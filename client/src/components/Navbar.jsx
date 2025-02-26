@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { FiMenu, FiX, FiSun, FiMoon, FiSearch, FiChevronRight, FiChevronDown } from "react-icons/fi";
+import { FiMenu, FiX, FiSun, FiMoon, FiSearch, FiChevronRight, FiChevronDown,FiHeart } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
 
 const categoriesData = [
@@ -63,7 +63,22 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-lg transition duration-300">
+    <>
+    <div className="flex bg-gray-100 container mx-auto px-2 py-2 items-center justify-end gap-x-4">
+      {/* Favorite Button */}
+      <button className="bg-white dark:bg-gray-700 p-2 rounded-full shadow-lg hover:bg-red-100 dark:hover:bg-red-700 transition">
+        <FiHeart size={18} className="text-gray-600 dark:text-gray-300 hover:text-red-500" />
+      </button>
+      
+      {/* Theme Toggle Button */}
+      <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="mr-4 p-2 rounded-full bg-white shadow-lg hover:bg-red-100 dark:bg-gray-700 transition"
+          >
+            {darkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
+          </button>
+    </div>
+    <nav className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-md transition duration-300">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         
         {/* Logo */}
@@ -161,6 +176,7 @@ const Navbar = () => {
         </div>
       )}
     </nav>
+    </>
   );
 };
 

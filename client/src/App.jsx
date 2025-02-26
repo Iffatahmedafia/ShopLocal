@@ -3,6 +3,8 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import Home from './pages/Home'
 import Navbar from './components/Navbar'
+import Product from './pages/Product'
+import Login from './pages/Login'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -10,8 +12,10 @@ function App() {
   return (
     <>
     <div className="w-full h-screen">
-      <Navbar />
-      <Home />
+      {/* <Navbar />
+      {/* <Home /> */}
+      {/* <Product /> */}
+      <Login />
       </div> 
     </>
   )
