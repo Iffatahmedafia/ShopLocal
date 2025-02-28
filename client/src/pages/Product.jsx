@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FiShoppingCart, FiHeart } from "react-icons/fi";
+import Navbar from "../components/Navbar"
 
 const allProducts = [
   { id: 1, name: "Smartphone", price: 699, brand: "Apple", image: "test.jpg" },
@@ -21,6 +22,8 @@ const Product = () => {
   );
 
   return (
+    <>
+    <Navbar />
     <div className="bg-slate dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen transition duration-300">
       <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
         {/* Sidebar Filters */}
@@ -94,6 +97,7 @@ const Product = () => {
         
       </div>
     </div>
+    </>
   );
 };
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FiSun, FiMoon, FiShoppingCart, FiHeart } from "react-icons/fi";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
+import Navbar from "../components/Navbar"
 
 const categories = [
   { name: "Electronics", image: "test.jpg" },
@@ -18,10 +19,21 @@ const products = [
 
 const Home = () => {
   const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
+  const [favouritesCount, setFavouritesCount] = useState(0)
+
+  const handleFavourites = () => {
+    setFavouritesCount(prev => prev + 1)
+    
+  }
+
 
   return (
+    <>
+    <Navbar 
+      count = {favouritesCount}
+    />
     <div className={`${darkMode ? "dark" : ""}`}>
-      <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition duration-300">
+      <div className="bg-slate dark:bg-gray-900 text-gray-900 dark:text-white transition duration-300">
 
         {/* Hero Section */}
         <header className="relative w-full h-[400px] bg-cover bg-center" style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}>
@@ -56,8 +68,10 @@ const Home = () => {
                 <img src={product.image} alt={product.name} className="w-full h-40 object-cover rounded-md mb-3" />
                 <h3 className="text-lg font-semibold">{product.name}</h3>
                 <p className="font-bold">{product.price}</p>
-                <button className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-2">
-                  <FiHeart /> Add to Favourites
+                <button 
+                  onClick = {handleFavourites}
+                  className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-2">
+                  <FiHeart /> Add to Favourites    
                 </button>
               </div>
             ))}
@@ -89,6 +103,7 @@ const Home = () => {
         </button>
       </div>
     </div>
+    </>
   );
 };
 
