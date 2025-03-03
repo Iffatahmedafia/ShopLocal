@@ -20,7 +20,33 @@ const Register = () => {
 
   const handleSubmitForm = async (data) => {
     console.log(data);
+    try {
+      const response = await fetch("http://localhost:8000/api/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+          password2: data.confirmPassword,
+          is_admin: false,
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        alert("User registered successfully!");
+      } else {
+        alert(result?.error || "Something went wrong");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 transition duration-300">

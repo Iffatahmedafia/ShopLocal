@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',  # Add this
-    'rest_framework.authtoken',
     'corsheaders',
     'store',  # Your app
 ]
@@ -95,7 +94,7 @@ DATABASES = {
         'USER': 'afia',
         'PASSWORD': '12345',
         'HOST': 'localhost',  # or your PostgreSQL host
-        'PORT': '5432',   
+        'PORT': '5432',
     }
 }
 

@@ -1,16 +1,19 @@
 # backend/serializers.py
-
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
+
+
+CustomUser = get_user_model()  # Get the correct user model dynamically
 
 class RegisterSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True)
 
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password', 'password2']
+        model = CustomUser
+        fields = ['name', 'email', 'password', 'password2', 'is_admin']
         extra_kwargs = {
             'password': {'write_only': True},
+            'is_admin': {'required': False},  # Allow is_admin to be set optionally (default False)
         }
 
     def validate(self, data):
@@ -19,10 +22,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data['username'],
+        validated_data.pop('password2')  # Remove password2 before saving
+        user = CustomUser.objects.create_user(
+            name=validated_data['name'],
             email=validated_data['email'],
-            password=validated_data['password']
+            password=validated_data['password'],
+            is_admin=validated_data.get('is_admin', False),  # Default to False if not provided
         )
         return user
 
@@ -30,5 +35,5 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
