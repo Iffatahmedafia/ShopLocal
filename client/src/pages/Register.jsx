@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useForm } from 'react-hook-form';
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { toast } from 'react-toastify';
+
 
 
 const Register = () => {
@@ -36,11 +38,12 @@ const Register = () => {
       });
   
       const result = await response.json();
+      console.log(result)
   
       if (response.ok) {
-        alert("User registered successfully!");
+        toast.success("User registered successfully!");
       } else {
-        alert(result?.error || "Something went wrong");
+        toast.error(result?.error || "Something went wrong");
       }
     } catch (error) {
       console.error("Error:", error);

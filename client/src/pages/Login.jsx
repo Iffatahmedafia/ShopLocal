@@ -1,6 +1,12 @@
 import { useState } from "react";
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../redux/slices/authSlice";
+import Cookies from "js-cookie";
+import { toast } from 'react-toastify';
+
+
 
 
 const Login = () => {
@@ -8,7 +14,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  console.log(showPassword)
+  const dispatch = useDispatch();
+ 
 
   const {
     register,
@@ -19,6 +26,31 @@ const Login = () => {
 
   const handleSubmitForm = async (data) => {
     console.log(data);
+    try {
+      const response = await fetch("http://localhost:8000/api/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
+  
+      const result = await response.json();
+      console.log(result)
+  
+      if (response.ok) {
+        dispatch(setCredentials({ user: result.user, accessToken: result.tokens.access }));
+        Cookies.set("accessToken", result.tokens.access, { expires: 7 }); // Store token in cookies
+        toast.success("Login successful!");
+      } else {
+        toast.error(result?.error || "Login failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (

@@ -5,6 +5,8 @@ import Navbar from './components/Navbar'
 import Product from './pages/Product'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Layout(){
   const location = useLocation();
@@ -25,17 +27,16 @@ function App() {
          <Route path='/' element={<Home />} />
          <Route path='/product' element={<Product />} />
      </Routes>
-     {/* Toast container for showing notifications
+     Toast container for showing notifications
      <ToastContainer 
          position="top-center" 
          autoClose={3000} 
-         hideProgressBar={false} 
+         hideProgressBar={true} 
          newestOnTop 
          closeOnClick 
          pauseOnHover 
-         draggable 
-         theme="dark" 
-       /> */}
+         draggable
+       />
      {/* <Toaster richColors /> */}
     </main>
    )

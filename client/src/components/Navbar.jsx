@@ -69,7 +69,7 @@ const Navbar = (favourites) => {
     <>
     <nav className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white shadow-md px-4 py-2 flex justify-between items-center"> 
         {/* Logo */}
-        <a href="/" className="text-2xl font-bold ml-6">Shop Local</a>
+        <a href="/" className="text-2xl font-bold ml-2 md:ml-6">Shop Local</a>
      
         <div className="flex items-center space-x-6">
           {/* Favorite Button */}
@@ -140,7 +140,7 @@ const Navbar = (favourites) => {
         </div>
 
         {/* Search Bar */}
-        <div className="flex-1 flex justify-center">
+        <div className="flex-1 flex md:justify-center">
           <div className="flex items-center border-2 border-gray-300 dark:border-gray-600 rounded-full overflow-hidden w-[280px] md:w-[500px]">
             <input
               type="text"
