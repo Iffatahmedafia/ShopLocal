@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiSun, FiMoon, FiShoppingCart, FiHeart } from "react-icons/fi";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import Navbar from "../components/Navbar"
+import { fetchCategories } from "../api";
+import { fetchSubCategories } from "../api";
 
 const categories = [
   { name: "Electronics", image: "test.jpg" },
@@ -20,6 +22,25 @@ const products = [
 const Home = () => {
   const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
   const [favouritesCount, setFavouritesCount] = useState(0)
+  const [categories, setCategories] = useState([])
+  const [subcategories, setSubcategories] = useState([])
+
+  useEffect(() => {
+    const getCategories = async () => {
+      const data = await fetchCategories();
+      setCategories(data);
+    };
+    getCategories();
+  }, []);
+  
+
+  useEffect(() => {
+    const getSubcategories = async () => {
+      const data = await fetchSubCategories();
+      setSubcategories(data);
+    };
+    getSubcategories();
+  }, []);
 
   const handleFavourites = () => {
     setFavouritesCount(prev => prev + 1)

@@ -1,6 +1,7 @@
 # backend/serializers.py
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from .models import Category, SubCategory, Product
 
 
 CustomUser = get_user_model()  # Get the correct user model dynamically
@@ -37,3 +38,27 @@ class RegisterSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'  # Include all fields
+
+class SubCategorySerializer(serializers.ModelSerializer):
+    category = CategorySerializer(read_only=True)  # Show full category details
+
+    class Meta:
+        model = SubCategory
+        fields = '__all__'
+        
+class ProductSerializer(serializers.ModelSerializer):
+    subcategory = SubCategorySerializer(read_only=True)  # Show full subcategory details
+    category = serializers.SerializerMethodField()  # Get category directly
+
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+    def get_category(self, obj):
+        return obj.subcategory.category.name  # Get category name from subcategory

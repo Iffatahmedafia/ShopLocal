@@ -2,44 +2,75 @@ import { useState, useEffect, useRef } from "react";
 import { FiMenu, FiX, FiSun, FiMoon, FiSearch, FiChevronRight, FiChevronDown,FiHeart } from "react-icons/fi";
 import { FaUserCircle, FaFolder, FaList } from "react-icons/fa";
 import { MdLabel } from 'react-icons/md';   // Material Design
+import { fetchCategories } from "../api";
+import { fetchSubCategories } from "../api";
 
-const categoriesData = [
-  {
-    name: "Electronics",
-    link: "/electronics",
-    subcategories: [
-      { name: "Mobiles", link: "/mobiles" },
-      { name: "Laptops", link: "/laptops" },
-      { name: "Accessories", link: "/accessories" },
-    ],
-  },
-  {
-    name: "Fashion",
-    link: "/fashion",
-    subcategories: [
-      { name: "Men's Wear", link: "/mens-wear" },
-      { name: "Women's Wear", link: "/womens-wear" },
-      { name: "Kids", link: "/kids-fashion" },
-    ],
-  },
-  {
-    name: "Home Appliances",
-    link: "/home-appliances",
-    subcategories: [
-      { name: "Kitchen", link: "/kitchen" },
-      { name: "Living Room", link: "/living-room" },
-      { name: "Bedroom", link: "/bedroom" },
-    ],
-  },
-];
+// const categoriesData = [
+//   {
+//     name: "Electronics",
+//     link: "/electronics",
+//     subcategories: [
+//       { name: "Mobiles", link: "/mobiles" },
+//       { name: "Laptops", link: "/laptops" },
+//       { name: "Accessories", link: "/accessories" },
+//     ],
+//   },
+//   {
+//     name: "Fashion",
+//     link: "/fashion",
+//     subcategories: [
+//       { name: "Men's Wear", link: "/mens-wear" },
+//       { name: "Women's Wear", link: "/womens-wear" },
+//       { name: "Kids", link: "/kids-fashion" },
+//     ],
+//   },
+//   {
+//     name: "Home Appliances",
+//     link: "/home-appliances",
+//     subcategories: [
+//       { name: "Kitchen", link: "/kitchen" },
+//       { name: "Living Room", link: "/living-room" },
+//       { name: "Bedroom", link: "/bedroom" },
+//     ],
+//   },
+// ];
 
 const Navbar = (favourites) => {
   const [isOpen, setIsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState(null);
+  const [activeCategory, setActiveCategory] = useState(null); 
   const dropdownRef = useRef(null);
   console.log(favourites)
+  const [categories, setCategories] = useState([])
+  const [subcategories, setSubcategories] = useState([])
+  
+    useEffect(() => {
+      const getCategories = async () => {
+        const data = await fetchCategories();
+        setCategories(data);
+      };
+      getCategories();
+    }, []);
+    
+  
+    useEffect(() => {
+      if (categories.length > 0) {
+        const getSubcategories = async () => {
+          const data = await fetchSubCategories();
+          console.log("Fetched Data: ", data)
+          setSubcategories(data);
+          console.log("SubCategories: ",subcategories)
+        };
+        getSubcategories();
+      }
+    }, [categories]);
+  
+
+    useEffect(() => {
+      console.log("Updated SubCategories:", subcategories); // ✅ Logs after state update
+    }, [subcategories]); // ✅ Runs whenever subcategories change
+  
  
 
   // Handle theme mode
@@ -108,8 +139,8 @@ const Navbar = (favourites) => {
                 
                 {/* Category List */}
                  <div className="w-56">
-                  {categoriesData.map((category, index) => (
-                    <div key={index} className="relative">
+                  {categories.map((category) => (
+                    <div key={category.id} className="relative">
                       <button
                         onClick={() => setActiveCategory(category.name === activeCategory ? null : category.name)}
                         className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex justify-between"
@@ -123,7 +154,9 @@ const Navbar = (favourites) => {
                 {/* Subcategories Panel (Fixed Alignment with First Category) */}
                 {activeCategory && (
                   <div className="absolute top-0 left-full w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
-                    {categoriesData.find(cat => cat.name === activeCategory)?.subcategories.map((sub, subIndex) => (
+                    {subcategories
+                    .filter(sub => sub.category.name === activeCategory)
+                    .map((sub, subIndex) => (
                       <a key={subIndex} href={sub.link} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                         {sub.name}
                       </a>

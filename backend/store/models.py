@@ -42,3 +42,39 @@ class CustomUser(AbstractUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+# Create Category model
+class Category(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+
+    def __str__(self):
+        return self.name
+
+class SubCategory(models.Model):
+    name = models.CharField(max_length=255)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="subcategories")
+   
+
+    def __str__(self):
+        return self.name
+
+class Product(models.Model):
+    name = models.CharField(max_length=255)
+    brand = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    offline_store = models.TextField()
+    online_store = models.TextField()
+    subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name="products")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="products")
+
+    def __str__(self):
+        return self.name
+
+class FavoriteProduct(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="favorites")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="favorited_by")
+
+    class Meta:
+        unique_together = ('user', 'product')
+
