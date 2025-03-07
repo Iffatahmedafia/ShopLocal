@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { FiSun, FiMoon, FiShoppingCart, FiHeart } from "react-icons/fi";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import Navbar from "../components/Navbar"
+import { useSelector } from "react-redux";
 import { fetchCategories } from "../api";
 import { fetchSubCategories } from "../api";
+import { fetchProducts } from "../api";
 
 const categories = [
   { name: "Electronics", image: "test.jpg" },
@@ -20,10 +22,13 @@ const products = [
 ];
 
 const Home = () => {
+  const { user } = useSelector((state) => state.auth);
+  console.log("User:", user)
   const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
   const [favouritesCount, setFavouritesCount] = useState(0)
   const [categories, setCategories] = useState([])
   const [subcategories, setSubcategories] = useState([])
+  const [products, setProducts] = useState([])
 
   useEffect(() => {
     const getCategories = async () => {
@@ -41,6 +46,17 @@ const Home = () => {
     };
     getSubcategories();
   }, []);
+
+  useEffect(() => {
+    if (categories.length > 0) {
+      const getProducts = async () => {
+        const data = await fetchProducts();
+        console.log("Products:", data)
+        setProducts(data);
+      };
+      getProducts();
+  }
+  }, [categories]);
 
   const handleFavourites = () => {
     setFavouritesCount(prev => prev + 1)
@@ -89,6 +105,9 @@ const Home = () => {
                 <img src={product.image} alt={product.name} className="w-full h-40 object-cover rounded-md mb-3" />
                 <h3 className="text-lg font-semibold">{product.name}</h3>
                 <p className="font-bold">{product.price}</p>
+                <p className="font-semibold text-base">Brand: {product.brand}</p>
+                <p className="font-semibold">Store: {product.offline_store}</p>
+                <p className="font-semibold">Online: {product.online_store}</p>
                 <button 
                   onClick = {handleFavourites}
                   className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-2">

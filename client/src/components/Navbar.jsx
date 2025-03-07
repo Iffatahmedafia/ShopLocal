@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { FiMenu, FiX, FiSun, FiMoon, FiSearch, FiChevronRight, FiChevronDown,FiHeart } from "react-icons/fi";
 import { FaUserCircle, FaFolder, FaList } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { MdLabel } from 'react-icons/md';   // Material Design
 import { fetchCategories } from "../api";
 import { fetchSubCategories } from "../api";
+import Avatar from "./Avatar";
 
 // const categoriesData = [
 //   {
@@ -36,6 +38,8 @@ import { fetchSubCategories } from "../api";
 // ];
 
 const Navbar = (favourites) => {
+  const { user } = useSelector((state) => state.auth);
+  console.log("User:", user)
   const [isOpen, setIsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -101,12 +105,19 @@ const Navbar = (favourites) => {
     <nav className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white shadow-md px-4 py-2 flex justify-between items-center"> 
         {/* Logo */}
         <a href="/" className="text-2xl font-bold ml-2 md:ml-6">Shop Local</a>
+        {user && ( 
+          <div className="text-xl font-semibold">
+            Welcome, {user.name}
+          </div>
+        )}
      
         <div className="flex items-center space-x-6">
           {/* Favorite Button */}
           <button className="relative bg-white dark:bg-gray-700 p-2 rounded-full shadow-lg hover:bg-red-100 dark:hover:bg-red-700 transition">
             <FiHeart size={18} className="text-gray-600 dark:text-gray-300 hover:text-red-500" />
-            <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white px-2 py-1 rounded-full">{favourites.count}</span>
+            {user && ( 
+              <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white px-2 py-1 rounded-full">{favourites.count}</span>
+            )}
           </button>
           
           {/* Theme Toggle Button */}
@@ -145,7 +156,7 @@ const Navbar = (favourites) => {
                         onClick={() => setActiveCategory(category.name === activeCategory ? null : category.name)}
                         className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex justify-between"
                       >
-                        {category.name} {category.subcategories && <FiChevronRight />}
+                        {category.name} {subcategories && <FiChevronRight />}
                       </button>
                     </div>
                   ))}
@@ -192,11 +203,14 @@ const Navbar = (favourites) => {
 
         {/* Right Section */}
         <div className="flex items-center space-x-6">
-          {/* Avatar with Sign In */}
-          <a href="/signin" className="flex items-center space-x-2 hover:text-red-400">
+          {user? (<Avatar />):
+          (
+          // Avatar with Sign In 
+          <a href="/login" className="flex items-center space-x-2 hover:text-red-400">
             <FaUserCircle size={28} />
             <span className="text-sm font-semibold">Sign In</span>
           </a>
+          )}
           {/* Theme Toggle Button
           <button
             onClick={() => setDarkMode(!darkMode)}

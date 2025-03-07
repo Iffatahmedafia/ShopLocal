@@ -2,6 +2,7 @@ import { useState } from "react";
 import { set, useForm } from 'react-hook-form';
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { setCredentials } from "../redux/slices/authSlice";
 import Cookies from "js-cookie";
 import { toast } from 'react-toastify';
@@ -15,6 +16,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
  
 
   const {
@@ -45,6 +47,10 @@ const Login = () => {
         dispatch(setCredentials({ user: result.user, accessToken: result.tokens.access }));
         Cookies.set("accessToken", result.tokens.access, { expires: 7 }); // Store token in cookies
         toast.success("Login successful!");
+        // Delay navigation by 1 second
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
       } else {
         toast.error(result?.error || "Login failed. Please try again.");
       }
