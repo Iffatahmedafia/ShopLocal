@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { FiMenu, FiX, FiSun, FiMoon, FiSearch, FiChevronRight, FiChevronDown,FiHeart } from "react-icons/fi";
 import { FaUserCircle, FaFolder, FaList } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { MdLabel } from 'react-icons/md';   // Material Design
 import { fetchCategories } from "../api";
 import { fetchSubCategories } from "../api";
@@ -40,14 +41,16 @@ import Avatar from "./Avatar";
 const Navbar = (favourites) => {
   const { user } = useSelector((state) => state.auth);
   console.log("User:", user)
+  const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null); 
   const dropdownRef = useRef(null);
-  console.log(favourites)
   const [categories, setCategories] = useState([])
   const [subcategories, setSubcategories] = useState([])
+  console.log(favourites)
+
   
     useEffect(() => {
       const getCategories = async () => {
@@ -114,7 +117,7 @@ const Navbar = (favourites) => {
         <div className="flex items-center space-x-6">
           {/* Favorite Button */}
           <button className="relative bg-white dark:bg-gray-700 p-2 rounded-full shadow-lg hover:bg-red-100 dark:hover:bg-red-700 transition">
-            <FiHeart size={18} className="text-gray-600 dark:text-gray-300 hover:text-red-500" />
+            <FiHeart size={18} onClick={() => user? (navigate('/products')) : (navigate('/login'))} className="text-gray-600 dark:text-gray-300" />
             {user && ( 
               <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white px-2 py-1 rounded-full">{favourites.count}</span>
             )}
@@ -167,10 +170,10 @@ const Navbar = (favourites) => {
                   <div className="absolute top-0 left-full w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
                     {subcategories
                     .filter(sub => sub.category.name === activeCategory)
-                    .map((sub, subIndex) => (
-                      <a key={subIndex} href={sub.link} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    .map((sub) => (
+                      <button onClick={() => navigate(`/products/${sub.id}`)} className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                         {sub.name}
-                      </a>
+                      </button>
                     ))}
                   </div>
                 )}

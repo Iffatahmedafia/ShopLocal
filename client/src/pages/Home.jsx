@@ -21,7 +21,7 @@ const products = [
   { name: "Smart Watch", price: "$249", image: "test.jpg" },
 ];
 
-const Home = () => {
+const Home = ({ updateFavouritesCount }) => {
   const { user } = useSelector((state) => state.auth);
   console.log("User:", user)
   const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
@@ -60,15 +60,13 @@ const Home = () => {
 
   const handleFavourites = () => {
     setFavouritesCount(prev => prev + 1)
+    updateFavouritesCount(favouritesCount + 1); // Update the parent's state (App.js)
     
   }
 
 
   return (
     <>
-    <Navbar 
-      count = {favouritesCount}
-    />
     <div className={`${darkMode ? "dark" : ""}`}>
       <div className="bg-slate dark:bg-gray-900 text-gray-900 dark:text-white transition duration-300">
 
@@ -104,7 +102,7 @@ const Home = () => {
               <div key={index} className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition">
                 <img src={product.image} alt={product.name} className="w-full h-40 object-cover rounded-md mb-3" />
                 <h3 className="text-lg font-semibold">{product.name}</h3>
-                <p className="font-bold">{product.price}</p>
+                <p className="font-bold">CAD {product.price}</p>
                 <p className="font-semibold text-base">Brand: {product.brand}</p>
                 <p className="font-semibold">Store: {product.offline_store}</p>
                 <p className="font-semibold">Online: {product.online_store}</p>

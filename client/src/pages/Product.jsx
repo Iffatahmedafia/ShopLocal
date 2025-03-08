@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiShoppingCart, FiHeart } from "react-icons/fi";
+import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar"
+import { fetchProducts } from "../api";
 
 const allProducts = [
   { id: 1, name: "Smartphone", price: 699, brand: "Apple", image: "test.jpg" },
@@ -13,17 +15,32 @@ const allProducts = [
 const brands = ["Apple", "Dell", "Sony", "Samsung"];
 
 const Product = () => {
+  const { subcategoryId } = useParams();
   const [priceRange, setPriceRange] = useState(1500);
   const [selectedBrand, setSelectedBrand] = useState("");
+  const [products, setProducts] = useState([])
+
+  useEffect(() => {
+    const getProducts = async () => {
+      const data = await fetchProducts();
+      if (subcategoryId) {
+        const filtered = data.filter((product) => product.subcategory.id === parseInt(subcategoryId));
+            setProducts(filtered);
+          } else {
+            setProducts(data);
+      }
+    }; getProducts();
+
+  }, [subcategoryId])
+ 
 
   // Filter products dynamically
-  const filteredProducts = allProducts.filter(
+  const filteredProducts = products.filter(
     (product) => product.price <= priceRange && (selectedBrand === "" || product.brand === selectedBrand)
   );
 
   return (
     <>
-    <Navbar />
     <div className="bg-slate dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen transition duration-300">
       <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
         {/* Sidebar Filters */}
@@ -86,9 +103,9 @@ const Product = () => {
                 {/* Product Image */}
                 <img src={product.image} alt={product.name} className="w-full h-40 object-cover rounded-md mb-3" />
                 <h3 className="text-lg font-semibold">{product.name}</h3>
-                <p className="text-blue-600 font-bold">${product.price}</p>
-                <p className="text-blue-600 font-bold">offline store</p>
-                <p className="text-blue-600 font-bold">online link</p>
+                <p className="text-blue-600 font-bold">CAD {product.price}</p>
+                <p className="text-blue-600 font-bold">Stores: {product.offline_store}</p>
+                <p className="text-blue-600 font-bold">Online: {product.online_store}</p>
               </div>
             ))}
           </div>
