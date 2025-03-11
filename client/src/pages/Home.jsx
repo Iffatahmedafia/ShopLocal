@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 import { fetchCategories } from "../api";
 import { fetchSubCategories } from "../api";
 import { fetchProducts } from "../api";
+import { toast } from 'react-toastify';
+import axios from "axios";
 
 const categories = [
   { name: "Electronics", image: "test.jpg" },
@@ -29,6 +31,7 @@ const Home = ({ updateFavouritesCount }) => {
   const [categories, setCategories] = useState([])
   const [subcategories, setSubcategories] = useState([])
   const [products, setProducts] = useState([])
+
 
   useEffect(() => {
     const getCategories = async () => {
@@ -58,11 +61,39 @@ const Home = ({ updateFavouritesCount }) => {
   }
   }, [categories]);
 
-  const handleFavourites = () => {
-    setFavouritesCount(prev => prev + 1)
-    updateFavouritesCount(favouritesCount + 1); // Update the parent's state (App.js)
-    
-  }
+  const handleFavourites = async (productId) => {
+
+    if (!user) {
+      toast.error('You must be logged in to add to favorites!');
+      return;
+    }
+    try {
+      console.log(user.id)
+      // Send a request to the backend to add the product to the favorites
+      const response = await axios.post('http://localhost:8000/api/favorites/add/', 
+        { user: user.id, product: productId, },
+        {
+          headers: {
+              "Content-Type": "application/json",
+          },
+        }
+
+      );
+
+      if (response.status === 201) {
+        setFavouritesCount(prev => prev + 1)
+        updateFavouritesCount(favouritesCount + 1); // Update the parent's state (App.js)
+        toast.success('Product added to favorites successfully!')
+      } 
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        toast.error('This product is already in your favorites!');
+      } else {
+        toast.error('An error occurred. Please try again later.');
+      }
+    }
+  }; 
+  
 
 
   return (
@@ -107,7 +138,7 @@ const Home = ({ updateFavouritesCount }) => {
                 <p className="font-semibold">Store: {product.offline_store}</p>
                 <p className="font-semibold">Online: {product.online_store}</p>
                 <button 
-                  onClick = {handleFavourites}
+                  onClick = {() => handleFavourites(product.id)}
                   className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-2">
                   <FiHeart /> Add to Favourites    
                 </button>

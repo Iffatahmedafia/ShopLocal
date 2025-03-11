@@ -1,7 +1,7 @@
 # backend/serializers.py
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Category, SubCategory, Product
+from .models import Category, SubCategory, Product, FavoriteProduct
 
 
 CustomUser = get_user_model()  # Get the correct user model dynamically
@@ -62,3 +62,10 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_category(self, obj):
         return obj.subcategory.category.name  # Get category name from subcategory
+
+class FavoriteProductSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = FavoriteProduct
+        fields = '__all__'
+        

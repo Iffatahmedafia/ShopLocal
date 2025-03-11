@@ -31,3 +31,14 @@ export const fetchProducts = async () => {
     return [];
   }
 };
+
+export const addFavourites = async () => {
+  try {
+    const response = await axios.post(`${API_URL}/products/`);
+    const result = await response.json();
+      console.log(result)
+  } catch (error) {
+    console.error("Error adding addtoFavourites:", error);
+    return [];
+  }
+};
