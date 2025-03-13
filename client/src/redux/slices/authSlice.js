@@ -4,7 +4,8 @@ import Cookies from "js-cookie";
 
 const initialState = {
     user: null,
-    accessToken: Cookies.get("accessToken") || null,
+    isAuthenticated: false,
+    // accessToken: Cookies.get("accessToken") || null,
    
 };
 
@@ -14,13 +15,14 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (state, action) => {
       state.user = action.payload.user;
-      state.accessToken = action.payload.accessToken;
-      Cookies.set("accessToken", action.payload.accessToken, { expires: 7 }); // 7 days
+      state.isAuthenticated = true;
+      // state.accessToken = action.payload.accessToken;
+      // Cookies.set("accessToken", action.payload.accessToken, { expires: 7 }); // 7 days
     },
     logout: (state) => {
       state.user = null;
-      state.accessToken = null;
-      Cookies.remove("accessToken");
+      state.isAuthenticated = false;
+      
     },
    
   },

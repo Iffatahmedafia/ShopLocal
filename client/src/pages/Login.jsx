@@ -8,8 +8,6 @@ import Cookies from "js-cookie";
 import { toast } from 'react-toastify';
 
 
-
-
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +16,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
  
-
+  
   const {
     register,
     handleSubmit,
@@ -38,14 +36,15 @@ const Login = () => {
           email: data.email,
           password: data.password,
         }),
+        credentials: "include",
       });
   
       const result = await response.json();
-      console.log(result)
+      console.log("Result",result)
   
       if (response.ok) {
-        dispatch(setCredentials({ user: result.user, accessToken: result.tokens.access }));
-        Cookies.set("accessToken", result.tokens.access, { expires: 7 }); // Store token in cookies
+        dispatch(setCredentials({ user: result.user }));
+        // Cookies.set("accessToken", result.tokens.access, { expires: 7 }); // Store token in cookies
         toast.success("Login successful!");
         // Delay navigation by 1 second
         setTimeout(() => {

@@ -117,7 +117,7 @@ const Navbar = (favourites) => {
         <div className="flex items-center space-x-6">
           {/* Favorite Button */}
           <button className="relative bg-white dark:bg-gray-700 p-2 rounded-full shadow-lg hover:bg-red-100 dark:hover:bg-red-700 transition">
-            <FiHeart size={18} onClick={() => user? (navigate('/products')) : (navigate('/login'))} className="text-gray-600 dark:text-gray-300" />
+            <FiHeart size={18} onClick={() => user? (navigate('/favorites')) : (navigate('/login'))} className="text-gray-600 dark:text-gray-300" />
             {user && ( 
               <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white px-2 py-1 rounded-full">{favourites.count}</span>
             )}

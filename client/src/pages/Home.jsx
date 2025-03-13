@@ -8,6 +8,7 @@ import { fetchSubCategories } from "../api";
 import { fetchProducts } from "../api";
 import { toast } from 'react-toastify';
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const categories = [
   { name: "Electronics", image: "test.jpg" },
@@ -31,6 +32,7 @@ const Home = ({ updateFavouritesCount }) => {
   const [categories, setCategories] = useState([])
   const [subcategories, setSubcategories] = useState([])
   const [products, setProducts] = useState([])
+
 
 
   useEffect(() => {
@@ -71,11 +73,12 @@ const Home = ({ updateFavouritesCount }) => {
       console.log(user.id)
       // Send a request to the backend to add the product to the favorites
       const response = await axios.post('http://localhost:8000/api/favorites/add/', 
-        { user: user.id, product: productId, },
+        { product: productId, },
         {
           headers: {
               "Content-Type": "application/json",
           },
+          withCredentials:true
         }
 
       );

@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',  # Add this
+    'rest_framework',
+    'rest_framework_simplejwt',
     'corsheaders',
     'store',  # Your app
 ]
@@ -54,12 +55,22 @@ MIDDLEWARE = [
 ]
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = True  
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3001",  # React frontend
+]
+
+CORS_ALLOW_CREDENTIALS = True  # Allow cookies to be sent in requests
+
+SESSION_COOKIE_SECURE = False  # Set to True in production (HTTPS)
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
 
 # Authentication settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        #  "store.authentication.CookieJWTAuthentication",
     )
 }
 
