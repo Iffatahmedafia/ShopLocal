@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { MdLabel } from 'react-icons/md';   // Material Design
 import { fetchCategories } from "../api";
-import { fetchSubCategories } from "../api";
+import { fetchSubCategories, fetchFavorites } from "../api";
 import Avatar from "./Avatar";
 
 // const categoriesData = [
@@ -49,6 +49,7 @@ const Navbar = (favourites) => {
   const dropdownRef = useRef(null);
   const [categories, setCategories] = useState([])
   const [subcategories, setSubcategories] = useState([])
+  const [favoritecount, setFavoritecount] = useState(0)
   console.log(favourites)
 
   
@@ -77,6 +78,16 @@ const Navbar = (favourites) => {
     useEffect(() => {
       console.log("Updated SubCategories:", subcategories); // ✅ Logs after state update
     }, [subcategories]); // ✅ Runs whenever subcategories change
+
+    
+    useEffect(() => {
+      const getFavorites = async () => {
+        const data = await fetchFavorites();
+        setFavoritecount(data.length);
+      };
+      getFavorites();
+    }, []);
+    
   
  
 
@@ -119,7 +130,7 @@ const Navbar = (favourites) => {
           <button className="relative bg-white dark:bg-gray-700 p-2 rounded-full shadow-lg hover:bg-red-100 dark:hover:bg-red-700 transition">
             <FiHeart size={18} onClick={() => user? (navigate('/favorites')) : (navigate('/login'))} className="text-gray-600 dark:text-gray-300" />
             {user && ( 
-              <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white px-2 py-1 rounded-full">{favourites.count}</span>
+              <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white px-2 py-1 rounded-full">{favoritecount}</span>
             )}
           </button>
           
@@ -129,7 +140,7 @@ const Navbar = (favourites) => {
                 className="mr-4 p-2 rounded-full bg-white shadow-lg hover:bg-red-100 dark:bg-gray-700 transition"
               >
                 {darkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
-              </button>
+          </button>
         </div>
     </nav>
     <nav className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-md transition duration-300">
@@ -232,9 +243,8 @@ const Navbar = (favourites) => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-gray-100 dark:bg-gray-800 p-4 space-y-2 transition duration-300">
-          <a href="/shop" className="block hover:text-blue-400">Shop</a>
+          <a href="/brands" className="block hover:text-blue-400">Brands</a>
           <a href="/categories" className="block hover:text-blue-400">Categories</a>
-          <a href="/contact" className="block hover:text-blue-400">Contact</a>
         </div>
       )}
     </nav>

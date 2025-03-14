@@ -1,6 +1,49 @@
+import { useState, useEffect } from "react";
 import { FiHeart } from "react-icons/fi";
+import { toast } from 'react-toastify';
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
-const ProductCard = ({ product, handleFavourites }) => {
+const ProductCard = ({ product, updateFavouritesCount }) => {
+  const { user } = useSelector((state) => state.auth);
+   const [favouritesCount, setFavouritesCount] = useState(0)
+   const navigate = useNavigate()
+
+  const handleFavourites = async (productId) => {
+
+    if (!user) {
+      toast.error('You must be logged in to add to favorites!');
+      navigate('/login')
+      return;
+    }
+    try {
+      console.log(user.id)
+      // Send a request to the backend to add the product to the favorites
+      const response = await axios.post('http://localhost:8000/api/favorites/add/', 
+        { product: productId, },
+        {
+          headers: {
+              "Content-Type": "application/json",
+          },
+          withCredentials:true
+        }
+
+      );
+      if (response.status === 201) {
+
+        setFavouritesCount(prev => prev + 1)
+        updateFavouritesCount(favouritesCount + 1); // Update the parent's state (App.js)
+        toast.success('Product added to favorites successfully!')
+      } 
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        toast.error('This product is already in your favorites!');
+      } else {
+        toast.error('An error occurred. Please try again later.');
+      }
+    }
+  }; 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition transform hover:scale-105 hover:shadow-2xl">
       {/* Product Image */}

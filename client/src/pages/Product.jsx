@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { FiShoppingCart, FiHeart } from "react-icons/fi";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar"
 import { fetchProducts } from "../api";
+import ProductCard from "../components/ProductCard";
 
 const allProducts = [
   { id: 1, name: "Smartphone", price: 699, brand: "Apple", image: "test.jpg" },
@@ -14,7 +16,8 @@ const allProducts = [
 
 const brands = ["Apple", "Dell", "Sony", "Samsung"];
 
-const Product = () => {
+const Product = ({ updateFavouritesCount }) => {
+  const { user } = useSelector((state) => state.auth);
   const { subcategoryId } = useParams();
   const [priceRange, setPriceRange] = useState(1500);
   const [selectedBrand, setSelectedBrand] = useState("");
@@ -32,6 +35,26 @@ const Product = () => {
     }; getProducts();
 
   }, [subcategoryId])
+
+
+  const handleFavourites = async (productId) => {
+
+    if (!user) {
+      toast.error('You must be logged in to add to favorites!');
+      return;
+    }
+    try {
+      console.log(user.id)
+      
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        toast.error('This product is already in your favorites!');
+      } else {
+        toast.error('An error occurred. Please try again later.');
+      }
+    }
+  }; 
+  
  
 
   // Filter products dynamically
@@ -92,21 +115,9 @@ const Product = () => {
         {/* Product Grid */}
         <div className="flex-1">
           <h2 className="text-2xl font-bold mb-6">Products</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {filteredProducts.map((product) => (
-              <div key={product.id} className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition relative">
-                {/* Favorite Button */}
-                <button className="absolute top-2 right-2 bg-white dark:bg-gray-700 p-2 rounded-full shadow-lg hover:bg-red-100 dark:hover:bg-red-700 transition">
-                  <FiHeart size={20} className="text-gray-600 dark:text-gray-300 hover:text-red-500" />
-                </button>
-
-                {/* Product Image */}
-                <img src={product.image} alt={product.name} className="w-full h-40 object-cover rounded-md mb-3" />
-                <h3 className="text-lg font-semibold">{product.name}</h3>
-                <p className="text-blue-600 font-bold">CAD {product.price}</p>
-                <p className="text-blue-600 font-bold">Stores: {product.offline_store}</p>
-                <p className="text-blue-600 font-bold">Online: {product.online_store}</p>
-              </div>
+              <ProductCard key={product.id} product={product} updateFavouritesCount={updateFavouritesCount} />
             ))}
           </div>
         </div>

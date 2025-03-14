@@ -1,30 +1,50 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
+import { fetchFavorites } from "../api";
 
 const FavoriteProduct = () => {
   const { user } = useSelector((state) => state.auth);
   console.log(user.id)
   const [favorites, setFavorites] = useState([]);
+  const navigate = useNavigate()
 
   useEffect(() => {
-    const fetchFavorites = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/api/favorites/", {
-          withCredentials: true, // Correct way to send user ID
-           
-          });
-          console.log(response.data)
-    
-        setFavorites(response.data.favorites);
-      } catch (error) {
-        console.error("Error fetching favorites:", error);
-      }
-    };
+    if (!user) {
+      navigate("/login"); // Redirect to login if user is null
+      return;
+    }
 
-    fetchFavorites();
-  }, [user]);
+    const getFavorites = async () => {
+      const data = await fetchFavorites();
+      if (!data){
+        console.log("No data")
+        navigate('/login')
+      }
+      setFavorites(data);
+    };
+    getFavorites();
+  }, [user, navigate]);
+
+  // useEffect(() => {
+  //   const fetchFavorites = async () => {
+  //     try {
+  //       const response = await axios.get("http://localhost:8000/api/favorites/", {
+  //         withCredentials: true, // Correct way to send user ID
+           
+  //         });
+  //         console.log(response.data)
+    
+  //       setFavorites(response.data.favorites);
+  //     } catch (error) {
+  //       console.error("Error fetching favorites:", error);
+  //     }
+  //   };
+
+  //   fetchFavorites();
+  // }, [user]);
 
   const handleFavourites = async () => {
     console.log("Product")

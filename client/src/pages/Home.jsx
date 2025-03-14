@@ -9,6 +9,7 @@ import { fetchProducts } from "../api";
 import { toast } from 'react-toastify';
 import axios from "axios";
 import Cookies from "js-cookie";
+import ProductCard from "../components/ProductCard";
 
 const categories = [
   { name: "Electronics", image: "test.jpg" },
@@ -133,19 +134,7 @@ const Home = ({ updateFavouritesCount }) => {
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Top Products</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {products.map((product, index) => (
-              <div key={index} className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition">
-                <img src={product.image} alt={product.name} className="w-full h-40 object-cover rounded-md mb-3" />
-                <h3 className="text-lg font-semibold">{product.name}</h3>
-                <p className="font-bold">CAD {product.price}</p>
-                <p className="font-semibold text-base">Brand: {product.brand}</p>
-                <p className="font-semibold">Store: {product.offline_store}</p>
-                <p className="font-semibold">Online: {product.online_store}</p>
-                <button 
-                  onClick = {() => handleFavourites(product.id)}
-                  className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-2">
-                  <FiHeart /> Add to Favourites    
-                </button>
-              </div>
+               <ProductCard key={product.id} product={product} updateFavouritesCount={updateFavouritesCount} />
             ))}
           </div>
         </section>

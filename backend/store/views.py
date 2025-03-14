@@ -25,6 +25,7 @@ def get_tokens_for_user(user):
         'access': str(refresh.access_token),
     }
 
+# Function to check user authentication
 def checkAuth(request):
         # Retrieve the token from cookies
         access_token = request.COOKIES.get("accessToken")
@@ -141,8 +142,6 @@ class FavoriteProductView(APIView):
         # Extract product ID from the request data
         product_id = request.data.get("product")
         print("Product Id:", product_id)
-        existing_favorites = FavoriteProduct.objects.filter(user_id=user_id, product_id=product_id)
-        print("Existing Favorites:", existing_favorites)  # Debugging the existing favorites query
         # Check if the product is already in the user's favorites
         if FavoriteProduct.objects.filter(user_id=user_id, product_id=product_id).exists():
             return Response(

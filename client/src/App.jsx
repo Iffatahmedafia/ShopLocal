@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import FavoriteProduct from "./pages/FavoriteProduct";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { setCredentials } from "./redux/slices/authSlice";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,6 +29,12 @@ const fetchUser = async (dispatch) => {
   } catch (error) {
     console.error("Failed to fetch user:", error);
   }
+};
+
+const ProtectedRoute = () => {
+  const { user } = useSelector((state) => state.auth);
+
+  return user ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 
@@ -57,9 +64,11 @@ function App() {
         {/* Layout will be applied to all these routes */}
         <Route element={<Layout favouritesCount={favouritesCount} />}>
           <Route path="/" element={<Home updateFavouritesCount={setFavouritesCount} />} />
-          <Route path="/products" element={<Product />} />
+          <Route path="/products" element={<Product updateFavouritesCount={setFavouritesCount} />} />
           <Route path="/products/:subcategoryId" element={<Product />} />
-          <Route path="/favorites" element={<FavoriteProduct />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/favorites" element={<FavoriteProduct />} />
+          </Route>
         </Route>
         
         {/* Login & Register should not have the Navbar */}
