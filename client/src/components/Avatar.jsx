@@ -48,7 +48,7 @@ const Avatar = () => {
                   <Link
                     to="/dashboard"
                     className={`${
-                      active ? "bg-gray-100" : ""
+                      active ? "bg-white" : ""
                     } text-black group flex w-full items-center rounded-md px-2 py-2 text-base`}
                   >
                     <FaUser className="mr-2" aria-hidden="true" />
@@ -62,7 +62,7 @@ const Avatar = () => {
                   <Link
                     to="/profile"
                     className={`${
-                      active ? "bg-gray-700" : ""
+                      active ? "bg-gray-100" : ""
                     } text-black group flex w-full items-center rounded-md px-2 py-2 text-base`}
                   >
                     <FaUserLock className="mr-2" aria-hidden="true" />

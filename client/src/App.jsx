@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import Product from "./pages/Product";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ProfilePage from "./pages/ProfilePage";
 import FavoriteProduct from "./pages/FavoriteProduct";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -66,8 +67,11 @@ function App() {
           <Route path="/" element={<Home updateFavouritesCount={setFavouritesCount} />} />
           <Route path="/products" element={<Product updateFavouritesCount={setFavouritesCount} />} />
           <Route path="/products/:subcategoryId" element={<Product />} />
+
           <Route element={<ProtectedRoute />}>
             <Route path="/favorites" element={<FavoriteProduct />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/security" element={<ProfilePage />} />
           </Route>
         </Route>
         

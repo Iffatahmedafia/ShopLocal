@@ -7,7 +7,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from store.authentication import CookieJWTAuthentication  # Import custom auth
 from rest_framework.views import APIView
 from rest_framework import generics
-from .serializers import RegisterSerializer, LoginSerializer, CategorySerializer, SubCategorySerializer, ProductSerializer, FavoriteProductSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, UserUpdateSerializer, CategorySerializer, SubCategorySerializer, ProductSerializer, FavoriteProductSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .models import Category, SubCategory, Product, FavoriteProduct, CustomUser
@@ -111,6 +111,46 @@ class CheckAuthView(APIView):
             return Response({"authenticated": False, "error": "Token expired"}, status=401)
         except jwt.InvalidTokenError:
             return Response({"authenticated": False, "error": "Invalid token"}, status=401)
+
+
+class UserProfileView(APIView):
+    
+    # GET request to fetch user data
+    def get(self, request):
+        user_data = checkAuth(request) # Custom function to check authentication
+        if not user_data:
+            return Response({"detail": "User is not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+        user_id = user_data.id
+        print(user_id)
+        try:
+            user = CustomUser.objects.get(id=user_id)
+            serializer = UserSerializer(user)  # Serialize the user data
+            print("User data:", serializer.data)
+            return Response(serializer.data)  # Return the serialized data as JSON
+        except CustomUser.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request):
+        user_data = checkAuth(request)
+        if not user_data:
+            return Response({"detail": "User is not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+        user_id = user_data.id
+        print(user_id)
+        try:
+            user = CustomUser.objects.get(id=user_id)
+            serializer = UserUpdateSerializer(user, data=request.data, partial=True)  # partial=True allows partial updates (only name or email)
+            
+            if serializer.is_valid():
+                # print("User data:", serializer.data)
+                serializer.save()  # Save the updated user data
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        except CustomUser.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
 
 
 # Get all categories

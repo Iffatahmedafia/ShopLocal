@@ -22,6 +22,16 @@ export const fetchSubCategories = async () => {
   }
 };
 
+export const fetchUserData = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/profile/`, { withCredentials: true });
+    console.log("User Data:",response.data)
+    return response.data;
+  } catch (error) {
+    console.error("Failed to load user data");
+  }
+};
+
 export const fetchProducts = async () => {
   try {
     const response = await axios.get(`${API_URL}/products/`);

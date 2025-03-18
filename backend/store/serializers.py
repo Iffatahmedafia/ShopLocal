@@ -40,6 +40,22 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
 
+class UserSerializer(serializers.ModelSerializer): 
+    class Meta: 
+        model = CustomUser
+        fields = ['name', 'email', 'is_admin']
+
+class UserUpdateSerializer(serializers.ModelSerializer): 
+    class Meta: 
+        model = CustomUser
+        fields = ['name', 'email']
+
+        def validate_email(self, value):
+            # Optionally add email validation logic (e.g., checking if it's unique)
+            if CustomUser.objects.filter(email=value).exists():
+                raise serializers.ValidationError("Email is already in use.")
+            return value
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
