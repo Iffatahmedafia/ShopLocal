@@ -243,8 +243,48 @@ const Navbar = (favourites) => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-gray-100 dark:bg-gray-800 p-4 space-y-2 transition duration-300">
-          <a href="/brands" className="block hover:text-blue-400">Brands</a>
-          <a href="/categories" className="block hover:text-blue-400">Categories</a>
+          {/* Categories Dropdown */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              className="flex items-center hover:text-red-400"
+              onClick={() => setDropdownOpen(!dropdownOpen)}>
+              Categories <FiChevronDown className="ml-1" />
+            </button>
+
+            {/* Main Dropdown Menu */}
+            {dropdownOpen && (
+              <div className="absolute left-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 flex">
+                
+                {/* Category List */}
+                 <div className="w-56">
+                  {categories.map((category) => (
+                    <div key={category.id} className="relative">
+                      <button
+                        onClick={() => setActiveCategory(category.name === activeCategory ? null : category.name)}
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex justify-between"
+                      >
+                        {category.name} {subcategories && <FiChevronRight />}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Subcategories Panel (Fixed Alignment with First Category) */}
+                {activeCategory && (
+                  <div className="absolute top-0 left-full w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                    {subcategories
+                    .filter(sub => sub.category.name === activeCategory)
+                    .map((sub) => (
+                      <button onClick={() => navigate(`/products/${sub.id}`)} className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        {sub.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          <a href="/brands" className="block hover:text-blue-400">Brands</a> <a href="/categories" className="block hover:text-blue-400">Categories</a>
         </div>
       )}
     </nav>

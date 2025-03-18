@@ -1,5 +1,6 @@
 # backend/serializers.py
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from .models import Category, SubCategory, Product, FavoriteProduct
 
@@ -55,6 +56,25 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             if CustomUser.objects.filter(email=value).exists():
                 raise serializers.ValidationError("Email is already in use.")
             return value
+
+class PasswordUpdateSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        user = self.instance  # Get the user instance passed in `serializer = PasswordUpdateSerializer(user, data=request.data)`
+
+        # Check if old password matches
+        if not user.check_password(data['old_password']):
+            raise serializers.ValidationError({"old_password": "Old password is incorrect."})
+
+        return data
+
+    def update(self, instance, validated_data):
+        instance.password = make_password(validated_data['new_password'])  # Hash the new password
+        instance.save()
+        return instance
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

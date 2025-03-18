@@ -16,9 +16,9 @@ const ChangePasswordForm = () => {
     }
 
     try {
-      await axios.put("http://localhost:8000/api/change-password",{
-        currentPassword: data.currentPassword,
-        newPassword: data.newPassword
+      await axios.put("http://localhost:8000/api/password/update/",{
+        old_password: data.currentPassword,
+        new_password: data.newPassword
       }, { withCredentials: true });
 
       toast.success("Password updated successfully!");
@@ -34,7 +34,7 @@ const ChangePasswordForm = () => {
             <input
               type="password"
               {...register("currentPassword", { required: "Current password is required" })}
-              className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500"
+              className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
             />
             {errors.currentPassword && <p className="text-red-500 text-sm">{errors.currentPassword.message}</p>}
           </div>
@@ -58,8 +58,7 @@ const ChangePasswordForm = () => {
           </div>
           <button
             type="submit"
-            className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
-          >
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition">
             Change Password
           </button>
         </form>

@@ -7,7 +7,7 @@ const ProfilePage = () => {
   const location = useLocation();
 
   return (
-    <div className="max-w-lg mx-auto bg-gray-100 dark:bg-gray-900 dark:text-white p-6 rounded-lg shadow-md">
+    <div className="mt-6 max-w-lg mx-auto bg-gray-100 dark:bg-gray-900 dark:text-white p-6 rounded-lg shadow-md">
         <ProfileCard />
       <h2 className="text-2xl font-semibold text-center mb-4 mt-4">
         {location.pathname === "/profile" ? "Update Profile" : "Change Password"}
