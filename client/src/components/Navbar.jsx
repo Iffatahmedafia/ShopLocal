@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { FiMenu, FiX, FiSun, FiMoon, FiSearch, FiChevronRight, FiChevronDown,FiHeart } from "react-icons/fi";
-import { FaUserCircle, FaFolder, FaList } from "react-icons/fa";
+import { FaUserCircle, FaFolder, FaList, FaShoppingBag, FaTag, FaStore, FaCogs, FaTrademark } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { MdLabel } from 'react-icons/md';   // Material Design
 import { fetchCategories } from "../api";
 import { fetchSubCategories, fetchFavorites } from "../api";
+import { useSearch } from '../SearchContext.jsx'
 import Avatar from "./Avatar";
 
 // const categoriesData = [
@@ -38,7 +39,7 @@ import Avatar from "./Avatar";
 //   },
 // ];
 
-const Navbar = (favourites) => {
+const Navbar = ({ count }) => {
   const { user } = useSelector((state) => state.auth);
   console.log("User:", user)
   const navigate = useNavigate()
@@ -50,7 +51,12 @@ const Navbar = (favourites) => {
   const [categories, setCategories] = useState([])
   const [subcategories, setSubcategories] = useState([])
   const [favoritecount, setFavoritecount] = useState(0)
-  console.log(favourites)
+  const { query, updateSearchQuery } = useSearch();
+
+  const handleSearch = (event) => {
+    updateSearchQuery(event.target.value);
+  };
+  console.log(count)
 
   
     useEffect(() => {
@@ -118,7 +124,7 @@ const Navbar = (favourites) => {
     <>
     <nav className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white shadow-md px-4 py-2 flex justify-between items-center"> 
         {/* Logo */}
-        <a href="/" className="text-2xl font-bold ml-2 md:ml-6">Shop Local</a>
+        <a href="/" className="text-2xl font-bold ml-2 md:ml-6 whitespace-nowrap">Shop Local</a>
         {user && ( 
           <div className="text-xl font-semibold">
             Welcome, {user.name}
@@ -129,8 +135,8 @@ const Navbar = (favourites) => {
           {/* Favorite Button */}
           <button className="relative bg-white dark:bg-gray-700 p-2 rounded-full shadow-lg hover:bg-red-100 dark:hover:bg-red-700 transition">
             <FiHeart size={18} onClick={() => user? (navigate('/favorites')) : (navigate('/login'))} className="text-gray-600 dark:text-gray-300" />
-            {user && ( 
-              <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white px-2 py-1 rounded-full">{favoritecount}</span>
+            {user && count > 0 && ( 
+              <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white px-2 py-1 rounded-full">{count}</span>
             )}
           </button>
           
@@ -192,18 +198,20 @@ const Navbar = (favourites) => {
             )}
           </div>
           <a href="/brands" className="hover:text-red-400 flex items-center">
-            <MdLabel size={18} className="mr-2" />
+            <FaTag size={18} className="mr-2" />
              Brands
           </a>
         </div>
 
         {/* Search Bar */}
-        <div className="flex-1 flex md:justify-center">
-          <div className="flex items-center border-2 border-gray-300 dark:border-gray-600 rounded-full overflow-hidden w-[280px] md:w-[500px]">
+        <div className="flex-1 flex md:justify-center px-2">
+          <div className="flex items-center border-2 border-gray-300 dark:border-gray-600 rounded-full overflow-hidden w-full max-w-sm md:w-96">
             <input
               type="text"
               placeholder="Search for products..."
               className="w-full p-2 text-sm text-gray-800 dark:text-white dark:bg-gray-700 focus:outline-none"
+              value={query}
+              onChange={handleSearch}
             />
             <button className="bg-red-600 px-4 py-2 text-white rounded-r-lg hover:bg-red-700">
             Search
@@ -222,7 +230,7 @@ const Navbar = (favourites) => {
           // Avatar with Sign In 
           <a href="/login" className="flex items-center space-x-2 hover:text-red-400">
             <FaUserCircle size={28} />
-            <span className="text-sm font-semibold">Sign In</span>
+            <span className="text-sm font-semibold hidden sm:inline">Sign In</span>
           </a>
           )}
           {/* Theme Toggle Button
@@ -243,48 +251,60 @@ const Navbar = (favourites) => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-gray-100 dark:bg-gray-800 p-4 space-y-2 transition duration-300">
+          
           {/* Categories Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
               className="flex items-center hover:text-red-400"
-              onClick={() => setDropdownOpen(!dropdownOpen)}>
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            >
               Categories <FiChevronDown className="ml-1" />
             </button>
 
             {/* Main Dropdown Menu */}
             {dropdownOpen && (
-              <div className="absolute left-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 flex">
-                
-                {/* Category List */}
-                 <div className="w-56">
-                  {categories.map((category) => (
-                    <div key={category.id} className="relative">
-                      <button
-                        onClick={() => setActiveCategory(category.name === activeCategory ? null : category.name)}
-                        className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex justify-between"
-                      >
-                        {category.name} {subcategories && <FiChevronRight />}
-                      </button>
-                    </div>
-                  ))}
-                </div>
+              <div className="mt-2 space-y-2 bg-gray-100 dark:bg-gray-800 rounded-md p-2">
+                {categories.map((category) => (
+                  <div key={category.id} className="relative">
+                    <button
+                      onClick={() =>
+                        setActiveCategory(activeCategory === category.name ? null : category.name)
+                      }
+                      className="w-full text-left flex items-center justify-between px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
+                    >
+                      {category.name}
+                      {/* Show chevron only if the category has subcategories */}
+                      {subcategories.some((sub) => sub.category.name === category.name) && (
+                        <FiChevronDown
+                          className={`ml-1 transition-transform ${
+                            activeCategory === category.name ? "rotate-180" : ""
+                          }`}
+                        />
+                      )}
+                    </button>
 
-                {/* Subcategories Panel (Fixed Alignment with First Category) */}
-                {activeCategory && (
-                  <div className="absolute top-0 left-full w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
-                    {subcategories
-                    .filter(sub => sub.category.name === activeCategory)
-                    .map((sub) => (
-                      <button onClick={() => navigate(`/products/${sub.id}`)} className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        {sub.name}
-                      </button>
-                    ))}
+                    {/* Subcategories Panel (Expands under clicked category) */}
+                    {activeCategory === category.name && (
+                      <div className="ml-6 mt-1 space-y-1">
+                        {subcategories
+                          .filter((sub) => sub.category.name === category.name)
+                          .map((sub) => (
+                            <button
+                              key={sub.id}
+                              onClick={() => navigate(`/products/${sub.id}`)}
+                              className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            >
+                              {sub.name}
+                            </button>
+                          ))}
+                      </div>
+                    )}
                   </div>
-                )}
+                ))}
               </div>
             )}
           </div>
-          <a href="/brands" className="block hover:text-blue-400">Brands</a> <a href="/categories" className="block hover:text-blue-400">Categories</a>
+          <a href="/brands" className="flex items-center hover:text-red-400">Brands</a>
         </div>
       )}
     </nav>

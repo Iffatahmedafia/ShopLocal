@@ -4,11 +4,26 @@ import { toast } from 'react-toastify';
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { fetchFavorites } from "../api";
+
+
 
 const ProductCard = ({ product, updateFavouritesCount }) => {
   const { user } = useSelector((state) => state.auth);
-   const [favouritesCount, setFavouritesCount] = useState(0)
-   const navigate = useNavigate()
+  const [favouritesCount, setFavouritesCount] = useState(0)
+  const navigate = useNavigate()
+  
+  
+  
+  const getFavorites = async () => {
+    const data = await fetchFavorites();
+    setFavouritesCount(data.length);
+    updateFavouritesCount(data.length)
+  };
+
+  useEffect(() => {
+    getFavorites();
+  }, []);
 
   const handleFavourites = async (productId) => {
 
@@ -19,6 +34,8 @@ const ProductCard = ({ product, updateFavouritesCount }) => {
     }
     try {
       console.log(user.id)
+      // setFavouritesCount(favouritesCount + 1);
+      updateFavouritesCount(favouritesCount + 1);
       // Send a request to the backend to add the product to the favorites
       const response = await axios.post('http://localhost:8000/api/favorites/add/', 
         { product: productId, },
@@ -31,9 +48,9 @@ const ProductCard = ({ product, updateFavouritesCount }) => {
 
       );
       if (response.status === 201) {
-
-        setFavouritesCount(prev => prev + 1)
-        updateFavouritesCount(favouritesCount + 1); // Update the parent's state (App.js)
+        getFavorites();
+        // setFavouritesCount(prev => prev + 1)
+        // updateFavouritesCount(favouritesCount + 1); // Update the parent's state (App.js)
         toast.success('Product added to favorites successfully!')
       } 
     } catch (error) {
@@ -42,6 +59,8 @@ const ProductCard = ({ product, updateFavouritesCount }) => {
       } else {
         toast.error('An error occurred. Please try again later.');
       }
+      // setFavouritesCount(favouritesCount - 1);
+      updateFavouritesCount(favouritesCount - 1);
     }
   }; 
   return (

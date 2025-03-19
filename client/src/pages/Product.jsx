@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar"
 import { fetchProducts } from "../api";
 import ProductCard from "../components/ProductCard";
+import { useSearch } from '../SearchContext.jsx';
 
 const allProducts = [
   { id: 1, name: "Smartphone", price: 699, brand: "Apple", image: "test.jpg" },
@@ -22,6 +23,7 @@ const Product = ({ updateFavouritesCount }) => {
   const [priceRange, setPriceRange] = useState(1500);
   const [selectedBrand, setSelectedBrand] = useState("");
   const [products, setProducts] = useState([])
+  const { query } = useSearch();
 
   useEffect(() => {
     const getProducts = async () => {
@@ -59,7 +61,10 @@ const Product = ({ updateFavouritesCount }) => {
 
   // Filter products dynamically
   const filteredProducts = products.filter(
-    (product) => product.price <= priceRange && (selectedBrand === "" || product.brand === selectedBrand)
+    (product) =>
+      product.price <= priceRange &&
+      (selectedBrand === "" || product.brand === selectedBrand) &&
+      (product.name.toLowerCase().includes(query.toLowerCase()) || product.brand.toLowerCase().includes(query.toLowerCase())) // Apply search query filter
   );
 
   return (
