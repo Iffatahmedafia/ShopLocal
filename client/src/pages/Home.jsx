@@ -3,6 +3,10 @@ import { FiSun, FiMoon, FiShoppingCart, FiHeart } from "react-icons/fi";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import Navbar from "../components/Navbar"
 import { useSelector } from "react-redux";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 import { fetchCategories } from "../api";
 import { fetchSubCategories } from "../api";
 import { fetchProducts } from "../api";
@@ -119,24 +123,68 @@ const Home = ({ updateFavouritesCount }) => {
         {/* Top Categories Section */}
         <section className="container mx-auto px-4 py-12">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Top Categories</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <Swiper
+            spaceBetween={20}
+            slidesPerView={2} // Show 2 slides on small screens
+            breakpoints={{
+              768: { slidesPerView: 4 }, // Show 4 slides on larger screens
+            }}
+            pagination={{ clickable: true }}
+            modules={[Pagination]}
+            className="pb-16" // Space for dots
+          >
             {categories.map((category, index) => (
-              <div key={index} className="flex flex-col items-center bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition">
-                <img src={category.image} alt={category.name} className="w-20 h-20 object-cover rounded-full mb-3" />
-                <p className="text-lg font-semibold">{category.name}</p>
-              </div>
-            ))}
-          </div>
+              <SwiperSlide key={index}>
+                <div className="flex flex-col items-center bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition">
+                  <img src={category.image} alt={category.name} className="w-32 h-32 object-cover rounded-lg border-4 border-gray-300 dark:border-gray-700 mb-3" />
+                  <p className="text-lg font-semibold">{category.name}</p>
+                </div>
+              </SwiperSlide>
+              ))}
+          </Swiper>
+          {/* Swiper Pagination - Inline Style */}
+          <style>
+            {`
+              .swiper-pagination {
+                position: relative !important;
+                margin-top: 15px;
+              }
+
+              .swiper-pagination-bullet {
+                background-color: gray !important;
+                width: 10px;
+                height: 10px;
+                opacity: 0.5;
+                transition: all 0.3s ease;
+              }
+
+              .swiper-pagination-bullet-active {
+                background-color: red !important;
+                opacity: 1;
+              }
+            `}
+          </style>
         </section>
 
         {/* Top Products Section */}
         <section className="container mx-auto px-4 py-12">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Top Products</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <Swiper
+            spaceBetween={20}
+            slidesPerView={2} // Show 2 slides on small screens
+            breakpoints={{
+              768: { slidesPerView: 4 }, // Show 4 slides on larger screens
+            }}
+            pagination={{ clickable: true }}
+            modules={[Pagination]}
+            className="pb-16" // Space for dots
+            >
             {products.map((product, index) => (
-               <ProductCard key={product.id} product={product} updateFavouritesCount={updateFavouritesCount} />
-            ))}
-          </div>
+              <SwiperSlide key={index}>
+                <ProductCard key={product.id} product={product} updateFavouritesCount={updateFavouritesCount} />
+              </SwiperSlide>
+              ))} 
+          </Swiper>
         </section>
 
         {/* Footer */}

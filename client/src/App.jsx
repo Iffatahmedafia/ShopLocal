@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import Product from "./pages/Product";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import VendorRegistration from "./components/VendorRegistration.jsx";
 import ProfilePage from "./pages/ProfilePage";
 import FavoriteProduct from "./pages/FavoriteProduct";
 import { useDispatch } from "react-redux";
@@ -79,6 +80,7 @@ function App() {
           
           {/* Login & Register should not have the Navbar */}
           <Route path="/register" element={<Register />} />
+          <Route path="/vendor_register" element={<VendorRegistration />} />
           <Route path="/login" element={<Login />} />
         </Routes>
 
