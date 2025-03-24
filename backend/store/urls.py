@@ -1,7 +1,7 @@
 # backend/urls.py
 
 from django.urls import path
-from .views import RegisterView, LoginView, CategoryListView, SubCategoryListView, ProductListView, FavoriteProductView, CheckAuthView, UserProfileView, PasswordUpdateView
+from .views import RegisterView, BrandView, LoginView, CategoryListView, SubCategoryListView, ProductListView, FavoriteProductView, CheckAuthView, UserProfileView, PasswordUpdateView
 
 
 urlpatterns = [
@@ -14,6 +14,7 @@ urlpatterns = [
     path('profile/', UserProfileView.as_view(), name='get_users'),
     path('profile/update/', UserProfileView.as_view(), name='update_users'),
     path('password/update/', PasswordUpdateView.as_view(), name='update_password'),
+    path('brand/create/', BrandView.as_view(), name='brand_register'),
  
     # URL for adding to favorites (POST)
     path('favorites/add/', FavoriteProductView.as_view(), name='add_favourite'),

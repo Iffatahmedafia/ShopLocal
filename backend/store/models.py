@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import BaseUserManager
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, name, password=None, **extra_fields):
@@ -29,6 +31,10 @@ class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)  # Email field as unique
     name = models.CharField(max_length=255) 
     is_admin = models.BooleanField(default=False)  # Custom isAdmin field
+    is_brand = models.BooleanField(default=False)
+
+    # Set a default value for 'username' field to prevent conflicts
+    username = models.CharField(max_length=255, unique=True, blank=True, null=True)
 
        # Use the custom user manager
     objects = CustomUserManager()
@@ -43,6 +49,8 @@ class CustomUser(AbstractUser):
     def is_staff(self):
         return self.is_admin
 
+
+
 # Create Category model
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -50,6 +58,27 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+class Brand(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="Brand")
+    name = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)
+    registration = models.CharField(max_length=255, unique=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    website_link = models.URLField(max_length=500, blank=True, null=True)  # Store URL
+    province = models.CharField(max_length=255)
+    
+    def __str__(self):
+        return self.name
+# Signal to keep Brand's name and email in sync with CustomUser
+@receiver(post_save, sender=CustomUser)
+def update_brand_info(sender, instance, **kwargs):
+    if hasattr(instance, 'brand'):
+        instance.brand.name = instance.name
+        instance.brand.email = instance.email
+        instance.brand.save()
 
 class SubCategory(models.Model):
     name = models.CharField(max_length=255)

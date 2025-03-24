@@ -33,7 +33,7 @@ const VendorRegistration = () => {
   const handleSubmitForm = async (data) => {
     console.log(data);
     try {
-      const response = await fetch("http://localhost:8000/api/register/", {
+      const response = await fetch("http://localhost:8000/api/brand/create/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,9 +41,15 @@ const VendorRegistration = () => {
         body: JSON.stringify({
           name: data.name,
           email: data.email,
+          registration: data.registration,
+          category: data.category,
+          phone: data.phone,
+          address: data.address,
+          website_link: data.website,
+          province: data.province,
           password: data.password,
           password2: data.confirmPassword,
-          is_admin: false,
+          is_brand: true,
         }),
       });
 
@@ -51,7 +57,7 @@ const VendorRegistration = () => {
       console.log(result);
 
       if (response.ok) {
-        toast.success("User registered successfully!");
+        toast.success("Brand registered successfully!");
       } else {
         toast.error(result?.error || "Something went wrong");
       }
@@ -136,7 +142,7 @@ const VendorRegistration = () => {
                 >
                   <option value="">Select a category</option>
                   {categories.map((category, index) => (
-                    <option key={index} value={category.name}>
+                    <option key={index} value={category.id}>
                       {category.name}
                     </option>
                   ))}
@@ -181,6 +187,22 @@ const VendorRegistration = () => {
                 />
                 {errors.address && (
                   <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>
+                )}
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 dark:text-gray-300 font-semibold">
+                  Website Link
+                </label>
+                <input
+                  type="text"
+                  id="website"
+                  name="website"
+                  className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
+                  placeholder="Enter Business website link"
+                  {...register("website", { required: "Website Link is required" })}
+                />
+                {errors.phone && (
+                  <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
                 )}
               </div>
               <div className="mb-4">

@@ -7,7 +7,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from store.authentication import CookieJWTAuthentication  # Import custom auth
 from rest_framework.views import APIView
 from rest_framework import generics
-from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, CategorySerializer, SubCategorySerializer, ProductSerializer, FavoriteProductSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, CategorySerializer, SubCategorySerializer, ProductSerializer, FavoriteProductSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .models import Category, SubCategory, Product, FavoriteProduct, CustomUser
@@ -172,13 +172,41 @@ class PasswordUpdateView(APIView):
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
+class BrandView(APIView):
+    def post(self, request):
+        print("Request Data:", request.data)
+        user_serializer = RegisterSerializer(data=request.data)
+        if user_serializer.is_valid():
+            # Check if the user already exists based on the email
+            email = request.data.get('email')
+            existing_user = CustomUser.objects.filter(email=email).first()
+            print("Existing User", existing_user)
 
+            if existing_user:
+                return Response({"message": "User with this email already exists!"}, status=status.HTTP_400_BAD_REQUEST)
 
+            # Create the user if it doesn't exist
+            user = user_serializer.save()
+
+            # Now, prepare the brand data (exclude user-related data)
+            brand_data = request.data.copy()  # Make a copy of the request data
+            brand_data['user'] = user.id  # Set the user ID manually
+
+            # Now pass the brand data to the BrandSerializer
+            brand_serializer = BrandSerializer(data=brand_data)
+            if brand_serializer.is_valid():
+                brand_serializer.save(user=user)  # Save the brand
+                return Response({"message": "Brand registered successfully!"}, status=status.HTTP_201_CREATED)
+            return Response(brand_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Get all categories
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+
 
 # Get all subcategories
 class SubCategoryListView(generics.ListAPIView):

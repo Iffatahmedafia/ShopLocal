@@ -2,7 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
-from .models import Category, SubCategory, Product, FavoriteProduct
+from .models import Category, SubCategory, Product, FavoriteProduct, Brand
 
 
 CustomUser = get_user_model()  # Get the correct user model dynamically
@@ -12,10 +12,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['name', 'email', 'password', 'password2', 'is_admin']
+        fields = ['name', 'email', 'password', 'password2', 'is_admin','is_brand']
         extra_kwargs = {
             'password': {'write_only': True},
             'is_admin': {'required': False},  # Allow is_admin to be set optionally (default False)
+            'is_brand': {'required': False},  # Allow is_brand to be set optionally (default False)
         }
 
     def validate(self, data):
@@ -30,6 +31,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             password=validated_data['password'],
             is_admin=validated_data.get('is_admin', False),  # Default to False if not provided
+            is_brand=validated_data.get('is_brand', False),  # Default to False if not provided
         )
         return user
 
@@ -45,6 +47,41 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta: 
         model = CustomUser
         fields = ['name', 'email', 'is_admin']
+
+# Brand Serializer
+class BrandSerializer(serializers.ModelSerializer):
+    # user = RegisterSerializer(read_only=True)
+
+    class Meta:
+        model = Brand
+        fields = ['user', 'name', 'email', 'registration', 'category', 'phone', 'address', 'website_link', 'province']
+
+    def create(self, validated_data):
+        user = validated_data.pop("user")
+        # user = CustomUser.objects.create_user(**user_data)
+        brand = Brand.objects.create(user=user, **validated_data)
+        return brand
+
+    def update(self, instance, validated_data):
+        # Update user fields
+        user_data = validated_data.pop("user", None)
+        if user_data:
+            instance.user.name = user_data.get("name", instance.user.name)
+            instance.user.email = user_data.get("email", instance.user.email)
+            instance.user.save()
+
+        # Update brand fields
+        instance.name = instance.user.name
+        instance.email = instance.user.email
+        instance.registration = validated_data.get("registration", instance.registration)
+        instance.category = validated_data.get("category", instance.category)
+        instance.phone = validated_data.get("phone", instance.phone)
+        instance.address = validated_data.get("address", instance.address)
+        instance.website_link = validated_data.get("website_link", instance.website_link)
+        instance.province = validated_data.get("province", instance.province)
+
+        instance.save()
+        return instance
 
 class UserUpdateSerializer(serializers.ModelSerializer): 
     class Meta: 
