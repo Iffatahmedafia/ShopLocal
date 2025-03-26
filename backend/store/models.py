@@ -90,12 +90,14 @@ class SubCategory(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=255)
+    image = models.CharField(max_length=255, default='images/default.jpg')  # Set default image
     brand = models.CharField(max_length=255)  # Store brand name
     price = models.DecimalField(max_digits=10, decimal_places=2)
     offline_store = models.TextField(blank=True, null=True)
     online_store = models.URLField(max_length=500, blank=True, null=True)  # Store URL
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name="products")
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="products")
+    brand_id = models.ForeignKey(Brand, null=True, on_delete=models.CASCADE, related_name="products")
 
     def __str__(self):
         return self.name

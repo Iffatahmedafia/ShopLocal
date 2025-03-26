@@ -69,7 +69,7 @@ function App() {
           <Route element={<Layout favouritesCount={favouritesCount} />}>
             <Route path="/" element={<Home updateFavouritesCount={setFavouritesCount} />} />
             <Route path="/products" element={<Product updateFavouritesCount={setFavouritesCount} />} />
-            <Route path="/products/:subcategoryId" element={<Product />} />
+            <Route path="/products/:subcategoryId" element={<Product updateFavouritesCount={setFavouritesCount} />} />
 
             <Route element={<ProtectedRoute />}>
               <Route path="/favorites" element={<FavoriteProduct />} />

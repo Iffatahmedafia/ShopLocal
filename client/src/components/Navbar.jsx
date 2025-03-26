@@ -122,9 +122,9 @@ const Navbar = ({ count }) => {
 
   return (
     <>
-    <nav className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white shadow-md px-4 py-2 flex justify-between items-center"> 
+    <nav className="bg-gray-800 dark:bg-gray-800 text-gray-900 dark:text-white shadow-md px-4 py-2 flex justify-between items-center"> 
         {/* Logo */}
-        <a href="/" className="text-2xl font-bold ml-2 md:ml-6 whitespace-nowrap">Shop Local</a>
+        <a href="/" className="text-2xl font-bold text-white ml-2 md:ml-6 whitespace-nowrap">Shop Local</a>
         {user && ( 
           <div className="text-xl font-semibold">
             Welcome, {user.name}
@@ -133,7 +133,7 @@ const Navbar = ({ count }) => {
      
         <div className="flex items-center space-x-6">
           {/* Favorite Button */}
-          <button className="relative bg-white dark:bg-gray-700 p-2 rounded-full shadow-lg hover:bg-red-100 dark:hover:bg-red-700 transition">
+          <button className="relative bg-white dark:bg-gray-700 p-2 rounded-full shadow-lg hover:bg-red-200 dark:hover:bg-red-700 transition">
             <FiHeart size={18} onClick={() => user? (navigate('/favorites')) : (navigate('/login'))} className="text-gray-600 dark:text-gray-300" />
             {user && count > 0 && ( 
               <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white px-2 py-1 rounded-full">{count}</span>
@@ -143,7 +143,7 @@ const Navbar = ({ count }) => {
           {/* Theme Toggle Button */}
           <button
                 onClick={() => setDarkMode(!darkMode)}
-                className="mr-4 p-2 rounded-full bg-white shadow-lg hover:bg-red-100 dark:bg-gray-700 transition"
+                className="mr-4 p-2 rounded-full bg-white shadow-lg hover:bg-red-200 dark:bg-gray-700 transition"
               >
                 {darkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
           </button>
@@ -158,7 +158,7 @@ const Navbar = ({ count }) => {
           {/* Categories Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
-              className="flex items-center hover:text-red-400"
+              className="flex items-center hover:text-red-600"
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
               <FaList size={18} className="mr-2" />Categories <FiChevronDown className="ml-1" />
@@ -197,7 +197,7 @@ const Navbar = ({ count }) => {
               </div>
             )}
           </div>
-          <a href="/brands" className="hover:text-red-400 flex items-center">
+          <a href="/brands" className="hover:text-red-600 flex items-center">
             <FaTag size={18} className="mr-2" />
              Brands
           </a>
@@ -213,7 +213,7 @@ const Navbar = ({ count }) => {
               value={query}
               onChange={handleSearch}
             />
-            <button className="bg-red-600 px-4 py-2 text-white rounded-r-lg hover:bg-red-700">
+            <button className="bg-red-700 px-4 py-2 text-white rounded-r-lg hover:bg-red-800">
             Search
           </button>
             {/* <button className="bg-red-600 text-white px-3 py-2 hover:bg-red-700 flex items-center gap-2">
@@ -228,7 +228,7 @@ const Navbar = ({ count }) => {
           {user? (<Avatar />):
           (
           // Avatar with Sign In 
-          <a href="/login" className="flex items-center space-x-2 hover:text-red-400">
+          <a href="/login" className="flex items-center space-x-2 hover:text-red-600">
             <FaUserCircle size={28} />
             <span className="text-sm font-semibold hidden sm:inline">Sign In</span>
           </a>
@@ -255,7 +255,7 @@ const Navbar = ({ count }) => {
           {/* Categories Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
-              className="flex items-center hover:text-red-400"
+              className="flex items-center hover:text-red-600"
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
               Categories <FiChevronDown className="ml-1" />
@@ -304,7 +304,7 @@ const Navbar = ({ count }) => {
               </div>
             )}
           </div>
-          <a href="/brands" className="flex items-center hover:text-red-400">Brands</a>
+          <a href="/brands" className="flex items-center hover:text-red-600">Brands</a>
         </div>
       )}
     </nav>

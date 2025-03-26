@@ -114,7 +114,7 @@ const Home = ({ updateFavouritesCount }) => {
           <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-white">Find Your Perfect Style</h1>
             <p className="mt-4 text-lg text-gray-300">Explore our latest collection of products at unbeatable prices.</p>
-            <a href="/shop" className="mt-6 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg">
+            <a href="/shop" className="mt-6 px-6 py-3 bg-red-700 hover:bg-red-600 text-white font-semibold rounded-lg">
               Shop Now
             </a>
           </div>
@@ -188,19 +188,19 @@ const Home = ({ updateFavouritesCount }) => {
         </section>
 
         {/* Footer */}
-        <footer className="bg-gray-100 dark:bg-gray-800 py-6 mt-12">
+        <footer className="bg-gray-800 dark:bg-gray-800 py-6 mt-12">
           <div className="container mx-auto text-center">
-            <h3 className="text-lg font-semibold">Follow Us</h3>
+            <h3 className="text-lg text-white font-semibold">Follow Us</h3>
             <div className="flex justify-center space-x-4 my-3">
-              <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-500"><FaFacebook size={24} /></a>
-              <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-500"><FaTwitter size={24} /></a>
-              <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-500"><FaInstagram size={24} /></a>
+              <a href="#" className="text-gray-100 dark:text-gray-300 hover:text-red-600"><FaFacebook size={24} /></a>
+              <a href="#" className="text-gray-100 dark:text-gray-300 hover:text-red-600"><FaTwitter size={24} /></a>
+              <a href="#" className="text-gray-100 dark:text-gray-300 hover:text-red-600"><FaInstagram size={24} /></a>
             </div>
-            <p className="text-gray-600 dark:text-gray-400">© 2025 Sho Local. All rights reserved.</p>
+            <p className="text-gray-200 dark:text-gray-400">© 2025 Shop Local. All rights reserved.</p>
           </div>
         </footer>
 
-        {/* Dark Mode Toggle */}
+        {/* Dark Mode Toggle
         <button
           onClick={() => {
             setDarkMode(!darkMode);
@@ -209,7 +209,7 @@ const Home = ({ updateFavouritesCount }) => {
           className="fixed bottom-5 right-5 bg-gray-200 dark:bg-gray-700 p-3 rounded-full shadow-lg"
         >
           {darkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
-        </button>
+        </button> */}
       </div>
     </div>
     </>
