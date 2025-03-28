@@ -122,7 +122,7 @@ const Product = ({ updateFavouritesCount }) => {
           <h2 className="text-2xl font-bold mb-6">Products</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} updateFavouritesCount={updateFavouritesCount} />
+              <ProductCard key={product.id} product={product} updateFavouritesCount={updateFavouritesCount} type="add" />
             ))}
           </div>
         </div>

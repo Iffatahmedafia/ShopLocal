@@ -7,6 +7,7 @@ import { MdLabel } from 'react-icons/md';   // Material Design
 import { fetchCategories } from "../api";
 import { fetchSubCategories, fetchFavorites } from "../api";
 import { useSearch } from '../SearchContext.jsx'
+import { useTheme } from "../context/ThemeContext.jsx";
 import Avatar from "./Avatar";
 
 // const categoriesData = [
@@ -44,7 +45,9 @@ const Navbar = ({ count }) => {
   console.log("User:", user)
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
+  // const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
+  const { darkMode, toggleDarkMode } = useTheme();
+  console.log("DarkMode", darkMode)
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null); 
   const dropdownRef = useRef(null);
@@ -98,15 +101,31 @@ const Navbar = ({ count }) => {
  
 
   // Handle theme mode
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [darkMode]);
+  // useEffect(() => {
+  //   if (darkMode) {
+  //     document.documentElement.classList.add("dark");
+  //     localStorage.setItem("theme", "dark");
+  //   } else {
+  //     document.documentElement.classList.remove("dark");
+  //     localStorage.setItem("theme", "light");
+  //   }
+  // }, [darkMode]);
+  // useEffect(() => {
+  //   const theme = localStorage.getItem("theme") || "light"; 
+  //   console.log("Theme", theme)
+  //   document.documentElement.classList.toggle("dark", theme === "dark"); 
+  //   setDarkMode(theme === "dark");
+  // }, []); // Run only on mount
+
+  // const toggleDarkMode = () => {
+  //   setDarkMode((prevMode) => {
+  //     const newMode = !prevMode;
+  //     localStorage.setItem("theme", newMode ? "dark" : "light");
+  //     document.documentElement.classList.toggle("dark", newMode);
+  //     return newMode;
+  //   });
+  // };
+  
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -126,7 +145,7 @@ const Navbar = ({ count }) => {
         {/* Logo */}
         <a href="/" className="text-2xl font-bold text-white ml-2 md:ml-6 whitespace-nowrap">Shop Local</a>
         {user && ( 
-          <div className="text-xl font-semibold">
+          <div className="dark:text-white text-xl font-semibold">
             Welcome, {user.name}
           </div>
         )}
@@ -142,7 +161,7 @@ const Navbar = ({ count }) => {
           
           {/* Theme Toggle Button */}
           <button
-                onClick={() => setDarkMode(!darkMode)}
+                onClick={toggleDarkMode}
                 className="mr-4 p-2 rounded-full bg-white shadow-lg hover:bg-red-200 dark:bg-gray-700 transition"
               >
                 {darkMode ? <FiSun size={18} /> : <FiMoon size={18} />}

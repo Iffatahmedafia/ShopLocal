@@ -8,7 +8,7 @@ import { fetchFavorites } from "../api";
 
 
 
-const ProductCard = ({ product, updateFavouritesCount }) => {
+const ProductCard = ({ product, updateFavouritesCount, type }) => {
   const { user } = useSelector((state) => state.auth);
   const [favouritesCount, setFavouritesCount] = useState(0)
   const navigate = useNavigate()
@@ -64,6 +64,43 @@ const ProductCard = ({ product, updateFavouritesCount }) => {
     }
     updateFavouritesCount(favouritesCount)
   }; 
+  const removeFavourites = async (productId) => {
+
+    if (!user) {
+      toast.error('You must be logged in to remove from favorites!');
+      navigate('/login')
+      return;
+    }
+    try {
+      console.log(user.id)
+      setFavouritesCount(favouritesCount - 1);
+      // updateFavouritesCount(favouritesCount + 1);
+      // Send a request to the backend to add the product to the favorites
+      const response = await axios.delete(`http://localhost:8000/api/favorites/remove/${productId}/`, 
+        {
+          headers: {
+              "Content-Type": "application/json",
+          },
+          withCredentials:true
+        });
+      if (response.status === 204) {
+        getFavorites();
+        // setFavouritesCount(prev => prev + 1)
+        // updateFavouritesCount(favouritesCount + 1); // Update the parent's state (App.js)
+        toast.success('Product removed from favorites successfully!')
+      } 
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        toast.error('This product is not in your favorites!');
+      } else {
+        toast.error('An error occurred. Please try again later.');
+      }
+      setFavouritesCount(favouritesCount + 1);
+      // updateFavouritesCount(favouritesCount - 1);
+    }
+    updateFavouritesCount(favouritesCount)
+  }; 
+
   return (
    
     <div className="bg-white dark:bg-gray-800 h-[28rem] flex flex-col rounded-xl shadow-lg overflow-hidden transition-transform transform hover:-translate-y-2 hover:shadow-xl group">
@@ -100,12 +137,22 @@ const ProductCard = ({ product, updateFavouritesCount }) => {
         </div>
 
         {/* Add to Favorites Button */}
+        {type == "add" ? (
         <button
           onClick={() => handleFavourites(product.id)}
           className="mt-4 w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition-all duration-300 font-semibold shadow-md hover:shadow-lg active:scale-95"
         >
           <FiHeart size={20} className="transition-transform duration-300 group-hover:scale-110" /> Add to Favorites
         </button>
+        ):(
+        <button
+          onClick={() => removeFavourites(product.id)}
+          className="mt-4 w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition-all duration-300 font-semibold shadow-md hover:shadow-lg active:scale-95"
+        >
+          <FiHeart size={20} className="transition-transform duration-300 group-hover:scale-110" /> Remove from Favorites
+        </button>
+        )
+      }
       </div>
     </div>
   );

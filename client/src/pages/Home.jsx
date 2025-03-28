@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import axios from "axios";
 import Cookies from "js-cookie";
 import ProductCard from "../components/ProductCard";
+import { useTheme } from "../context/ThemeContext"; 
 
 const categories = [
   { name: "Electronics", image: "test.jpg" },
@@ -32,7 +33,8 @@ const products = [
 const Home = ({ updateFavouritesCount }) => {
   const { user } = useSelector((state) => state.auth);
   console.log("User:", user)
-  const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
+  // const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
+  const { darkMode } = useTheme(); // Get dark mode state
   const [favouritesCount, setFavouritesCount] = useState(0)
   const [categories, setCategories] = useState([])
   const [subcategories, setSubcategories] = useState([])
@@ -181,7 +183,7 @@ const Home = ({ updateFavouritesCount }) => {
             >
             {products.map((product, index) => (
               <SwiperSlide key={index}>
-                <ProductCard key={product.id} product={product} updateFavouritesCount={updateFavouritesCount} />
+                <ProductCard key={product.id} product={product} updateFavouritesCount={updateFavouritesCount} type="add" />
               </SwiperSlide>
               ))} 
           </Swiper>

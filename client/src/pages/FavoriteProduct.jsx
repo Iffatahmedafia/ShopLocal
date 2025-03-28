@@ -5,10 +5,11 @@ import { useNavigate } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { fetchFavorites } from "../api";
 
-const FavoriteProduct = () => {
+const FavoriteProduct = ({ updateFavouritesCount }) => {
   const { user } = useSelector((state) => state.auth);
   console.log(user.id)
   const [favorites, setFavorites] = useState([]);
+  const [type, setType] = useState([]);
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -46,10 +47,6 @@ const FavoriteProduct = () => {
   //   fetchFavorites();
   // }, [user]);
 
-  const handleFavourites = async () => {
-    console.log("Product")
-
-  }
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -57,7 +54,7 @@ const FavoriteProduct = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {favorites.length > 0 ? (
           favorites.map((product) => (
-            <ProductCard key={product.id} product={product} handleFavourites={handleFavourites} />
+            <ProductCard key={product.id} product={product} updateFavouritesCount={updateFavouritesCount} type="delete" />
           ))
         ) : (
           <p className="text-center text-gray-500">No favorite products yet.</p>

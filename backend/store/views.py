@@ -265,7 +265,10 @@ class FavoriteProductView(APIView):
 
     def delete(self, request, product_id):
         # Get the user ID from the request (again, assuming user is authenticated)
-        user_id =  request.data.get('user') # Get the user ID
+        user = checkAuth(request)
+        print("User", user)
+        user_id = user.id
+        # user_id =  request.data.get('user') # Get the user ID
         
         try:
             # Find the favorite product by user and product ID

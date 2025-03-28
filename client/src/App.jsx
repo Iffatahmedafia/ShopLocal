@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setCredentials } from "./redux/slices/authSlice";
 import { SearchProvider } from './SearchContext.jsx';
+import { ThemeProvider } from "./context/ThemeContext.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -62,6 +63,7 @@ function App() {
   }, [dispatch]);
   
   return (
+    <ThemeProvider>
     <SearchProvider> {/* Wrap the entire app with SearchProvider */}
       <main className="w-full min-h-screen">
         <Routes>
@@ -72,7 +74,7 @@ function App() {
             <Route path="/products/:subcategoryId" element={<Product updateFavouritesCount={setFavouritesCount} />} />
 
             <Route element={<ProtectedRoute />}>
-              <Route path="/favorites" element={<FavoriteProduct />} />
+              <Route path="/favorites" element={<FavoriteProduct updateFavouritesCount={setFavouritesCount} />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/security" element={<ProfilePage />} />
             </Route>
@@ -96,6 +98,7 @@ function App() {
         />
       </main>
     </SearchProvider>
+    </ThemeProvider>
   );
 }
 
