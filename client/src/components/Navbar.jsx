@@ -244,14 +244,26 @@ const Navbar = ({ count }) => {
 
         {/* Right Section */}
         <div className="flex items-center space-x-6">
+          {/* <a href="/vendor_register" className="hidden md:flex items-center underline md:text-red-500 hover:text-red-600 text-underline flex items-center">
+              Register your business
+          </a> */}
           {user? (<Avatar />):
           (
           // Avatar with Sign In 
-          <a href="/login" className="flex items-center space-x-2 hover:text-red-600">
+          <a href="/login" className="hidden md:flex items-center space-x-2 hover:text-red-600">
             <FaUserCircle size={28} />
             <span className="text-sm font-semibold hidden sm:inline">Sign In</span>
           </a>
           )}
+          {!user &&
+           <button
+              type="button"
+              onClick={() => navigate('/vendor_register')}
+              className="hidden md:flex items-center bg-red-700 hover:bg-red-600 text-white px-3 py-2 rounded-full transition"
+            >
+               Register your business
+          </button>
+          }
           {/* Theme Toggle Button
           <button
             onClick={() => setDarkMode(!darkMode)}
@@ -270,6 +282,13 @@ const Navbar = ({ count }) => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-gray-100 dark:bg-gray-800 p-4 space-y-2 transition duration-300">
+          <button
+              type="button"
+              onClick={() => navigate('/vendor_register')}
+              className="w-full flex items-center justify-center bg-red-700 hover:bg-red-600 text-white py-2 transition"
+            >
+               Register your business
+          </button>
           
           {/* Categories Dropdown */}
           <div className="relative" ref={dropdownRef}>
@@ -324,6 +343,23 @@ const Navbar = ({ count }) => {
             )}
           </div>
           <a href="/brands" className="flex items-center hover:text-red-600">Brands</a>
+          <hr className="my-4 border-gray-300 dark:border-gray-700" />
+          <div className="flex items-center justify-center">
+            <button
+                type="button"
+                onClick={() => navigate('/login')}
+                className="bg-gray-300 hover:bg-gray-400 text-red-700 px-2 py-2 rounded-lg transition"
+              >
+                Sign In
+            </button>
+          </div>
+          <p className="mt-4 text-center text-gray-700 dark:text-gray-300">
+            Don't have an account?{" "}
+          <a href="/register" className="text-red-500 hover:underline">Sign Up</a>
+          {/* <Link to="/signup" className="text-red-500 hover:underline">
+            Sign Up
+          </Link> */}
+          </p>
         </div>
       )}
     </nav>

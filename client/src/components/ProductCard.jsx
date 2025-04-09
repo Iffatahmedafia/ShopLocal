@@ -5,6 +5,8 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchFavorites } from "../api";
+import { Edit, Trash2 } from "lucide-react";
+
 
 
 
@@ -103,7 +105,7 @@ const ProductCard = ({ product, updateFavouritesCount, type }) => {
 
   return (
    
-    <div className="bg-white dark:bg-gray-800 h-[28rem] flex flex-col rounded-xl shadow-lg overflow-hidden transition-transform transform hover:-translate-y-2 hover:shadow-xl group">
+    <div className="bg-white dark:bg-gray-800 h-auto flex flex-col rounded-xl shadow-lg overflow-hidden transition-transform transform hover:-translate-y-2 hover:shadow-xl group">
       {/* Product Image */}
       <div className="flex justify-center items-center h-56 mb-3 bg-white dark:bg-gray-900 rounded-t-xl">
       <img
@@ -147,9 +149,9 @@ const ProductCard = ({ product, updateFavouritesCount, type }) => {
         ):(
         <button
           onClick={() => removeFavourites(product.id)}
-          className="mt-4 w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition-all duration-300 font-semibold shadow-md hover:shadow-lg active:scale-95"
+          className="mt-4 w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-2 py-2 rounded-lg transition-all duration-300 font-semibold shadow-md hover:shadow-lg active:scale-95"
         >
-          <FiHeart size={20} className="transition-transform duration-300 group-hover:scale-110" /> Remove from Favorites
+          <Trash2 size={18} className="transition-transform duration-300 group-hover:scale-110" /> Remove
         </button>
         )
       }

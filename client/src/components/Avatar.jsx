@@ -41,14 +41,14 @@ const Avatar = () => {
             leaveFrom='transform opacity-100 scale-100'
             leaveTo='transform opacity-0 scale-95'
           >
-            <Menu.Items className='absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-gray-200 shadow-lg ring-1 ring-white/10 focus:outline-none'>
+            <Menu.Items className='absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-gray-100 shadow-lg ring-1 ring-white/10 focus:outline-none'>
               <div className='p-4'>
                 <Menu.Item>
                 {({ active }) => (
                   <Link
                     to="/profile"
                     className={`${
-                      active ? "bg-white" : ""
+                      active ? "bg-red-100 text-red-700" : ""
                     } text-black group flex w-full items-center rounded-md px-2 py-2 text-base`}
                   >
                     <FaUser className="mr-2" aria-hidden="true" />
@@ -62,7 +62,7 @@ const Avatar = () => {
                   <Link
                     to="/security"
                     className={`${
-                      active ? "bg-gray-100" : ""
+                      active ? "bg-red-100 text-red-700" : ""
                     } text-black group flex w-full items-center rounded-md px-2 py-2 text-base`}
                   >
                     <FaUserLock className="mr-2" aria-hidden="true" />
@@ -76,7 +76,7 @@ const Avatar = () => {
                     <button
                       onClick={logoutHandler}
                       className={`${
-                        active ? "bg-gray-700" : ""
+                        active ? "bg-red-100 text-red-700" : ""
                       } text-red-500 group flex w-full items-center rounded-md px-2 py-2 text-base`}
                     >
                       <IoLogOutOutline className='mr-2' aria-hidden='true' />

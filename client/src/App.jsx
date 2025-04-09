@@ -8,6 +8,9 @@ import Register from "./pages/Register";
 import VendorRegistration from "./components/VendorRegistration.jsx";
 import ProfilePage from "./pages/ProfilePage";
 import FavoriteProduct from "./pages/FavoriteProduct";
+import Brand from "./pages/Brands.jsx"
+import Sidebar from "./components/Sidebar.jsx";
+import ShowProducts from "./components/UserPanel/ShowProducts.jsx";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setCredentials } from "./redux/slices/authSlice";
@@ -37,8 +40,35 @@ const fetchUser = async (dispatch) => {
 
 const ProtectedRoute = () => {
   const { user } = useSelector((state) => state.auth);
+    return user ? <Outlet /> : <Navigate to="/login" replace />
+         
+  
+};
 
-  return user ? <Outlet /> : <Navigate to="/login" replace />;
+const PanelRoute = ({ favouritesCount }) => {
+  const { user } = useSelector((state) => state.auth);
+  const [sidebarOpen, setSidebarOpen] = useState(true);  // Control sidebar visibility
+  return (
+    <div className="flex min-h-screen">
+      {/* Navbar stays fixed at the top */}
+      <div className="w-full fixed top-0 left-0 right-0 z-10">
+        <Navbar count={favouritesCount} />
+      </div>
+
+      {/* Main content */}
+      <div className="flex flex-1 mt-[100px]"> {/* Add margin-top to push content below the navbar */}
+        {/* Sidebar remains fixed on the left */}
+        <Sidebar open={sidebarOpen} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        
+        {/* Main content area */}
+        <div
+          className={`flex-1 transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-0'} overflow-y-auto`}
+        >
+          <Outlet /> {/* Renders the child routes inside Layout */}
+        </div>
+      </div>
+    </div>
+  )  
 };
 
 
@@ -72,13 +102,14 @@ function App() {
             <Route path="/" element={<Home updateFavouritesCount={setFavouritesCount} />} />
             <Route path="/products" element={<Product updateFavouritesCount={setFavouritesCount} />} />
             <Route path="/products/:subcategoryId" element={<Product updateFavouritesCount={setFavouritesCount} />} />
-
-            <Route element={<ProtectedRoute />}>
+            <Route path="/brands" element={<Brand />} />
+          </Route>
+          <Route element={<PanelRoute favouritesCount={favouritesCount} />}>
+              <Route path="/showproducts" element={<ShowProducts />} />
               <Route path="/favorites" element={<FavoriteProduct updateFavouritesCount={setFavouritesCount} />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/security" element={<ProfilePage />} />
             </Route>
-          </Route>
           
           {/* Login & Register should not have the Navbar */}
           <Route path="/register" element={<Register />} />

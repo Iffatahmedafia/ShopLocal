@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { FiSun, FiMoon, FiShoppingCart, FiHeart } from "react-icons/fi";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import Navbar from "../components/Navbar"
+import Sidebar from "../components/Sidebar";
 import { useSelector } from "react-redux";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
