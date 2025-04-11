@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import Table from '../Table';
 import { fetchProducts } from "../../api";
+import DialogWrapper from "../DialogWrapper";
+import AddProductForm from "./AddProductForm";
 
 // / Define table columns
 const columns = [
@@ -25,11 +27,17 @@ const ShowProducts = () => {
     
     }, []);
 
+  const handleAdd = (productData) => {
+    console.log("Product Added:", productData);
+    // axios.post("/api/products", productData)...
+  };
+
   // Edit Category
   const handleEdit = (product) => {
     console.log("Editing Category:", product);
   
   };
+
 
   // Delete Category
   const handleDelete = (product) => {
@@ -59,6 +67,9 @@ const ShowProducts = () => {
               onDelete={handleDelete}
             />
         </div>
+        <AddProductForm open={isModalOpen} setOpen={setIsModalOpen} title="Add New Product" onSubmit={handleAdd} />
+        
+       
      
       {/* Add Task Modal
       <AddCategory open={isModalOpen} setOpen={setIsModalOpen} onSubmit={addNewCategory} category={selectedCategory} /> */}
