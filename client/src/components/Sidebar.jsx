@@ -35,15 +35,15 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`fixed top-30 left-0 w-64 h-screen overflow-y-auto transition-all duration-300 transform ${
+      className={`fixed top-28 left-0 w-64 h-screen overflow-y-auto transition-all duration-300 transform ${
         darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
       }`}
     >
       <div className="h-full flex flex-col gap-5 p-5 shadow-lg">
         {/* Sidebar Header */}
-        <h1 className="flex gap-2 items-center text-2xl font-bold">
+        {/* <h1 className="flex gap-2 items-center text-2xl font-bold">
           Shop Local
-        </h1>
+        </h1> */}
 
         {/* Sidebar Links */}
         <div className="flex-1 flex flex-col gap-4 py-4">
@@ -54,7 +54,7 @@ const Sidebar = () => {
               className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-300 ${
                 path === el.link.split("/")[0]
                   ? "bg-red-100 text-red-700"
-                  : "text-gray-700 hover:bg-red-100 hover:text-red-700"
+                  : "text-gray-700 dark:text-white hover:bg-red-100 hover:text-red-700"
               }`}
             >
               {el.icon}
@@ -67,7 +67,7 @@ const Sidebar = () => {
           {/* Settings Button with Dropdown */}
           <div>
             <button
-              className="w-full flex items-center justify-between p-2 text-lg text-gray-700 hover:bg-red-100 hover:text-red-700 rounded-lg transition-all duration-300"
+              className="w-full flex items-center justify-between p-2 text-lg text-gray-700 dark:text-white hover:bg-red-100 hover:text-red-700 rounded-lg transition-all duration-300"
               onClick={() => setOpenSettings(!openSettings)}
             >
               <span className="flex items-center gap-3">

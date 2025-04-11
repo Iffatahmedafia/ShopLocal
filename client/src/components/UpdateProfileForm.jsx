@@ -9,6 +9,12 @@ import { toast } from "react-toastify";
 const UpdateProfileForm = () => {
   const dispatch = useDispatch();
   const [userData, setUserData] = useState(null);
+  const [image, setImage] = useState(null);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) setImage(URL.createObjectURL(file));
+  };
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
@@ -37,7 +43,19 @@ const UpdateProfileForm = () => {
   };
 
   return (
+    
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div>
+          <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-1">
+            Profile Image
+          </label>
+          <input type="file" accept="image/*" onChange={handleImageChange} className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500" />
+    
+          {image && (
+            <img src={image} alt="Preview" className="mt-3 w-16 h-16 rounded-full object-cover" />
+          )}
+          
+        </div>
           <div>
             <label className="block text-gray-700 dark:text-gray-300 font-semibold">Name</label>
             <input
