@@ -1,7 +1,7 @@
 # backend/urls.py
 
 from django.urls import path
-from .views import RegisterView, BrandView, LoginView, CategoryListView, SubCategoryListView, ProductListView, FavoriteProductView, CheckAuthView, UserProfileView, PasswordUpdateView
+from .views import RegisterView, BrandView, LoginView, CategoryListView, SubCategoryListView, SubSubCategoryListView, ProductListView, FavoriteProductView, CheckAuthView, UserProfileView, PasswordUpdateView
 
 
 urlpatterns = [
@@ -10,6 +10,7 @@ urlpatterns = [
     path('check_auth/', CheckAuthView.as_view()),
     path('categories/', CategoryListView.as_view(), name='categories'),
     path('subcategories/', SubCategoryListView.as_view(), name='subcategories'),
+    path('sub_subsubcategories/', SubSubCategoryListView.as_view(), name='sub_subcategories'),
     path('products/', ProductListView.as_view(), name='products'),
     path('profile/', UserProfileView.as_view(), name='get_users'),
     path('profile/update/', UserProfileView.as_view(), name='update_users'),

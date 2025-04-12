@@ -49,9 +49,7 @@ class CustomUser(AbstractUser):
     def is_staff(self):
         return self.is_admin
 
-
-
-# Create Category model
+# Category model
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
     image = models.CharField(max_length=255, default='images/default.jpg')  # Set default image
@@ -59,14 +57,38 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+class SubCategory(models.Model):
+    name = models.CharField(max_length=255)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="subcategories")
+
+    class Meta:
+        unique_together = ('name', 'category')
+
+    def __str__(self):
+        return f"{self.category.name} ➝ {self.name}"
+
+# Sub-Subcategory
+class SubSubcategory(models.Model):
+    name = models.CharField(max_length=100)
+    subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name='sub_subcategories')
+
+    class Meta:
+        unique_together = ('name', 'subcategory')
+
+    def __str__(self):
+        return f"{self.subcategory.category.name} ➝ {self.subcategory.name} ➝ {self.name}"
+   
+
+
 class Brand(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="Brand")
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
-    registration = models.CharField(max_length=255, unique=True)
+    registration = models.CharField(max_length=255, unique=True,blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
-    address = models.TextField(blank=True, null=True)
+    store_address = models.TextField(blank=True, null=True)
+    supershop_store = models.TextField(blank=True, null=True)
     website_link = models.URLField(max_length=500, blank=True, null=True)  # Store URL
     province = models.CharField(max_length=255)
     
@@ -80,22 +102,18 @@ def update_brand_info(sender, instance, **kwargs):
         instance.brand.email = instance.email
         instance.brand.save()
 
-class SubCategory(models.Model):
-    name = models.CharField(max_length=255)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="subcategories")
-   
-
-    def __str__(self):
-        return self.name
 
 class Product(models.Model):
     name = models.CharField(max_length=255)
     image = models.CharField(max_length=255, default='images/default.jpg')  # Set default image
+    description = models.TextField(blank=True)
     brand = models.CharField(max_length=255)  # Store brand name
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    offline_store = models.TextField(blank=True, null=True)
+    retail_store = models.TextField(blank=True, null=True)
+    supershop_store = models.TextField(blank=True, null=True)
     online_store = models.URLField(max_length=500, blank=True, null=True)  # Store URL
-    subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name="products")
+    subcategory = models.ForeignKey(SubCategory, null=True, blank=True, on_delete=models.SET_NULL, related_name='products')
+    sub_subcategory = models.ForeignKey(SubSubcategory, null=True, blank=True, on_delete=models.SET_NULL, related_name='products')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="products")
     brand_id = models.ForeignKey(Brand, null=True, on_delete=models.CASCADE, related_name="products")
 

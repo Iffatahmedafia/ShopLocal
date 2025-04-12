@@ -20,6 +20,8 @@ const brands = ["Apple", "Dell", "Sony", "Samsung"];
 const Product = ({ updateFavouritesCount }) => {
   const { user } = useSelector((state) => state.auth);
   const { subcategoryId } = useParams();
+  const { categoryId } = useParams();
+  const { subsubcategoryId } = useParams();
   const [priceRange, setPriceRange] = useState(1500);
   const [selectedBrand, setSelectedBrand] = useState("");
   const [products, setProducts] = useState([])
@@ -28,16 +30,40 @@ const Product = ({ updateFavouritesCount }) => {
   useEffect(() => {
     const getProducts = async () => {
       const data = await fetchProducts();
-      if (subcategoryId) {
-        const filtered = data.filter((product) => product.subcategory.id === parseInt(subcategoryId));
-            setProducts(filtered);
-          } else {
-            setProducts(data);
+      let filtered = data;
+  
+      if (subsubcategoryId) {
+        filtered = data.filter(
+          (product) => product.sub_subcategory?.id === parseInt(subsubcategoryId)
+        );
+        console.log("Filtered by sub-subcategory:", filtered);
+      } else if (subcategoryId) {
+        filtered = data.filter(
+          (product) =>
+            product.subcategory?.id === parseInt(subcategoryId) ||
+            product.sub_subcategory?.subcategory?.id === parseInt(subcategoryId)
+        );
+        console.log("Filtered by subcategory:", filtered);
+      } else if (categoryId) {
+        filtered = data.filter(
+          (product) =>
+            product.category?.id === parseInt(categoryId) ||
+            product.subcategory?.category?.id === parseInt(categoryId) ||
+            product.sub_subcategory?.subcategory?.category?.id === parseInt(categoryId)
+        );
+        console.log("Filtered by category:", filtered);
+      } else {
+        console.log("No filtering, all products shown.");
       }
-    }; getProducts();
-
-  }, [subcategoryId])
-
+  
+      setProducts(filtered);
+    };
+  
+    getProducts();
+  }, [subsubcategoryId, subcategoryId, categoryId]);
+  
+  
+  
 
   const handleFavourites = async (productId) => {
 

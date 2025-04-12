@@ -2,7 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
-from .models import Category, SubCategory, Product, FavoriteProduct, Brand
+from .models import Category, SubCategory, SubSubcategory, Product, FavoriteProduct, Brand
 
 
 CustomUser = get_user_model()  # Get the correct user model dynamically
@@ -124,9 +124,17 @@ class SubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategory
         fields = '__all__'
+
+class SubSubCategorySerializer(serializers.ModelSerializer):
+    subcategory = SubCategorySerializer(read_only=True)  # Show full subcategory details
+
+    class Meta:
+        model = SubSubcategory
+        fields = '__all__'
         
 class ProductSerializer(serializers.ModelSerializer):
     subcategory = SubCategorySerializer(read_only=True)  # Show full subcategory details
+    sub_subcategory = SubSubCategorySerializer(read_only=True)
     category = serializers.SerializerMethodField()  # Get category directly
 
     class Meta:
@@ -134,7 +142,18 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_category(self, obj):
-        return obj.subcategory.category.name  # Get category name from subcategory
+        # Try sub_subcategory > subcategory > None
+        if obj.sub_subcategory and obj.sub_subcategory.subcategory and obj.sub_subcategory.subcategory.category:
+            return {
+                "id": obj.sub_subcategory.subcategory.category.id,
+                "name": obj.sub_subcategory.subcategory.category.name
+            }
+        elif obj.subcategory and obj.subcategory.category:
+            return {
+                "id": obj.subcategory.category.id,
+                "name": obj.subcategory.category.name
+            }
+        return None
 
 class FavoriteProductSerializer(serializers.ModelSerializer):
 

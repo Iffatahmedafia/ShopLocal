@@ -7,10 +7,10 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from store.authentication import CookieJWTAuthentication  # Import custom auth
 from rest_framework.views import APIView
 from rest_framework import generics
-from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, CategorySerializer, SubCategorySerializer, ProductSerializer, FavoriteProductSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, CategorySerializer, SubCategorySerializer, SubSubCategorySerializer, ProductSerializer, FavoriteProductSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .models import Category, SubCategory, Product, FavoriteProduct, CustomUser
+from .models import Category, SubCategory, SubSubcategory, Product, FavoriteProduct, CustomUser
 from django.conf import settings
 import jwt
 from rest_framework.exceptions import AuthenticationFailed
@@ -207,11 +207,16 @@ class CategoryListView(generics.ListAPIView):
     serializer_class = CategorySerializer
 
 
-
 # Get all subcategories
 class SubCategoryListView(generics.ListAPIView):
     queryset = SubCategory.objects.all()
     serializer_class = SubCategorySerializer
+
+# Get all sub_subcategories
+class SubSubCategoryListView(generics.ListAPIView):
+    queryset = SubSubcategory.objects.all()
+    serializer_class = SubSubCategorySerializer
+
 
 # Get all products
 class ProductListView(generics.ListAPIView):

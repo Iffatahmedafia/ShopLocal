@@ -22,6 +22,16 @@ export const fetchSubCategories = async () => {
   }
 };
 
+export const fetchSubSubCategories = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/sub_subsubcategories/`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching subsubcategories:", error);
+    return [];
+  }
+};
+
 export const fetchUserData = async () => {
   try {
     const response = await axios.get(`${API_URL}/profile/`, { withCredentials: true });

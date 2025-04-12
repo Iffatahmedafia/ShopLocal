@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { MdLabel } from 'react-icons/md';   // Material Design
 import { fetchCategories } from "../api";
-import { fetchSubCategories, fetchFavorites } from "../api";
+import { fetchSubCategories, fetchFavorites, fetchSubSubCategories } from "../api";
 import { useSearch } from '../SearchContext.jsx'
 import { useTheme } from "../context/ThemeContext.jsx";
 import Avatar from "./Avatar";
@@ -50,9 +50,11 @@ const Navbar = ({ count }) => {
   console.log("DarkMode", darkMode)
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null); 
+  const [activeSubCategory, setActiveSubCategory] = useState(null);
   const dropdownRef = useRef(null);
   const [categories, setCategories] = useState([])
   const [subcategories, setSubcategories] = useState([])
+  const [subsubcategories, setSubSubcategories] = useState([])
   const [favoritecount, setFavoritecount] = useState(0)
   const { query, updateSearchQuery } = useSearch();
 
@@ -65,6 +67,7 @@ const Navbar = ({ count }) => {
     useEffect(() => {
       const getCategories = async () => {
         const data = await fetchCategories();
+        console.log("Fetched Category Data: ", data)
         setCategories(data);
       };
       getCategories();
@@ -82,6 +85,19 @@ const Navbar = ({ count }) => {
         getSubcategories();
       }
     }, [categories]);
+
+
+    useEffect(() => {
+      if (subcategories.length > 0) {
+        const getSubSubcategories = async () => {
+          const data = await fetchSubSubCategories();
+          console.log("Fetched sub_subcategories Data: ", data)
+          setSubSubcategories(data);
+          console.log("SubSubCategories: ",subsubcategories)
+        };
+        getSubSubcategories();
+      }
+    }, [subcategories]);
   
 
     useEffect(() => {
@@ -125,6 +141,16 @@ const Navbar = ({ count }) => {
   //     return newMode;
   //   });
   // };
+
+  const handleNavigate = ({ categoryId, subcategoryId, subsubcategoryId }) => {
+    if (subsubcategoryId) {
+      navigate(`/products/sub/${subsubcategoryId}`);
+    } else if (subcategoryId) {
+      navigate(`/products/subcategory/${subcategoryId}`);
+    } else if (categoryId) {
+      navigate(`/products/category/${categoryId}`);
+    }
+  };
   
 
   // Close dropdown when clicking outside
@@ -188,14 +214,17 @@ const Navbar = ({ count }) => {
               <div className="absolute left-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 flex">
                 
                 {/* Category List */}
-                 <div className="w-56">
+                <div className="w-56">
                   {categories.map((category) => (
                     <div key={category.id} className="relative">
                       <button
-                        onClick={() => setActiveCategory(category.name === activeCategory ? null : category.name)}
+                        onClick={() => {setActiveCategory(category.name === activeCategory ? null : category.name)
+                          setActiveSubCategory(null); // clear subcategory
+                        }
+                        }
                         className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex justify-between"
                       >
-                        {category.name} {subcategories && <FiChevronRight />}
+                        {category.name} {subcategories.some(sub => sub.category.id === category.id) && <FiChevronRight />}
                       </button>
                     </div>
                   ))}
@@ -203,16 +232,45 @@ const Navbar = ({ count }) => {
 
                 {/* Subcategories Panel (Fixed Alignment with First Category) */}
                 {activeCategory && (
-                  <div className="absolute top-0 left-full w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                <div className="absolute top-0 left-full flex items-start">
+                  {/* Subcategory Panel */}
+                  <div className="w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
                     {subcategories
-                    .filter(sub => sub.category.name === activeCategory)
-                    .map((sub) => (
-                      <button onClick={() => navigate(`/products/${sub.id}`)} className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        {sub.name}
-                      </button>
-                    ))}
+                      .filter(sub => sub.category.name === activeCategory)
+                      .map((sub) => (
+                        <button
+                          key={sub.id}
+                          onClick={() => {
+                            setActiveSubCategory(sub.id === activeSubCategory ? null : sub.id)
+                            handleNavigate({ subcategoryId: sub.id });
+                          }
+                          }
+                          className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex justify-between items-center"
+                        >
+                          {sub.name}
+                          {subsubcategories.some(subsub => subsub.subcategory.id === sub.id) && <FiChevronRight />}
+                        </button>
+                      ))}
                   </div>
-                )}
+
+                  {/* Sub-subcategory Panel */}
+                  {activeSubCategory && (
+                    <div className="w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                      {subsubcategories
+                        .filter(subsub => subsub.subcategory.id === activeSubCategory)
+                        .map((subSub) => (
+                          <button
+                            key={subSub.id}
+                            onClick={() => handleNavigate({ subsubcategoryId: subSub.id })}
+                            className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          >
+                            {subSub.name}
+                          </button>
+                        ))}
+                    </div>
+                  )}
+                </div>
+                )}  
               </div>
             )}
           </div>
