@@ -10,7 +10,7 @@ from rest_framework import generics
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, CategorySerializer, SubCategorySerializer, SubSubCategorySerializer, ProductSerializer, FavoriteProductSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .models import Category, SubCategory, SubSubcategory, Product, FavoriteProduct, CustomUser
+from .models import Category, SubCategory, SubSubcategory, Brand, Product, FavoriteProduct, CustomUser
 from django.conf import settings
 import jwt
 from rest_framework.exceptions import AuthenticationFailed
@@ -65,7 +65,7 @@ class LoginView(APIView):
             user = authenticate(email=email, password=password)
             if user:
                 tokens = get_tokens_for_user(user)
-                response = Response({"user": {"id": user.id, "email": user.email, "name": user.name}}, status=status.HTTP_200_OK)
+                response = Response({"user": {"id": user.id, "email": user.email, "name": user.name, "is_admin": user.is_admin, "is_brand": user.is_brand }}, status=status.HTTP_200_OK)
                 response.set_cookie(
                     key="accessToken", 
                     value=tokens["access"], 
@@ -201,6 +201,11 @@ class BrandView(APIView):
 
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def get(self, request):
+        brands = Brand.objects.all()
+        serializer = BrandSerializer(brands, many=True)
+        return Response(serializer.data)
+
 # Get all categories
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
@@ -222,6 +227,32 @@ class SubSubCategoryListView(generics.ListAPIView):
 class ProductListView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+# Add Products
+class ProductView(APIView):
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+    def post(self, request):
+        user = checkAuth(request)
+        # Get the user ID from the request (assuming user is authenticated)
+        print("User Id: ", user.id)
+        print("Incoming Request Data:", request.data)
+        
+        # Add the user explicitly to the request data
+        request.data['user'] = user.id
+        print(request.data)
+       
+        # Serialize the incoming data and validate it
+       
+        serializer = ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            product = serializer.save()
+            return Response({"message": "Product added successfully!"}, status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)  # Log the errors to the console
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 # Add Products to favourites
 class FavoriteProductView(APIView):

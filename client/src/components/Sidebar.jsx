@@ -4,7 +4,7 @@ import {
   MdSettings,
   MdTaskAlt,
 } from "react-icons/md";
-import { FaTasks, FaTrashAlt, FaUsers, FaThList, FaChevronDown, FaChevronUp, FaUserCircle, FaLock } from "react-icons/fa";
+import { FaTasks, FaIndustry, FaBoxOpen, FaHeart, FaTag, FaTrashAlt, FaUsers, FaThList, FaChevronDown, FaChevronUp, FaUserCircle, FaLock } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
@@ -20,18 +20,40 @@ const Sidebar = () => {
   // State for Settings submenu
   const [openSettings, setOpenSettings] = useState(false);
 
-  
-
   const linkData = [
     { label: "Dashboard", link: "dashboard", icon: <MdDashboard /> },
-    { label: "Your Products", link: "showproducts", icon: <FaTasks /> },
-    { label: "Favourite Products", link: "favorites", icon: <FaTasks /> },
-    { label: "Categories", link: "categories", icon: <FaThList /> },
-    { label: "Trash", link: "trash", icon: <FaTrashAlt /> },
-    // Show Users link only if user is admin
-    // ...(user?.isAdmin ? [{ label: "Users", link: "users", icon: <FaUsers /> }] : []),
-    { label: "Users", link: "users", icon: <FaUsers /> },
+    { label: "Favourite Products", link: "favorites", icon: <FaHeart /> },
+    // Show for brand users and admins
+    ...(user?.is_brand || user?.is_admin
+      ? [
+          { label: "Brands", link: "showbrands", icon: <FaTag /> },
+          { label: "Products", link: "showproducts", icon: <FaBoxOpen /> },
+          { label: "Trash", link: "trash", icon: <FaTrashAlt /> },
+        ]
+      : []),
+    // Show only for admins
+    ...(user?.is_admin
+      ? [
+          { label: "Categories", link: "categories", icon: <FaThList /> },
+          { label: "Users", link: "users", icon: <FaUsers /> },
+        ]
+      : []),
+   
   ];
+
+  
+
+  // const linkData = [
+  //   { label: "Dashboard", link: "dashboard", icon: <MdDashboard /> },
+  //   { label: "Brands", link: "brands", icon: <FaTasks /> },
+  //   { label: "Products", link: "showproducts", icon: <FaTasks /> },
+  //   { label: "Favourite Products", link: "favorites", icon: <FaTasks /> },
+  //   { label: "Categories", link: "categories", icon: <FaThList /> },
+  //   { label: "Users", link: "users", icon: <FaUsers /> },
+  //   { label: "Trash", link: "trash", icon: <FaTrashAlt /> },
+  //   // Show Users link only if user is admin
+  //   // ...(user?.isAdmin ? [{ label: "Users", link: "users", icon: <FaUsers /> }] : []),
+  // ];
 
   return (
     <div

@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { fetchCategories } from "../../api";
+import { fetchCategories, fetchSubCategories, fetchSubSubCategories, fetchBrands } from "../../api";
 import DialogWrapper from "../DialogWrapper";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
+  const { user } = useSelector((state) => state.auth);
+  console.log("User:", user)
   const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
+  const [selectedsubcategory, setSelectedsubcategory] = useState("");
+  const [subsubcategories, setSubSubcategories] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [image, setImage] = useState(null);
   const [currentStep, setCurrentStep] = useState(1); // Manage form steps
 
@@ -23,6 +31,42 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
     getCategories();
   }, []);
 
+  useEffect(() => {
+        if (categories.length > 0) {
+          const getSubcategories = async () => {
+            const data = await fetchSubCategories();
+            console.log("Fetched subcategories: ", data)
+            setSubcategories(data);
+          };
+          getSubcategories();
+        }
+      }, [categories]);
+  
+  
+  useEffect(() => {
+    if (subcategories.length > 0) {
+      const getSubSubcategories = async () => {
+        const data = await fetchSubSubCategories();
+        console.log("Fetched sub_subcategories Data: ", data)
+        setSubSubcategories(data);
+      };
+      getSubSubcategories();
+    }
+  }, [subcategories]);
+
+  useEffect(() => {
+    const getBrands = async () => {
+      const data = await fetchBrands();
+      console.log("Fetched Brands Data: ", data)
+      setBrands(data);
+    };
+    getBrands();
+  }, []);
+
+  const filtered_brand = brands.filter((brand) => brand.user == user.id)
+  console.log(filtered_brand)
+
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -33,6 +77,25 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
   const handleSubmitForm = async (data) => {
     // Form submission logic here
     console.log(data);
+    try {
+      const response = await axios.post("http://localhost:8000/api/product/create/", {
+          name: data.name,
+          description: data.description,
+          brand_id: data.brand,
+          price: data.price,
+          subcategory_id: parseInt(data.category),
+          sub_subcategory_id: parseInt(data.subcategory),
+          supershop_store: data.store,
+          online_store: data.website,
+        },{ withCredentials: true }
+      )
+
+      console.log(response.data);
+      toast.success("Product registered successfully!");
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(error.response?.data?.error || "Something went wrong");
+  }
   };
 
   // Handle step navigation
@@ -114,18 +177,18 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
               )}
             </div>
 
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-2">
               <button
                 type="button"
                 onClick={handlePreviousStep}
-                className="py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg"
+                className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded-lg font-semibold transition"
               >
                 Previous
               </button>
               <button
                 type="button"
                 onClick={handleNextStep}
-                className="py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg"
+                className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition"
               >
                 Next
               </button>
@@ -137,6 +200,27 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
         {currentStep === 3 && (
           <div>
             <div className="mb-2">
+              <label className="block text-gray-700 dark:text-gray-300 font-semibold">
+                Select Brand
+              </label>
+              <select
+                id="brand"
+                name="brand"
+                className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
+                {...register("brand", { required: "Brand is required"})}
+              >
+                <option value="">Select Brand</option>
+                {filtered_brand.map((brand, index) => (
+                  <option key={index} value={brand.id}>
+                    {brand.name}
+                  </option>
+                ))}
+              </select>
+              {errors.brand && (
+                <p className="text-red-500 text-sm mt-1">{errors.brand.message}</p>
+              )}
+            </div>
+            {/* <div className="mb-2">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                 Brand Name
               </label>
@@ -151,7 +235,7 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
               {errors.brand && (
                 <p className="text-red-500 text-sm mt-1">{errors.brand.message}</p>
               )}
-            </div>
+            </div> */}
 
             <div className="mb-2">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
@@ -170,18 +254,18 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
               )}
             </div>
 
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-2">
               <button
                 type="button"
                 onClick={handlePreviousStep}
-                className="py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg"
+                className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded-lg font-semibold transition"
               >
                 Previous
               </button>
               <button
                 type="button"
                 onClick={handleNextStep}
-                className="py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg"
+                className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition"
               >
                 Next
               </button>
@@ -200,10 +284,12 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
                 id="category"
                 name="category"
                 className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
-                {...register("category", { required: "Category is required" })}
+                {...register("category", { required: "Category is required",
+                  onChange: (e) => setSelectedsubcategory(e.target.value)
+                })}
               >
                 <option value="">Select a category</option>
-                {categories.map((category, index) => (
+                {subcategories.map((category, index) => (
                   <option key={index} value={category.id}>
                     {category.name}
                   </option>
@@ -213,10 +299,33 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
                 <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>
               )}
             </div>
+            <div className="mb-2">
+              <label className="block text-gray-700 dark:text-gray-300 font-semibold">
+                Select Product SubCategory
+              </label>
+              <select
+                id="subcategory"
+                name="subcategory"
+                className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
+                {...register("subcategory", { required: "SubCategory is required" })}
+              >
+                <option value="">Select a subcategory</option>
+                {subsubcategories
+                .filter((subSub) => subSub.subcategory.id === parseInt(selectedsubcategory))
+                .map((subcategory, index) => (
+                  <option key={index} value={subcategory.id}>
+                    {subcategory.name}
+                  </option>
+                ))}
+              </select>
+              {errors.subcategory && (
+                <p className="text-red-500 text-sm mt-1">{errors.subcategory.message}</p>
+              )}
+            </div>
 
             <div className="mb-2">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
-                Product Retail Store/SuperMarket if any
+                Product Retail Store/SuperMarket (if any)
               </label>
               <input
                 type="text"
@@ -233,7 +342,7 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
 
             <div className="mb-2">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
-                Product Online Store Link if any
+                Product Online Store Link (if any)
               </label>
               <input
                 type="text"
@@ -249,12 +358,21 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
             </div>
 
             {/* Final Submit */}
+            <div className="flex justify-between gap-2">
+              <button
+                type="button"
+                onClick={handlePreviousStep}
+                className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded-lg font-semibold transition"
+              >
+                Previous
+              </button>
             <button
               type="submit"
               className="w-full py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg font-medium"
             >
               Add Product
             </button>
+            </div>
           </div>
         )}
       </form>

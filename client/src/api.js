@@ -32,6 +32,16 @@ export const fetchSubSubCategories = async () => {
   }
 };
 
+export const fetchBrands = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/brands/`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching brands:", error);
+    return [];
+  }
+};
+
 export const fetchUserData = async () => {
   try {
     const response = await axios.get(`${API_URL}/profile/`, { withCredentials: true });

@@ -84,13 +84,14 @@ class Brand(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="Brand")
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
-    registration = models.CharField(max_length=255, unique=True,blank=True, null=True)
+    registration = models.CharField(max_length=255, unique=True, blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     store_address = models.TextField(blank=True, null=True)
     supershop_store = models.TextField(blank=True, null=True)
     website_link = models.URLField(max_length=500, blank=True, null=True)  # Store URL
     province = models.CharField(max_length=255)
+    status = models.CharField(default="Pending")
     
     def __str__(self):
         return self.name
@@ -107,11 +108,11 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     image = models.CharField(max_length=255, default='images/default.jpg')  # Set default image
     description = models.TextField(blank=True)
-    brand = models.CharField(max_length=255)  # Store brand name
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     retail_store = models.TextField(blank=True, null=True)
     supershop_store = models.TextField(blank=True, null=True)
     online_store = models.URLField(max_length=500, blank=True, null=True)  # Store URL
+    status = models.CharField(default="Pending")
     subcategory = models.ForeignKey(SubCategory, null=True, blank=True, on_delete=models.SET_NULL, related_name='products')
     sub_subcategory = models.ForeignKey(SubSubcategory, null=True, blank=True, on_delete=models.SET_NULL, related_name='products')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="products")

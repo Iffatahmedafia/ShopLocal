@@ -3,15 +3,25 @@ import Table from '../Table';
 import { fetchProducts } from "../../api";
 import DialogWrapper from "../DialogWrapper";
 import AddProductForm from "./AddProductForm";
+import { useSelector } from "react-redux";
 
 // / Define table columns
 const columns = [
+  { key: "image", label: "Image" },
   { key: "name", label: "Name" },
-  { key: "brand", label: "Brand" }
+  { key: "description", label: "Description" },
+  { key: "brand", label: "Brand" },
+  { key: "price", label: "Price" },
+  { key: "retail_store", label: "Store/Supermarkets" },
+  { key: "online_store", label: "Website" },
+  { key: "status", label: "Status" },
+ 
   
 ];
 
 const ShowProducts = () => {
+  const { user } = useSelector((state) => state.auth);
+  console.log("User:", user)
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [products, setProducts] = useState([])
@@ -20,12 +30,18 @@ const ShowProducts = () => {
       const getProducts = async () => {
         const data = await fetchProducts();
         console.log("Products:", data)
-        setProducts(data);
+        let filtered = data;
+        if (user.is_brand) {
+          filtered = data.filter(
+            (product) => product.user === user.id
+          );
+        }
+        setProducts(filtered);
         setLoading(false)
       };
       getProducts();
     
-    }, []);
+    }, [user]);
 
   const handleAdd = (productData) => {
     console.log("Product Added:", productData);
@@ -62,7 +78,7 @@ const ShowProducts = () => {
         <div className="bg-gray-100 text-white p-6">
           <Table
               columns={columns}
-              data={products.map((product) => ({ id: product.id, name: product.name, brand: product.brand }))}
+              data={products.map((product) => ({ id: product.id, image: product.image, name: product.name, brand: product.brand, description: product.description, price: product.price, retail_store: product.retail_store, online_store: product.online_store, status: product.status }))}
               onEdit={handleEdit}
               onDelete={handleDelete}
             />

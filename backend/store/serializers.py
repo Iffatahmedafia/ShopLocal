@@ -54,7 +54,8 @@ class BrandSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Brand
-        fields = ['user', 'name', 'email', 'registration', 'category', 'phone', 'address', 'website_link', 'province']
+        fields = '__all__'
+       
 
     def create(self, validated_data):
         user = validated_data.pop("user")
@@ -76,7 +77,8 @@ class BrandSerializer(serializers.ModelSerializer):
         instance.registration = validated_data.get("registration", instance.registration)
         instance.category = validated_data.get("category", instance.category)
         instance.phone = validated_data.get("phone", instance.phone)
-        instance.address = validated_data.get("address", instance.address)
+        instance.store_address = validated_data.get("store_address", instance.store_address)
+        instance.supershop_store = validated_data.get("supershop_store", instance.supershop_store)
         instance.website_link = validated_data.get("website_link", instance.website_link)
         instance.province = validated_data.get("province", instance.province)
 
@@ -133,6 +135,15 @@ class SubSubCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class ProductSerializer(serializers.ModelSerializer):
+    # For write
+    subcategory_id = serializers.PrimaryKeyRelatedField(
+        queryset=SubCategory.objects.all(), source='subcategory', write_only=True
+    )
+    sub_subcategory_id = serializers.PrimaryKeyRelatedField(
+        queryset=SubSubcategory.objects.all(), source='sub_subcategory', write_only=True
+    )
+
+    # For read
     subcategory = SubCategorySerializer(read_only=True)  # Show full subcategory details
     sub_subcategory = SubSubCategorySerializer(read_only=True)
     category = serializers.SerializerMethodField()  # Get category directly

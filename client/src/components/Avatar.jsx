@@ -46,13 +46,13 @@ const Avatar = () => {
                 <Menu.Item>
                 {({ active }) => (
                   <Link
-                    to="/profile"
+                    to="/dashboard"
                     className={`${
                       active ? "bg-red-100 text-red-700" : ""
                     } text-black group flex w-full items-center rounded-md px-2 py-2 text-base`}
                   >
                     <FaUser className="mr-2" aria-hidden="true" />
-                    Profile
+                    My Account
                   </Link>
                 )}
                 </Menu.Item>
@@ -60,13 +60,13 @@ const Avatar = () => {
                 <Menu.Item>
                 {({ active }) => (
                   <Link
-                    to="/security"
+                    to="/profile"
                     className={`${
                       active ? "bg-red-100 text-red-700" : ""
                     } text-black group flex w-full items-center rounded-md px-2 py-2 text-base`}
                   >
                     <FaUserLock className="mr-2" aria-hidden="true" />
-                    Change Password
+                    Security
                   </Link>
                 )}
                 </Menu.Item>

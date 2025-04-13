@@ -41,10 +41,10 @@ const VendorRegistration = () => {
         body: JSON.stringify({
           name: data.name,
           email: data.email,
-          registration: data.registration,
           category: data.category,
           phone: data.phone,
-          address: data.address,
+          store_address: data.store_address,
+          supershop_store: data.supershop_store,
           website_link: data.website,
           province: data.province,
           password: data.password,
@@ -114,6 +114,22 @@ const VendorRegistration = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700 dark:text-gray-300 font-semibold">
+                  Phone Number
+                </label>
+                <input
+                  type="text"
+                  id="phone"
+                  name="phone"
+                  className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
+                  placeholder="Enter Business phone number"
+                  {...register("phone", { required: "Phone Number is required" })}
+                />
+                {errors.phone && (
+                  <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+                )}
+              </div>
+              {/* <div className="mb-4">
+                <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                   Business Registration Number
                 </label>
                 <input
@@ -129,7 +145,7 @@ const VendorRegistration = () => {
                 {errors.registration && (
                   <p className="text-red-500 text-sm mt-1">{errors.registration.message}</p>
                 )}
-              </div>
+              </div> */}
               <div className="mb-4">
                 <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                   Select Business Category
@@ -159,39 +175,39 @@ const VendorRegistration = () => {
             <div>           
               <div className="mb-4">
                 <label className="block text-gray-700 dark:text-gray-300 font-semibold">
-                  Phone Number
+                  Store Address (if any)
+                </label>
+                <textarea
+                  id="store_address"
+                  name="store_address"
+                  className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
+                  placeholder="Enter your store address"
+                  rows="3"
+                  {...register("store_address")}
+                />
+                {errors.store_address && (
+                  <p className="text-red-500 text-sm mt-1">{errors.store_address.message}</p>
+                )}
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 dark:text-gray-300 font-semibold">
+                  Are your products available in supermarkets? Please specify if any
                 </label>
                 <input
                   type="text"
-                  id="phone"
-                  name="phone"
+                  id="supershop_store"
+                  name="supershop_store"
                   className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
-                  placeholder="Enter Business phone number"
-                  {...register("phone", { required: "Phone Number is required" })}
+                  placeholder="Enter Supermarkets name e.g. Food Basics,Fortinos..."
+                  {...register("supershop_store")}
                 />
-                {errors.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+                {errors.supershop_store && (
+                  <p className="text-red-500 text-sm mt-1">{errors.supershop_store.message}</p>
                 )}
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700 dark:text-gray-300 font-semibold">
-                  Business Address
-                </label>
-                <textarea
-                  id="address"
-                  name="address"
-                  className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
-                  placeholder="Enter your business address"
-                  rows="3"
-                  {...register("address", { required: "Address is required" })}
-                />
-                {errors.address && (
-                  <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 dark:text-gray-300 font-semibold">
-                  Website Link
+                  Website Link (if any)
                 </label>
                 <input
                   type="text"
@@ -201,8 +217,8 @@ const VendorRegistration = () => {
                   placeholder="Enter Business website link"
                   {...register("website", { required: "Website Link is required" })}
                 />
-                {errors.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+                {errors.website && (
+                  <p className="text-red-500 text-sm mt-1">{errors.website.message}</p>
                 )}
               </div>
               <div className="mb-4">

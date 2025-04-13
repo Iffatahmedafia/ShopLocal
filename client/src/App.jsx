@@ -11,6 +11,8 @@ import FavoriteProduct from "./pages/FavoriteProduct";
 import Brand from "./pages/Brands.jsx"
 import Sidebar from "./components/Sidebar.jsx";
 import ShowProducts from "./components/UserPanel/ShowProducts.jsx";
+import showBrands from "./components/UserPanel/showBrands.jsx";
+import Dashboard from "./components/UserPanel/Dashboard.jsx";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setCredentials } from "./redux/slices/authSlice";
@@ -38,16 +40,21 @@ const fetchUser = async (dispatch) => {
   }
 };
 
-const ProtectedRoute = () => {
-  const { user } = useSelector((state) => state.auth);
-    return user ? <Outlet /> : <Navigate to="/login" replace />
+// const ProtectedRoute = () => {
+//   const { user } = useSelector((state) => state.auth);
+//     return user ? <Outlet /> : <Navigate to="/login" replace />
          
   
-};
+// };
 
-const PanelRoute = ({ favouritesCount }) => {
+const ProtectedRoute = ({ favouritesCount }) => {
   const { user } = useSelector((state) => state.auth);
   const [sidebarOpen, setSidebarOpen] = useState(true);  // Control sidebar visibility
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
   return (
     <div className="flex min-h-screen">
       {/* Navbar stays fixed at the top */}
@@ -106,8 +113,10 @@ function App() {
             <Route path="/products/sub/:subsubcategoryId" element={<Product updateFavouritesCount={setFavouritesCount} />} />
             <Route path="/brands" element={<Brand />} />
           </Route>
-          <Route element={<PanelRoute favouritesCount={favouritesCount} />}>
+          <Route element={<ProtectedRoute favouritesCount={favouritesCount} />}>
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/showproducts" element={<ShowProducts />} />
+              <Route path="/showbrands" element={<showBrands />} />
               <Route path="/favorites" element={<FavoriteProduct updateFavouritesCount={setFavouritesCount} />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/security" element={<ProfilePage />} />
