@@ -4,6 +4,7 @@ import { fetchProducts } from "../../api";
 import DialogWrapper from "../DialogWrapper";
 import AddProductForm from "./AddProductForm";
 import { useSelector } from "react-redux";
+import Tabs from "../Tabs";
 
 // / Define table columns
 const columns = [
@@ -25,6 +26,8 @@ const ShowProducts = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [products, setProducts] = useState([])
+  const [selectedTab, setSelectedTab] = useState("Pending");
+
 
   useEffect(() => {
       const getProducts = async () => {
@@ -42,6 +45,17 @@ const ShowProducts = () => {
       getProducts();
     
     }, [user]);
+
+    const tabOptions = [
+      { value: "Pending", label: "Pending" },
+      { value: "Approved", label: "Approved" },
+    ];
+
+    const filteredProduct = 
+      selectedTab === "Pending" 
+      ? products.filter((product) => product.status == "Pending")
+      : products.filter((product) => product.status === "Approved")
+    
 
   const handleAdd = (productData) => {
     console.log("Product Added:", productData);
@@ -64,7 +78,7 @@ const ShowProducts = () => {
   if (loading) return <p className="text-gray-900">Loading products...</p>;
 
   return (
-    <div className="p-6">
+    <div className="min-h-screen p-6">
         {/* Add Task Button */}
         <div className="flex justify-center md:justify-end p-3">
           <button
@@ -75,10 +89,16 @@ const ShowProducts = () => {
           </button>
         </div>
         <h2 className="text-2xl font-bold text-center md:text-start mb-4">Products</h2>
-        <div className="bg-gray-100 text-white p-6">
+       
+        <div className="text-white">
+        <Tabs
+          tabs={tabOptions}
+          selectedTab={selectedTab}
+          onTabChange={setSelectedTab}
+        />
           <Table
               columns={columns}
-              data={products.map((product) => ({ id: product.id, image: product.image, name: product.name, brand: product.brand, description: product.description, price: product.price, retail_store: product.retail_store, online_store: product.online_store, status: product.status }))}
+              data={filteredProduct.map((product) => ({ id: product.id, image: product.image, name: product.name, brand: product.brand, description: product.description, price: product.price, retail_store: product.retail_store, online_store: product.online_store, status: product.status }))}
               onEdit={handleEdit}
               onDelete={handleDelete}
             />

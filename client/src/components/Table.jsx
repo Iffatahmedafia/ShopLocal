@@ -1,14 +1,12 @@
-import React, { useState } from "react";
-import { BiMessageAltDetail } from "react-icons/bi";
+import React, { useState, useMemo } from "react";
 import {
-  MdDelete,
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
   MdKeyboardDoubleArrowUp,
   MdOutlineRestore,
 } from "react-icons/md";
-import { FaList } from "react-icons/fa";
-import { Edit, Trash2 } from "lucide-react"; // Importing icons for edit and delete
+import { Edit, Trash2 } from "lucide-react";
+import { FiSearch } from "react-icons/fi";
 
 
 const ICONS = {
@@ -17,112 +15,210 @@ const ICONS = {
   low: <MdKeyboardArrowDown />,
 };
 
-
-// Function to format date to YY-MM-DD
-const formatDate = (dateString) => {
-  if (!dateString) return "N/A";
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-CA"); // "en-CA" formats as YYYY-MM-DD
+const statusColors = {
+  Todo: "bg-blue-600",
+  "In Progress": "bg-yellow-600",
+  Completed: "bg-green-600",
 };
 
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  return new Date(dateString).toLocaleDateString("en-CA");
+};
 
+const Table = ({
+  columns,
+  data,
+  onEdit = null,
+  onDelete = null,
+  onRestore = null,
+  onPermanentDelete = null,
+}) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
 
-const Table = ({ columns, data, onEdit = null, onDelete = null, onRestore = null, onPermanentDelete = null }) => {
-  // Define color mapping for task statuses
-  console.log("Product Data", data)
-  const statusColors = {
-    "Todo": "bg-blue-600",
-    "In Progress": "bg-yellow-600",
-    "Completed": "bg-green-600",
+  // Filtered and Paginated Data
+  const filteredData = useMemo(() => {
+    return data.filter((item) =>
+      columns.some((col) =>
+        String(item[col.key] || "")
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, data, columns]);
+
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
-  return (
-    <div className="overflow-x-auto shadow-xl rounded-lg border border-gray-100">
-      <table className="min-w-full divide-y divide-gray-100 bg-white">
-        {/* Table Header */}
-        <thead className="bg-gray-200 text-gray-900">
+  // inside your Table component (replacing return JSX)
+return (
+  <div className="w-full max-w-5xl mx-auto">
+    {/* Search */}
+    <div className="flex justify-end mb-4 px-2">
+      <div className="relative w-64">
+        <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
+          <FiSearch />
+        </span>
+        <input
+          type="text"
+          placeholder="Search..."
+          className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring focus:border-red-700"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1);
+          }}
+        />
+      </div>
+    </div>
+    
+
+    {/* Table */}
+    <div className="w-full overflow-x-auto rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
+    <div className="min-w-[1000px]">
+      <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead className="bg-gray-100 dark:bg-gray-700">
           <tr>
             {columns.map((column) => (
               <th
                 key={column.key}
-                className="px-4 py-3 text-left font-bold uppercase tracking-wider whitespace-nowrap">
+                className="px-4 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider whitespace-nowrap"
+              >
                 {column.label}
               </th>
             ))}
-            {/* Show Action Column Only If at Least One Action Exists */}
             {(onEdit || onDelete || onRestore || onPermanentDelete) && (
-              <th className="px-4 py-3 text-left font-bold uppercase tracking-wider whitespace-nowrap">
+              <th className="px-4 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
                 Action
               </th>
             )}
           </tr>
         </thead>
-
-        {/* Table Body */}
-        <tbody className="divide-y divide-gray-100 text-gray-700">
-          {data.map((item) => (
-            <tr key={item.id} className="hover:bg-gray-200 transition-all hover:shadow-md transition-all duration-200">
-              {columns.map((column) => (
-                <td
-                  key={column.key}
-                  className="px-4 py-3 whitespace-nowrap overflow-hidden text-ellipsis max-w-xs"
-                >
-                  {/* Add color dot for status column */}
-                  {column.key === "stage" ? (
-                    <div className="flex items-center space-x-2">
-                      <span
-                        className={`w-3 h-3 rounded-full ${
-                          statusColors[item[column.key]] || "bg-gray-600"
-                        }`}
-                      ></span>
-                      <span>{item[column.key]}</span>
-                    </div>
-                  ) : column.key === "date" || column.key === "startDate" || column.key === "endDate" ? (
-                    // Format date for dueDate column
-                    formatDate(item[column.key])
-                  ):(
-                    item[column.key]
-                  )}
-                </td>
-              ))}
-
-              {/* Render Action Buttons Only If Any Action is Passed */}
-              {(onEdit || onDelete || onRestore || onPermanentDelete) && (
-                <td className="px-4 py-3 whitespace-nowrap">
-                  <div className="flex space-x-4">
-                    {onEdit && (
-                      <button onClick={() => onEdit(item)} className="text-blue-500 hover:text-blue-400">
-                        <Edit size={18} />
-                      </button>
-                    )}
-                    {onDelete && (
-                      <button onClick={() => onDelete(item)} className="text-red-500 hover:text-red-400">
-                        <Trash2 size={18} />
-                      </button>
-                    )}
-                    {onRestore && (
-                      <button onClick={() => onRestore(item)} className="text-green-500 hover:text-green-400">
-                        <MdOutlineRestore size={18} />
-                      </button>
-                    )}
-                    {onPermanentDelete && (
-                      <button onClick={() => onPermanentDelete(item)} className="text-red-500 hover:text-red-400">
-                        Delete Forever
-                      </button>
-                    )}
-                  </div>
-                </td>
-              )}
+        <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700 text-gray-700 dark:text-gray-200">
+          {paginatedData.length === 0 ? (
+            <tr>
+              <td colSpan={columns.length + 1} className="text-center py-5 text-gray-500">
+                No results found.
+              </td>
             </tr>
-          ))}
+          ) : (
+            paginatedData.map((item) => (
+              <tr key={item.id} className="hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-200">
+                {columns.map((column) => (
+                  <td
+                    key={column.key}
+                    className="px-4 py-3 whitespace-nowrap text-sm max-w-xs overflow-hidden text-ellipsis"
+                  >
+                    {column.key === "stage" ? (
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`w-3 h-3 rounded-full ${
+                            statusColors[item[column.key]] || "bg-gray-500"
+                          }`}
+                        ></span>
+                        {item[column.key]}
+                      </div>
+                    ) : ["date", "startDate", "endDate"].includes(column.key) ? (
+                      formatDate(item[column.key])
+                    ) : (
+                      item[column.key]
+                    )}
+                  </td>
+                ))}
+                {(onEdit || onDelete || onRestore || onPermanentDelete) && (
+                  <td className="px-4 py-3 whitespace-nowrap text-sm">
+                    <div className="flex space-x-3">
+                      {onEdit && (
+                        <button onClick={() => onEdit(item)} className="text-blue-500 hover:text-blue-600">
+                          <Edit size={18} />
+                        </button>
+                      )}
+                      {onDelete && (
+                        <button onClick={() => onDelete(item)} className="text-red-500 hover:text-red-600">
+                          <Trash2 size={18} />
+                        </button>
+                      )}
+                      {onRestore && (
+                        <button onClick={() => onRestore(item)} className="text-green-500 hover:text-green-600">
+                          <MdOutlineRestore size={18} />
+                        </button>
+                      )}
+                      {onPermanentDelete && (
+                        <button
+                          onClick={() => onPermanentDelete(item)}
+                          className="text-red-500 hover:text-red-600 text-xs font-semibold"
+                        >
+                          Delete Forever
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                )}
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>
-  );
+
+    {/* Bottom Controls */}
+    <div className="flex flex-col sm:flex-row justify-between sm:items-center px-4 py-4 dark:bg-gray-900 rounded-b-lg border-t border-gray-100 dark:border-gray-700 gap-2 sm:gap-4">
+      {/* Rows per page */}
+      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+        <span className="mr-2">Rows per page:</span>
+        <select
+          value={rowsPerPage}
+          onChange={(e) => {
+            setCurrentPage(1);
+            onChangeRowsPerPage?.(parseInt(e.target.value)); // Optional external handler
+          }}
+          className="border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 bg-white dark:bg-gray-800 text-sm"
+        >
+          {[5, 10, 15].map((size) => (
+            <option key={size} value={size}>
+              {size}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex items-center gap-2">
+        <span className="text-gray-600 dark:text-gray-400 text-sm">
+          Page {currentPage} of {totalPages}
+        </span>
+        <div className="flex gap-1">
+          {[...Array(totalPages)].map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => handlePageChange(idx + 1)}
+              className={`px-3 py-1 rounded-md text-sm font-medium ${
+                currentPage === idx + 1
+                  ? "bg-gray-600 text-white"
+                  : "bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100"
+              }`}
+            >
+              {idx + 1}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+);
+
 };
 
 export default Table;
-
-
-
-
