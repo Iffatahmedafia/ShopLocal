@@ -4,6 +4,8 @@ import {
   MdKeyboardArrowUp,
   MdKeyboardDoubleArrowUp,
   MdOutlineRestore,
+  MdKeyboardArrowLeft,
+  MdKeyboardArrowRight
 } from "react-icons/md";
 import { Edit, Trash2 } from "lucide-react";
 import { FiSearch } from "react-icons/fi";
@@ -63,7 +65,7 @@ const Table = ({
 
   // inside your Table component (replacing return JSX)
 return (
-  <div className="w-full max-w-5xl mx-auto">
+  <div className="w-full max-w-4xl mx-auto">
     {/* Search */}
     <div className="flex justify-end mb-4 px-2">
       <div className="relative w-64">
@@ -85,9 +87,8 @@ return (
     
 
     {/* Table */}
-    <div className="w-full overflow-x-auto rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
-    <div className="min-w-[1000px]">
-      <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
+    <div className="overflow-x-auto rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
+      <table className="w-full table-auto divide-y divide-gray-200 dark:divide-gray-700">
         <thead className="bg-gray-100 dark:bg-gray-700">
           <tr>
             {columns.map((column) => (
@@ -194,27 +195,35 @@ return (
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
         <span className="text-gray-600 dark:text-gray-400 text-sm">
           Page {currentPage} of {totalPages}
         </span>
-        <div className="flex gap-1">
-          {[...Array(totalPages)].map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => handlePageChange(idx + 1)}
-              className={`px-3 py-1 rounded-md text-sm font-medium ${
-                currentPage === idx + 1
-                  ? "bg-gray-600 text-white"
-                  : "bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100"
-              }`}
-            >
-              {idx + 1}
-            </button>
-          ))}
+        <div className="flex gap-2">
+        <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`px-3 py-1 rounded-md text-sm font-medium ${
+              currentPage === 1
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500"
+                : "bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100"
+            }`}
+          >
+            <MdKeyboardArrowLeft size={20} />
+          </button>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`px-3 py-1 rounded-md text-sm font-medium ${
+              currentPage === totalPages
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500"
+                : "bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100"
+            }`}
+          >
+            <MdKeyboardArrowRight size={20} />
+          </button>
         </div>
       </div>
-    </div>
     </div>
   </div>
 );

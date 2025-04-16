@@ -78,7 +78,7 @@ const ShowProducts = () => {
   if (loading) return <p className="text-gray-900">Loading products...</p>;
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen p-2">
         {/* Add Task Button */}
         <div className="flex justify-center md:justify-end p-3">
           <button
