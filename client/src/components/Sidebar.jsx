@@ -26,7 +26,7 @@ const Sidebar = () => {
     // Show for brand users and admins
     ...(user?.is_brand || user?.is_admin
       ? [
-          { label: "Brands", link: "showbrands", icon: <FaTag /> },
+          { label: "Brands", link: "brand_detail", icon: <FaTag /> },
           { label: "Products", link: "showproducts", icon: <FaBoxOpen /> },
           { label: "Trash", link: "trash", icon: <FaTrashAlt /> },
         ]
