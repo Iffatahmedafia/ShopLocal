@@ -7,7 +7,7 @@ import {
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight
 } from "react-icons/md";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, CheckCircle, XCircle } from "lucide-react";
 import { FiSearch } from "react-icons/fi";
 
 
@@ -35,6 +35,7 @@ const Table = ({
   onDelete = null,
   onRestore = null,
   onPermanentDelete = null,
+  isAdmin= false
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -58,6 +59,16 @@ const Table = ({
   );
 
   const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+  const handleApprove = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+  const handleDecline = (page) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
@@ -102,6 +113,11 @@ return (
             {(onEdit || onDelete || onRestore || onPermanentDelete) && (
               <th className="px-4 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
                 Action
+              </th>
+            )}
+            {(isAdmin) && (
+              <th className="px-4 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                Admin Action
               </th>
             )}
           </tr>
@@ -163,6 +179,19 @@ return (
                           Delete Forever
                         </button>
                       )}
+                    </div>
+                  </td>
+                )}
+                {(isAdmin) && (
+                  <td className="px-4 py-3 whitespace-nowrap text-sm">
+                    <div className="flex space-x-3">
+                    <button onClick={handleApprove} className="text-green-600 hover:text-green-800 flex items-center gap-1">
+                      <CheckCircle size={20} />
+                    </button>
+
+                    <button onClick={handleDecline} className="text-red-500 hover:text-red-800 flex items-center gap-1">
+                      <XCircle size={20} />
+                    </button>
                     </div>
                   </td>
                 )}

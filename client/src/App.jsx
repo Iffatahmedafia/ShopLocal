@@ -10,11 +10,12 @@ import ProfilePage from "./pages/ProfilePage";
 import FavoriteProduct from "./pages/FavoriteProduct";
 import Brand from "./pages/Brands.jsx"
 import Sidebar from "./components/Sidebar.jsx";
-import ShowProducts from "./components/UserPanel/ShowProducts.jsx";
+import ProductList from "./components/UserPanel/ProductList.jsx";
 import BrandDetail from "./components/UserPanel/BrandDetail.jsx";
 import Dashboard from "./components/UserPanel/Dashboard.jsx";
 import Categories from "./pages/AdminPanel/Categories.jsx";
 import Users from "./pages/AdminPanel/Users.jsx";
+import BrandList from "./pages/AdminPanel/BrandList.jsx";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setCredentials } from "./redux/slices/authSlice";
@@ -117,8 +118,9 @@ function App() {
           </Route>
           <Route element={<ProtectedRoute favouritesCount={favouritesCount} />}>
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/showproducts" element={<ShowProducts />} />
+              <Route path="/productlist" element={<ProductList />} />
               <Route path="/brand_detail" element={<BrandDetail />} />
+              <Route path="/brandlist" element={<BrandList />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/users" element={<Users />} />
               <Route path="/favorites" element={<FavoriteProduct updateFavouritesCount={setFavouritesCount} />} />

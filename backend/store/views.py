@@ -112,9 +112,12 @@ class CheckAuthView(APIView):
         except jwt.InvalidTokenError:
             return Response({"authenticated": False, "error": "Invalid token"}, status=401)
 
+# Get all Users
+class UserListView(generics.ListAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
 
 class UserProfileView(APIView):
-    
     # GET request to fetch user data
     def get(self, request):
         user_data = checkAuth(request) # Custom function to check authentication

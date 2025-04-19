@@ -20,7 +20,7 @@ const columns = [
   
 ];
 
-const ShowProducts = () => {
+const ProductList = () => {
   const { user } = useSelector((state) => state.auth);
   console.log("User:", user)
   const [loading, setLoading] = useState(true);
@@ -75,12 +75,12 @@ const ShowProducts = () => {
   
   };
 
-  if (loading) return <p className="text-gray-900">Loading products...</p>;
+  if (loading) return <p className="text-gray-900 mt-6">Loading products...</p>;
 
   return (
     <div className="min-h-screen p-2">
         {/* Add Task Button */}
-        <div className="flex justify-center md:justify-end p-3">
+        <div className="flex justify-center md:justify-end p-3 mt-4">
           <button
             onClick={() => setIsModalOpen(true)}
             className="py-3 px-6 text-white bg-red-700 hover:to-red-800 rounded-lg transition-all"
@@ -89,7 +89,7 @@ const ShowProducts = () => {
           </button>
         </div>
         <h2 className="text-2xl font-bold text-center md:text-start mb-4">Products</h2>
-       
+        {products.length> 0 ? (
         <div className="text-white">
         <Tabs
           tabs={tabOptions}
@@ -101,8 +101,12 @@ const ShowProducts = () => {
               data={filteredProduct.map((product) => ({ id: product.id, image: product.image, name: product.name, brand: product.brand, description: product.description, price: product.price, retail_store: product.retail_store, online_store: product.online_store, status: product.status }))}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              isAdmin = {user?.is_admin}
             />
         </div>
+        ):(
+        <p className="text-center text-gray-500">No brands yet.</p>
+      )}
         <AddProductForm open={isModalOpen} setOpen={setIsModalOpen} title="Add New Product" onSubmit={handleAdd} />
         
        
@@ -118,4 +122,4 @@ const ShowProducts = () => {
 
 
 
-export default ShowProducts
+export default ProductList

@@ -46,7 +46,7 @@ class LoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer): 
     class Meta: 
         model = CustomUser
-        fields = ['name', 'email', 'is_admin']
+        fields = ['name', 'email', 'is_admin', 'is_brand']
 
 # Brand Serializer
 class BrandSerializer(serializers.ModelSerializer):

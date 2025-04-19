@@ -26,16 +26,22 @@ const Sidebar = () => {
     // Show for brand users and admins
     ...(user?.is_brand || user?.is_admin
       ? [
-          { label: "Brands", link: "brand_detail", icon: <FaTag /> },
-          { label: "Products", link: "showproducts", icon: <FaBoxOpen /> },
+          { label: "Products", link: "productlist", icon: <FaBoxOpen /> },
           { label: "Trash", link: "trash", icon: <FaTrashAlt /> },
+        ]
+      : []),
+    ...(user?.is_brand
+      ? [
+          { label: "Brand Detail", link: "brand_detail", icon: <FaTag /> },
         ]
       : []),
     // Show only for admins
     ...(user?.is_admin
       ? [
+          { label: "Brands", link: "brandlist", icon: <FaThList /> },
           { label: "Categories", link: "categories", icon: <FaThList /> },
           { label: "Users", link: "users", icon: <FaUsers /> },
+
         ]
       : []),
    
