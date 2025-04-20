@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import Table from '../Table';
-import { fetchProducts } from "../../api";
+import { fetchProducts, updateProductStatus } from "../../api";
 import DialogWrapper from "../DialogWrapper";
 import AddProductForm from "./AddProductForm";
 import { useSelector } from "react-redux";
+import { toast } from 'react-toastify';
 import Tabs from "../Tabs";
 
 // / Define table columns
@@ -49,16 +50,41 @@ const ProductList = () => {
     const tabOptions = [
       { value: "Pending", label: "Pending" },
       { value: "Approved", label: "Approved" },
+      { value: "Declined", label: "Rejected" },
     ];
 
-    const filteredProduct = 
-      selectedTab === "Pending" 
-      ? products.filter((product) => product.status == "Pending")
-      : products.filter((product) => product.status === "Approved")
+    const filteredProduct = products.filter((product) => {
+      if (selectedTab === "Pending") {
+        return product.status === "Pending";
+      } else if (selectedTab === "Approved") {
+        return product.status === "Approved";
+      } else if (selectedTab === "Declined" || selectedTab === "Rejected") {
+        return product.status === "Declined" || product.status === "Rejected";
+      } else {
+        return true; // fallback: show all
+      }
+    });
+
+const handleAdminAction = async (product, newStatus) => {
+    console.log("Approving or Declining product")
+    try {
+      const response =await updateProductStatus(product.id, newStatus);
+      console.log("Response", response)
+      if (response.status==200) {
+        toast.success("Product status updated successfully!");
+        // update local state if needed
+        setBrands((prev) =>
+          prev.map((p) => (p.id === product.id ? { ...p, status: newStatus } : p))
+        );
+      }
+    } catch (err) {
+      console.error(`Failed to update product status to ${newStatus}:`, err);
+    }
+  };
     
 
-  const handleAdd = (productData) => {
-    console.log("Product Added:", productData);
+  const handleAdd = (product) => {
+    console.log("Product Added:", product);
     // axios.post("/api/products", productData)...
   };
 
@@ -78,7 +104,7 @@ const ProductList = () => {
   if (loading) return <p className="text-gray-900 mt-6">Loading products...</p>;
 
   return (
-    <div className="min-h-screen p-2">
+    <div className="p-2">
         {/* Add Task Button */}
         <div className="flex justify-center md:justify-end p-3 mt-4">
           <button
@@ -88,9 +114,11 @@ const ProductList = () => {
             + Add Product
           </button>
         </div>
-        <h2 className="text-2xl font-bold text-center md:text-start mb-4">Products</h2>
+        <div className="md:ml-12">
+          <h2 className="text-2xl font-bold text-center md:text-start mb-4">Products</h2>
+        </div>
         {products.length> 0 ? (
-        <div className="text-white">
+        <div className="">
         <Tabs
           tabs={tabOptions}
           selectedTab={selectedTab}
@@ -102,6 +130,7 @@ const ProductList = () => {
               onEdit={handleEdit}
               onDelete={handleDelete}
               isAdmin = {user?.is_admin}
+              onAdminAction={handleAdminAction}
             />
         </div>
         ):(

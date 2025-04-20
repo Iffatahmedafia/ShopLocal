@@ -209,6 +209,31 @@ class BrandView(APIView):
         serializer = BrandSerializer(brands, many=True)
         return Response(serializer.data)
 
+    # admin only
+    def put(self, request, brand_id):
+
+        user_data = checkAuth(request)
+        print("User Data", user_data)
+        if not user_data:
+            return Response({"message": "Unauthorized. Admins only."}, status=status.HTTP_403_FORBIDDEN)
+
+        action = request.data.get("status")
+        if action not in ["Approved", "Declined"]:
+            return Response({"message": "Invalid action."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            brand = Brand.objects.get(id=brand_id)
+        except Brand.DoesNotExist:
+            return Response({"message": "Brand not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if brand.status.lower() != "pending":
+            return Response({"message": f"Brand already {brand.status}."}, status=status.HTTP_400_BAD_REQUEST)
+
+        brand.status = "Approved" if action == "Approved" else "Rejected"
+        brand.save()
+        return Response({"message": f"Brand {brand.status.lower()} successfully."}, status=status.HTTP_200_OK)
+
+
 # Get all categories
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
@@ -254,6 +279,32 @@ class ProductView(APIView):
         else:
             print(serializer.errors)  # Log the errors to the console
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # admin only
+    def put(self, request, product_id):
+
+        user_data = checkAuth(request)
+        print("User Data", user_data)
+        if not user_data:
+            return Response({"message": "Unauthorized. Admins only."}, status=status.HTTP_403_FORBIDDEN)
+
+        action = request.data.get("status")
+        if action not in ["Approved", "Declined"]:
+            return Response({"message": "Invalid action."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({"message": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if product.status.lower() != "pending":
+            return Response({"message": f"Product already {product.status}."}, status=status.HTTP_400_BAD_REQUEST)
+
+        product.status = "Approved" if action == "Approved" else "Rejected"
+        product.save()
+        return Response({"message": f"Product {product.status.lower()} successfully."}, status=status.HTTP_200_OK)
+
+
 
 
 

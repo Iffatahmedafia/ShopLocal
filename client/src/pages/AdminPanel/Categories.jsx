@@ -108,7 +108,7 @@ useEffect(() => {
         </div>
         <h2 className="text-2xl font-bold text-center md:text-start mb-4">Categories</h2>
        
-        <div className="text-white">
+        <div className="">
         <Tabs
           tabs={tabOptions}
           selectedTab={selectedTab}

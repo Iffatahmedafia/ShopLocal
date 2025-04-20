@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Pencil } from "lucide-react"; // optional icon
+import { fetchBrands } from "../../api";
+import { useSelector } from "react-redux";
 
 const brand=[
   {name: "Zara"},
@@ -11,7 +13,28 @@ const brand=[
 ]
 
 const BrandDetail = ({ onSave }) => {
+  const { user } = useSelector((state) => state.auth);
+  console.log("User:", user)
   const [isEditing, setIsEditing] = useState(false);
+  const [brands, setBrands] = useState([]);
+
+  
+
+  useEffect(() => {
+      const getBrands = async () => {
+        const data = await fetchBrands();
+        console.log("Brands:", data)
+        let filtered = data;
+        if (user.is_brand) {
+          filtered = data.filter(
+            (brand) => brand.user === user.id
+          );
+        }
+        setBrands(filtered);
+      };
+      getBrands();
+    
+    }, [user]);
 
    
 

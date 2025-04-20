@@ -96,3 +96,26 @@ export const addFavourites = async () => {
     return [];
   }
 };
+
+export const updateBrandStatus = async (brandId, status) => {
+  try {
+    const response = await axios.put(`${API_URL}/brands/${brandId}/status/`, { status },
+      {withCredentials: true}
+    );
+    return response
+  } catch (error) {
+    console.error("Error updating brand status:", error);
+    throw error;
+  }
+};
+export const updateProductStatus = async (productId, status) => {
+  try {
+    const response = await axios.put(`${API_URL}/products/${productId}/status/`, { status },
+      {withCredentials: true}
+    );
+    return response
+  } catch (error) {
+    console.error("Error updating brand status:", error);
+    throw error;
+  }
+};

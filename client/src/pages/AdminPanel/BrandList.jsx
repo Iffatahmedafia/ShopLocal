@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { fetchBrands } from "../../api";
+import { toast } from 'react-toastify';
+import { fetchBrands, updateBrandStatus } from "../../api";
 import Table from "../../components/Table";
+
 
 
 // / Define table columns
@@ -37,6 +39,23 @@ const BrandList = () => {
       };
       getBrands();
     }, []);
+
+  const handleAdminAction = async (brand, newStatus) => {
+    console.log("Approving or Declining brand")
+    try {
+      const response =await updateBrandStatus(brand.id, newStatus);
+      console.log("Response", response)
+      if (response.status==200) {
+        toast.success("Brand status update successfully!");
+        // update local state if needed
+        setBrands((prev) =>
+          prev.map((b) => (b.id === brand.id ? { ...b, status: newStatus } : b))
+        );
+      }
+    } catch (err) {
+      console.error(`Failed to update brand status to ${newStatus}:`, err);
+    }
+  };
   
 
     // Add Brand
@@ -71,13 +90,14 @@ const BrandList = () => {
         </div>
         <h2 className="text-2xl font-bold text-center md:text-start mb-4">Brands</h2>
        {brands.length> 0 ? (
-        <div className="text-white">
+        <div className="">
           <Table
               columns={columns}
               data={brands.map((brand) => ({ id: brand.id, name: brand.name, email: brand.email, phone: brand.phone, province: brand.province, store_address: brand.store_address, website_link: brand.website_link, status: brand.status }))}
               onEdit={handleEdit}
               onDelete={handleDelete}
               isAdmin={user?.is_admin}
+              onAdminAction={handleAdminAction}
             />
         </div>
         ):(

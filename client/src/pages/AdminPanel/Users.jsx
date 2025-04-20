@@ -70,7 +70,7 @@ const Users = () => {
         </div>
         <h2 className="text-2xl font-bold text-center md:text-start mb-4">Users</h2>
        
-        <div className="text-white">
+        <div className="">
         
           <Table
               columns={columns}

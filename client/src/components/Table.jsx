@@ -35,7 +35,8 @@ const Table = ({
   onDelete = null,
   onRestore = null,
   onPermanentDelete = null,
-  isAdmin= false
+  isAdmin= false,
+  onAdminAction = null
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -78,8 +79,8 @@ const Table = ({
 return (
   <div className="w-full max-w-4xl mx-auto">
     {/* Search */}
-    <div className="flex justify-end mb-4 px-2">
-      <div className="relative w-64">
+    <div className="flex justify-start mb-4 px-2">
+      <div className="relative w-56">
         <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
           <FiSearch />
         </span>
@@ -115,7 +116,7 @@ return (
                 Action
               </th>
             )}
-            {(isAdmin) && (
+            {(isAdmin) && onAdminAction &&(
               <th className="px-4 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
                 Admin Action
               </th>
@@ -182,14 +183,14 @@ return (
                     </div>
                   </td>
                 )}
-                {(isAdmin) && (
+                {(isAdmin) && onAdminAction && (
                   <td className="px-4 py-3 whitespace-nowrap text-sm">
                     <div className="flex space-x-3">
-                    <button onClick={handleApprove} className="text-green-600 hover:text-green-800 flex items-center gap-1">
+                    <button onClick={() => onAdminAction(item, "Approved")} className="text-green-600 hover:text-green-800 flex items-center gap-1">
                       <CheckCircle size={20} />
                     </button>
 
-                    <button onClick={handleDecline} className="text-red-500 hover:text-red-800 flex items-center gap-1">
+                    <button onClick={() => onAdminAction(item, "Declined")} className="text-red-500 hover:text-red-800 flex items-center gap-1">
                       <XCircle size={20} />
                     </button>
                     </div>

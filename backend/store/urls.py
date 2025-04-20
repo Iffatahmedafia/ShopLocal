@@ -18,7 +18,9 @@ urlpatterns = [
     path('password/update/', PasswordUpdateView.as_view(), name='update_password'),
     path('brands/', BrandView.as_view(), name='get_brands'),
     path('brand/create/', BrandView.as_view(), name='brand_register'),
+    path('brands/<int:brand_id>/status/', BrandView.as_view(), name='brand-status-update'),
     path('product/create/', ProductView.as_view(), name='add_product'),
+    path('products/<int:product_id>/status/', ProductView.as_view(), name='product-status-update'),
  
     # URL for adding to favorites (POST)
     path('favorites/add/', FavoriteProductView.as_view(), name='add_favourite'),
