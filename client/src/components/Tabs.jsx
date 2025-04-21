@@ -3,7 +3,7 @@ import React from "react";
 
 const Tabs = ({ tabs, selectedTab, onTabChange }) => {
   return (
-    <div className="flex justify-center space-x-4">
+    <div className="flex justify-center space-x-4 mb-4">
       {tabs.map((tab) => (
         <button
           key={tab.value}

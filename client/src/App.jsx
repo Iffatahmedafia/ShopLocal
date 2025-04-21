@@ -10,6 +10,7 @@ import ProfilePage from "./pages/ProfilePage";
 import FavoriteProduct from "./pages/FavoriteProduct";
 import Brand from "./pages/Brands.jsx"
 import Sidebar from "./components/Sidebar.jsx";
+import MobileSidebar from "./components/MobileSidebar.jsx";
 import ProductList from "./components/UserPanel/ProductList.jsx";
 import BrandDetail from "./components/UserPanel/BrandDetail.jsx";
 import Dashboard from "./components/UserPanel/Dashboard.jsx";
@@ -53,28 +54,44 @@ const fetchUser = async (dispatch) => {
 const ProtectedRoute = ({ favouritesCount }) => {
   const { user } = useSelector((state) => state.auth);
   const [sidebarOpen, setSidebarOpen] = useState(true);  // Control sidebar visibility
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
   return (
-    <div className="flex min-h-screen">
-      {/* Navbar stays fixed at the top */}
+    <div className="flex flex-col min-h-screen">
+      {/* Fixed Navbar */}
       <div className="w-full fixed top-0 left-0 right-0 z-10">
         <Navbar count={favouritesCount} />
       </div>
 
-      {/* Main content */}
-      <div className="flex flex-1 mt-[100px]"> {/* Add margin-top to push content below the navbar */}
-        {/* Sidebar remains fixed on the left */}
-        <Sidebar open={sidebarOpen} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-        
-        {/* Main content area */}
+      {/* Mobile Sidebar (only on mobile view) */}
+      {isMobile && <MobileSidebar />}
+
+      <div className={`flex-1 flex ${isMobile ? '' : 'mt-[100px]'}`}>
+        {/* Desktop Sidebar (hidden on mobile) */}
+        {!isMobile && (
+          <Sidebar open={sidebarOpen} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        )}
+
+        {/* Main Content Area */}
         <div
-          className={`flex-1 transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-0'} overflow-y-auto`}
+          className={`flex-1 transition-all duration-300 overflow-y-auto ${
+            !isMobile ? (sidebarOpen ? 'ml-64' : 'ml-0') : ''
+          }`}
         >
-          <Outlet /> {/* Renders the child routes inside Layout */}
+          <Outlet />
         </div>
       </div>
     </div>

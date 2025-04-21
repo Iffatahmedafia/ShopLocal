@@ -8,6 +8,7 @@ import { FaTasks, FaIndustry, FaBoxOpen, FaHeart, FaTag, FaTrashAlt, FaUsers, Fa
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import { getNavLinksByRole } from "./NavLinksByRole";
 
 
 const Sidebar = () => {
@@ -19,51 +20,18 @@ const Sidebar = () => {
 
   // State for Settings submenu
   const [openSettings, setOpenSettings] = useState(false);
-
-  const linkData = [
-    { label: "Dashboard", link: "dashboard", icon: <MdDashboard /> },
-    { label: "Favourite Products", link: "favorites", icon: <FaHeart /> },
-    // Show for brand users and admins
-    ...(user?.is_brand || user?.is_admin
-      ? [
-          { label: "Products", link: "productlist", icon: <FaBoxOpen /> },
-          { label: "Trash", link: "trash", icon: <FaTrashAlt /> },
-        ]
-      : []),
-    ...(user?.is_brand
-      ? [
-          { label: "Brand Detail", link: "brand_detail", icon: <FaTag /> },
-        ]
-      : []),
-    // Show only for admins
-    ...(user?.is_admin
-      ? [
-          { label: "Brands", link: "brandlist", icon: <FaThList /> },
-          { label: "Categories", link: "categories", icon: <FaThList /> },
-          { label: "Users", link: "users", icon: <FaUsers /> },
-
-        ]
-      : []),
-   
-  ];
-
+  const role = user?.is_admin
+      ? 'admin'
+      : user?.is_brand
+      ? 'brand'
+      : 'user';
   
+  const linkData = getNavLinksByRole(role);
 
-  // const linkData = [
-  //   { label: "Dashboard", link: "dashboard", icon: <MdDashboard /> },
-  //   { label: "Brands", link: "brands", icon: <FaTasks /> },
-  //   { label: "Products", link: "showproducts", icon: <FaTasks /> },
-  //   { label: "Favourite Products", link: "favorites", icon: <FaTasks /> },
-  //   { label: "Categories", link: "categories", icon: <FaThList /> },
-  //   { label: "Users", link: "users", icon: <FaUsers /> },
-  //   { label: "Trash", link: "trash", icon: <FaTrashAlt /> },
-  //   // Show Users link only if user is admin
-  //   // ...(user?.isAdmin ? [{ label: "Users", link: "users", icon: <FaUsers /> }] : []),
-  // ];
 
   return (
     <div
-      className={`fixed top-28 left-0 w-64 h-screen overflow-y-auto transition-all duration-300 transform ${
+      className={`fixed top-[100px] left-0 w-64 h-screen overflow-y-auto transition-all duration-300 transform ${
         darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
       }`}
     >
@@ -75,7 +43,9 @@ const Sidebar = () => {
 
         {/* Sidebar Links */}
         <div className="flex-1 flex flex-col gap-4 py-4">
-          {linkData.map((el) => (
+          {linkData
+          .filter(el => el.label !== 'Settings')
+          .map((el) => (
             <Link
               key={el.label}
               to={el.link}
@@ -112,11 +82,6 @@ const Sidebar = () => {
                   <li>
                     <Link to="/profile" className="block px-3 py-1 flex items-center gap-2 rounded-md text-gray-600 hover:bg-red-100 hover:text-red-700"> 
                       Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/security" className="block px-3 py-1 flex items-center gap-2 rounded-md text-gray-600 hover:bg-red-100 hover:text-red-700">
-                      Security
                     </Link>
                   </li>
                 </ul>
