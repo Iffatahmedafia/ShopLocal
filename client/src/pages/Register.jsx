@@ -139,7 +139,7 @@ const Register = () => {
           <div className="flex gap-4">
             <button
               type="submit"
-              className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition"
+              className="w-full bg-red-700 hover:bg-red-800 text-white py-2 rounded-lg font-semibold transition"
             >
               Register
             </button>
@@ -155,7 +155,7 @@ const Register = () => {
         {/* Sign Up Link */}
         <p className="mt-4 text-center text-gray-700 dark:text-gray-300">
           Already have an account?{" "}
-          <a className="text-red-500 hover:underline">Login</a>
+          <a href="/login" className="text-red-600 hover:underline">Login</a>
           {/* <Link to="/signup" className="text-red-500 hover:underline">
             Sign Up
           </Link> */}

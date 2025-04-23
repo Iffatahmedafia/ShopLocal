@@ -7,13 +7,16 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from store.authentication import CookieJWTAuthentication  # Import custom auth
 from rest_framework.views import APIView
 from rest_framework import generics
-from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, CategorySerializer, SubCategorySerializer, SubSubCategorySerializer, ProductSerializer, FavoriteProductSerializer
+from .serializers import RegisterSerializer, LoginSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, CategorySerializer, SubCategorySerializer, SubSubCategorySerializer, ProductSerializer, FavoriteProductSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .models import Category, SubCategory, SubSubcategory, Brand, Product, FavoriteProduct, CustomUser
 from django.conf import settings
 import jwt
 from rest_framework.exceptions import AuthenticationFailed
+from django.core.mail import send_mail
+from rest_framework import status
+from datetime import datetime, timedelta
 
 
 
@@ -111,6 +114,55 @@ class CheckAuthView(APIView):
             return Response({"authenticated": False, "error": "Token expired"}, status=401)
         except jwt.InvalidTokenError:
             return Response({"authenticated": False, "error": "Invalid token"}, status=401)
+
+class ForgotPasswordView(APIView):
+    def post(self, request):
+        serializer = ForgotPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data["email"]
+            try:
+                user = CustomUser.objects.get(email=email)
+                payload = {
+                    "user_id": user.id,
+                    "exp": datetime.utcnow() + timedelta(minutes=30),
+                    "iat": datetime.utcnow(),
+                }
+                token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
+
+                reset_url = f"http://localhost:3001/reset-password?token={token}"
+                send_mail(
+                    "Reset Your Password",
+                    f"Click this link to reset your password: {reset_url}",
+                    settings.EMAIL_HOST_USER,
+                    [email],
+                    fail_silently=False,
+                )
+                return Response({"message": "Password reset link sent."})
+            except User.DoesNotExist:
+                return Response({"error": "No user found with this email."}, status=404)
+
+        return Response(serializer.errors, status=400)
+
+
+class ResetPasswordView(APIView):
+    def post(self, request):
+        serializer = ResetPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            token = serializer.validated_data["token"]
+            try:
+                payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+                user = CustomUser.objects.get(id=payload["user_id"])
+                user.set_password(serializer.validated_data["new_password"])
+                user.save()
+                return Response({"message": "Password reset successful."})
+            except jwt.ExpiredSignatureError:
+                return Response({"error": "Token expired"}, status=400)
+            except jwt.InvalidTokenError:
+                return Response({"error": "Invalid token"}, status=400)
+            except User.DoesNotExist:
+                return Response({"error": "User not found"}, status=404)
+
+        return Response(serializer.errors, status=400)
 
 # Get all Users
 class UserListView(generics.ListAPIView):

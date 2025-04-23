@@ -5,6 +5,8 @@ import Navbar from "./components/Navbar";
 import Product from "./pages/Product";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/Authentication/ForgotPassword.jsx";
+import ResetPassword from "./pages/Authentication/ResetPassword.jsx";
 import VendorRegistration from "./components/VendorRegistration.jsx";
 import ProfilePage from "./pages/ProfilePage";
 import FavoriteProduct from "./pages/FavoriteProduct";
@@ -149,6 +151,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/vendor_register" element={<VendorRegistration />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
 
         {/* Toast container for showing notifications */}

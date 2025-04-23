@@ -9,8 +9,6 @@ import { toast } from 'react-toastify';
 
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const dispatch = useDispatch();
@@ -114,7 +112,7 @@ const Login = () => {
               />
               Remember Me
             </label>
-            <a className="text-red-500 hover:underline"> Forgot Password?</a>
+            <a href="/forgot-password" className="text-red-600 hover:underline"> Forgot Password?</a>
             {/* <Link to="/forgot-password" className="text-red-500 hover:underline">
               Forgot Password?
             </Link> */}
@@ -124,7 +122,7 @@ const Login = () => {
           <div className="flex gap-4">
             <button
               type="submit"
-              className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition"
+              className="w-full bg-red-700 hover:bg-red-800 text-white py-2 rounded-lg font-semibold transition"
             >
               Login
             </button>
@@ -140,7 +138,7 @@ const Login = () => {
         {/* Sign Up Link */}
         <p className="mt-4 text-center text-gray-700 dark:text-gray-300">
           Don't have an account?{" "}
-          <a className="text-red-500 hover:underline">Sign Up</a>
+          <a href= "/register" className="text-red-600 hover:underline">Sign Up</a>
           {/* <Link to="/signup" className="text-red-500 hover:underline">
             Sign Up
           </Link> */}

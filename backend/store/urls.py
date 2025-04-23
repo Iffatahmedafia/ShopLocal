@@ -1,13 +1,15 @@
 # backend/urls.py
 
 from django.urls import path
-from .views import RegisterView, BrandView, LoginView, CategoryListView, SubCategoryListView, SubSubCategoryListView, ProductListView, ProductView, FavoriteProductView, CheckAuthView, UserProfileView, UserListView, PasswordUpdateView
+from .views import RegisterView, BrandView, LoginView, ForgotPasswordView, ResetPasswordView, CategoryListView, SubCategoryListView, SubSubCategoryListView, ProductListView, ProductView, FavoriteProductView, CheckAuthView, UserProfileView, UserListView, PasswordUpdateView
 
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
     path('check_auth/', CheckAuthView.as_view()),
+    path('forgot-password/', ForgotPasswordView.as_view()),
+    path('reset-password/', ResetPasswordView.as_view()),
     path('categories/', CategoryListView.as_view(), name='categories'),
     path('subcategories/', SubCategoryListView.as_view(), name='subcategories'),
     path('sub_subsubcategories/', SubSubCategoryListView.as_view(), name='sub_subcategories'),
