@@ -107,11 +107,11 @@ const ProductCard = ({ product, updateFavouritesCount, type }) => {
    
     <div className="bg-white dark:bg-gray-800 h-auto flex flex-col rounded-xl shadow-lg overflow-hidden transition-transform transform hover:-translate-y-2 hover:shadow-xl group">
       {/* Product Image */}
-      <div className="flex justify-center items-center h-56 mb-3 bg-white dark:bg-gray-900 rounded-t-xl">
+      <div className="flex justify-center items-center h-56 mb-3 bg-white dark:bg-gray-800 rounded-t-xl">
       <img
         src={product.image}
         alt={product.name}
-        className="w-48 h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+        className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
       />
       </div>
 
@@ -119,14 +119,15 @@ const ProductCard = ({ product, updateFavouritesCount, type }) => {
       <div className="p-4 flex flex-col flex-grow">
         <h3 className="text-xl font-bold text-gray-900 dark:text-white">{product.name}</h3>
         <p className="text-gray-500 dark:text-gray-400 font-medium">Brand: {product.brand}</p>
-
+       
         {/* Where to Buy */}
-        <div className="mt-3 flex-grow">
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-semibold">Offline Store:</span> {product.offline_store || "Not Available"}
+        <div className="mt-4 flex-grow">
+        <h3 className="text-md font-semibold dark:text-gray-100 mb-3">Where to Buy</h3>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">
+            <span className="font-semibold">Retail Store:</span> {product.offline_store || "Not Available"}
           </p>
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-semibold">Online Store: </span> 
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">
+            <span className="font-semibold">Online: </span> 
             <a 
               href={product.online_store} 
               target="_blank" 

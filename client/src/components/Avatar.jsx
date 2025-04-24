@@ -25,7 +25,7 @@ const Avatar = () => {
       <div>
         <Menu as='div' className='relative inline-block text-left z-40'>
           <div>
-            <Menu.Button className='w-10 h-10 2xl:w-12 2xl:h-12 flex items-center justify-center rounded-full bg-gray-800 hover:bg-gray-700'>
+            <Menu.Button className='w-10 h-10 2xl:w-14 2xl:h-14 flex items-center justify-center rounded-full bg-gray-900 hover:bg-gray-700'>
               <span className='text-white font-semibold'>
                 <FaUser />
               </span>

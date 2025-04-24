@@ -114,9 +114,9 @@ const Home = ({ updateFavouritesCount }) => {
 
         {/* Hero Section */}
         <header className="relative w-full h-[400px] bg-cover bg-center" style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}>
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-white">Find Your Perfect Style</h1>
-            <p className="mt-4 text-lg text-gray-300">Explore our latest collection of products at unbeatable prices.</p>
+          <div className="absolute inset-0 bg-gray-100 bg-opacity-50 flex flex-col justify-center items-center text-center">
+            <h1 className="text-4xl md:text-6xl font-bold">Find Your Perfect Local Products</h1>
+            <p className="mt-4 text-lg text-gray-700">Explore our local shops and their collections.</p>
             <a href="/shop" className="mt-6 px-6 py-3 bg-red-700 hover:bg-red-600 text-white font-semibold rounded-lg">
               Shop Now
             </a>
@@ -191,7 +191,7 @@ const Home = ({ updateFavouritesCount }) => {
         </section>
 
         {/* Footer */}
-        <footer className="bg-gray-800 dark:bg-gray-800 py-6 mt-12">
+        <footer className="bg-black dark:bg-gray-800 py-6 mt-12">
           <div className="container mx-auto text-center">
             <h3 className="text-lg text-white font-semibold">Follow Us</h3>
             <div className="flex justify-center space-x-4 my-3">

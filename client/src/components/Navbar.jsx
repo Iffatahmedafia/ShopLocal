@@ -167,11 +167,11 @@ const Navbar = ({ count }) => {
 
   return (
     <>
-    <nav className="bg-gray-800 dark:bg-gray-800 text-gray-900 dark:text-white shadow-md px-4 py-2 flex justify-between items-center"> 
+    <nav className="bg-black dark:text-white shadow-md px-4 py-2 flex justify-between items-center"> 
         {/* Logo */}
-        <a href="/" className="text-2xl font-bold text-white ml-2 md:ml-6 whitespace-nowrap">Shop Local</a>
+        <a href="/" className="text-xl font-bold text-white ml-2 md:ml-6 whitespace-nowrap">Shop Local</a>
         {user && ( 
-          <div className="text-white text-xl font-semibold">
+          <div className="text-white text-lg font-semibold">
             Welcome, {user.name}
           </div>
         )}
@@ -179,7 +179,7 @@ const Navbar = ({ count }) => {
         <div className="flex items-center space-x-6">
           {/* Favorite Button */}
           <button className="relative bg-white dark:bg-gray-700 p-2 rounded-full shadow-lg hover:bg-red-200 dark:hover:bg-red-700 transition">
-            <FiHeart size={18} onClick={() => user? (navigate('/favorites')) : (navigate('/login'))} className="text-gray-600 dark:text-gray-300" />
+            <FiHeart size={16} onClick={() => user? (navigate('/favorites')) : (navigate('/login'))} className="text-gray-600 dark:text-gray-300" />
             {user && count > 0 && ( 
               <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white px-2 py-1 rounded-full">{count}</span>
             )}
@@ -190,12 +190,12 @@ const Navbar = ({ count }) => {
                 onClick={toggleDarkMode}
                 className="mr-4 p-2 rounded-full bg-white shadow-lg hover:bg-red-200 dark:bg-gray-700 transition"
               >
-                {darkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
+                {darkMode ? <FiSun size={16} /> : <FiMoon size={18} />}
           </button>
         </div>
     </nav>
-    <nav className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-md transition duration-300">
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+    <nav className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-md border-b border-gray-300 dark:border-gray-700 transition duration-300 mb-1">
+      <div className="px-4 py-3 flex justify-between items-center">
              
         {/* Desktop Links */}
         <div className="hidden md:flex items-center space-x-6 ml-6">
@@ -274,26 +274,27 @@ const Navbar = ({ count }) => {
               </div>
             )}
           </div>
-          <a href="/brands" className="hover:text-red-700 flex items-center">
+          <a href="/brands" className="hover:text-red-600 flex items-center">
             <FaTag size={18} className="mr-2" />
              Brands
           </a>
         </div>
 
         {/* Search Bar */}
-        <div className="flex-1 flex md:justify-center px-2">
+        <div className="flex-1 flex md:justify-center pr-2">
           <div className="flex items-center border-2 border-gray-300 dark:border-gray-600 rounded-full overflow-hidden w-full max-w-sm md:w-96">
+            <FiSearch size={25} className="text-red-700 ml-3"/>
             <input
               type="text"
               placeholder="Search for products..."
-              className="w-full p-2 text-sm text-gray-800 dark:text-white dark:bg-gray-700 focus:outline-none"
+              className="w-full p-2 text-sm text-gray-800 dark:text-white dark:bg-gray-800 focus:outline-none"
               value={query}
               onChange={handleSearch}
             />
             <button className="bg-red-700 px-4 py-2 text-white rounded-r-lg hover:bg-red-800">
-            Search
-          </button>
-            {/* <button className="bg-red-600 text-white px-3 py-2 hover:bg-red-700 flex items-center gap-2">
+              Search
+            </button>
+            {/* <button className="bg-red-700 text-white px-3 py-2 hover:bg-red-700 flex items-center gap-2">
               <FiSearch size={18} />
               <span className="hidden md:inline">Search</span>
             </button> */}
@@ -308,8 +309,8 @@ const Navbar = ({ count }) => {
           {user? (<Avatar />):
           (
           // Avatar with Sign In 
-          <a href="/login" className="hidden md:flex items-center space-x-2 hover:text-red-700">
-            <FaUserCircle size={28} />
+          <a href="/login" className="hidden md:flex items-center space-x-1 hover:text-red-700">
+            <FaUserCircle size={30} />
             <span className="text-sm font-semibold hidden sm:inline">Sign In</span>
           </a>
           )}
@@ -339,7 +340,7 @@ const Navbar = ({ count }) => {
 
       {/* Mobile Menu */}
       {isOpen &&  (
-        <div className="md:hidden bg-gray-100 dark:bg-gray-800 p-4 space-y-2 transition duration-300">
+        <div className="md:hidden bg-white dark:bg-gray-800 p-4 space-y-2 transition duration-300">
         {!user && (
           <button
               type="button"
@@ -361,7 +362,7 @@ const Navbar = ({ count }) => {
 
             {/* Main Dropdown Menu */}
             {dropdownOpen && (
-              <div className="mt-2 space-y-2 bg-gray-100 dark:bg-gray-800 rounded-md p-2">
+              <div className="mt-2 space-y-2 bg-white dark:bg-gray-800 rounded-md p-2">
                 {categories.map((category) => (
                   <div key={category.id} className="relative">
                     <button
@@ -441,7 +442,7 @@ const Navbar = ({ count }) => {
               <button
                   type="button"
                   onClick={() => navigate('/login')}
-                  className="bg-gray-300 hover:bg-gray-400 text-red-700 px-2 py-2 rounded-lg transition"
+                  className="bg-gray-300 hover:bg-gray-400 text-red-700 px-4 py-2 rounded-md transition"
                 >
                   Sign In
               </button>
