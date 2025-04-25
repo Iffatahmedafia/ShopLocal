@@ -2,7 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
-from .models import Category, SubCategory, SubSubcategory, Product, FavoriteProduct, Brand
+from .models import Category, SubCategory, SubSubcategory, Product, FavoriteProduct, Brand, UserInteraction
 
 
 CustomUser = get_user_model()  # Get the correct user model dynamically
@@ -18,6 +18,11 @@ class RegisterSerializer(serializers.ModelSerializer):
             'is_admin': {'required': False},  # Allow is_admin to be set optionally (default False)
             'is_brand': {'required': False},  # Allow is_brand to be set optionally (default False)
         }
+
+    # def validate_email(self, value):
+    #     if CustomUser.objects.filter(email=value).exists():
+    #         raise serializers.ValidationError("A user with this email already exists.")
+    #     return value
 
     def validate(self, data):
         if data['password'] != data['password2']:
@@ -104,11 +109,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['name', 'email']
 
-        def validate_email(self, value):
-            # Optionally add email validation logic (e.g., checking if it's unique)
-            if CustomUser.objects.filter(email=value).exists():
-                raise serializers.ValidationError("Email is already in use.")
-            return value
+    def validate_email(self, value):
+        # Optionally add email validation logic (e.g., checking if it's unique)
+        if CustomUser.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Email is already in use.")
+        return value
 
 class PasswordUpdateSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only=True)
@@ -184,5 +189,10 @@ class FavoriteProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FavoriteProduct
+        fields = '__all__'
+
+class UserInteractionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserInteraction
         fields = '__all__'
         

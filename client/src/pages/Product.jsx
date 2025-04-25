@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 import { fetchProducts, fetchBrands, fetchCategories } from "../api";
+import { logInteraction } from "../utils/logInteraction.js";
 import ProductCard from "../components/ProductCard";
 import { useSearch } from '../SearchContext.jsx';
 
@@ -18,6 +19,7 @@ const Product = ({ updateFavouritesCount }) => {
   const [selectedBrands, setSelectedBrands] = useState([]); // State for selected brands
   const [selectedBrandCategories, setSelectedBrandCategories] = useState([]); // State for selected brand categories
   const [products, setProducts] = useState([]);
+  const [recommended, setRecommended] = useState([]);
   const { query } = useSearch();
 
   useEffect(() => {
@@ -62,10 +64,55 @@ const Product = ({ updateFavouritesCount }) => {
       }
 
       setProducts(filtered);
+      if (user) {
+        filtered.slice(0, 5).forEach((product) => {
+          logInteraction({ userId: user.id, productId: product.id, action: "view" });
+        });
+      }
     };
 
     getProducts();
   }, [subsubcategoryId, subcategoryId, categoryId]);
+
+  useEffect(() => {
+    if (user && query.trim().length > 0) {
+      logInteraction({ userId: user.id, searchQuery: query, action: "search" });
+    }
+  }, [query]);
+
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      if (!user) return;
+      // Mock data (remove when backend is ready)
+    const mockData = [
+      {
+        id: 999,
+        name: "Test Apple Watch Ultra",
+        image: "https://via.placeholder.com/200",
+        price: "799.00",
+        category: "Electronics",
+        tags: ["smartwatch", "apple"]
+      },
+      {
+        id: 998,
+        name: "Mock Samsung Galaxy Buds",
+        image: "https://via.placeholder.com/200",
+        price: "129.99",
+        category: "Electronics",
+        tags: ["audio", "wireless"]
+      }
+    ];
+      try {
+        // const response = await axios.get("/api/recommendations/");
+        // setRecommended(response.data.recommendations || []);
+        setRecommended(mockData);
+      } catch (error) {
+        console.error("Error fetching recommendations:", error);
+      }
+    };
+  
+    fetchRecommendations();
+  }, [user]);
 
   const handleFavourites = async (productId) => {
     if (!user) {
@@ -122,7 +169,7 @@ const Product = ({ updateFavouritesCount }) => {
     <div className="bg-slate dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen transition duration-300">
       <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
         {/* Sidebar Filters */}
-        <aside className="w-full md:w-1/4 bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md">
+        <aside className="w-full md:w-1/4 bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md self-start">
           <h3 className="text-xl font-bold mb-4">Filters</h3>
 
           {/* Brand Filter (Checkboxes for multiple selection) */}
@@ -179,9 +226,32 @@ const Product = ({ updateFavouritesCount }) => {
           <h2 className="text-2xl font-bold mb-6">Products</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} updateFavouritesCount={updateFavouritesCount} type="add" />
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                updateFavouritesCount={updateFavouritesCount} 
+                type="add"
+                onClick={() => logInteraction({ userId: user?.id, productId: product.id, action: "click" })}
+              />
             ))}
           </div>
+          {console.log("Recommended",recommended.length)}
+          {recommended.length > 0 && (
+          <div className="my-12 border-t border-gray-300 dark:border-gray-700 pt-8">
+            <h3 className="text-2xl font-bold mb-4">Recommended For You</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+              {recommended.map((item, index) => (
+                <ProductCard 
+                  key={`rec-${index}`} 
+                  product={item} 
+                  updateFavouritesCount={updateFavouritesCount} 
+                  type="recommend"
+                  onClick={() => logInteraction({ userId: user?.id, productId: item.id, action: "click" })}
+                />
+              ))}
+            </div>
+          </div>
+          )}
         </div>
       </div>
     </div>

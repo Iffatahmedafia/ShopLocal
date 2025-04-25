@@ -139,7 +139,7 @@ const Home = ({ updateFavouritesCount }) => {
             {categories.map((category, index) => (
               <SwiperSlide key={index}>
                 <div className="flex flex-col items-center bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition">
-                  <img src={category.image} alt={category.name} className="w-32 h-32 object-cover rounded-lg border-4 border-gray-300 dark:border-gray-700 mb-3" />
+                  <img src={category.image || "https://via.placeholder.com/200"} alt={category.name} className="w-32 h-32 object-cover rounded-lg border-4 border-gray-300 dark:border-gray-700 mb-3" />
                   <p className="text-lg font-semibold">{category.name}</p>
                 </div>
               </SwiperSlide>

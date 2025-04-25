@@ -7,16 +7,17 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from store.authentication import CookieJWTAuthentication  # Import custom auth
 from rest_framework.views import APIView
 from rest_framework import generics
-from .serializers import RegisterSerializer, LoginSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, CategorySerializer, SubCategorySerializer, SubSubCategorySerializer, ProductSerializer, FavoriteProductSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserInteractionSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, CategorySerializer, SubCategorySerializer, SubSubCategorySerializer, ProductSerializer, FavoriteProductSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .models import Category, SubCategory, SubSubcategory, Brand, Product, FavoriteProduct, CustomUser
+from .models import Category, SubCategory, SubSubcategory, Brand, Product, FavoriteProduct, CustomUser, UserInteraction
 from django.conf import settings
 import jwt
 from rest_framework.exceptions import AuthenticationFailed
 from django.core.mail import send_mail
 from rest_framework import status
 from datetime import datetime, timedelta
+from .llm_mistral import generate_recommendations
 
 
 
@@ -423,3 +424,29 @@ class FavoriteProductView(APIView):
         
         except FavoriteProduct.DoesNotExist:
             return Response({"error": "Favorite product not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class LogInteractionView(APIView):
+    def post(self, request):
+        serializer = UserInteractionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Interaction logged!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LLMRecommendationView(APIView):
+    def get(self, request):
+        user = request.user
+        interactions = UserInteraction.objects.filter(user=user).order_by('-timestamp')[:10]
+        tags = []
+        for i in interactions:
+            if i.search_query:
+                tags.append(i.search_query)
+            if i.product and i.product.tags:
+                tags.extend(i.product.tags)
+        keywords = list(set(tags))[:5]
+        try:
+            results = generate_recommendations(keywords)
+            return Response({"recommendations": results})
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

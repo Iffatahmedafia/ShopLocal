@@ -113,6 +113,8 @@ class Product(models.Model):
     supershop_store = models.TextField(blank=True, null=True)
     online_store = models.URLField(max_length=500, blank=True, null=True)  # Store URL
     status = models.CharField(default="Pending")
+    tags = models.JSONField(default=list, blank=True, null=True)  # Example: ["smartwatch", "fitness", "apple"]
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name="products")
     subcategory = models.ForeignKey(SubCategory, null=True, blank=True, on_delete=models.SET_NULL, related_name='products')
     sub_subcategory = models.ForeignKey(SubSubcategory, null=True, blank=True, on_delete=models.SET_NULL, related_name='products')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="products")
@@ -127,4 +129,17 @@ class FavoriteProduct(models.Model):
 
     class Meta:
         unique_together = ('user', 'product')
+
+class UserInteraction(models.Model):
+    ACTION_CHOICES = [
+        ('view', 'View'),
+        ('click', 'Click'),
+        ('purchase', 'Purchase'),
+        ('search', 'Search'),
+    ]
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
+    search_query = models.CharField(max_length=255, blank=True, null=True)
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
