@@ -8,9 +8,11 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen px-4 py-10 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
-      <h1 className="text-2xl font-bold mb-6 text-center md:text-start text-gray-800 dark:text-white">
-        My Profile
-      </h1>
+      <div className="md:ml-12">
+        <h1 className="text-2xl font-bold mb-6 text-center md:text-start text-gray-800 dark:text-white">
+          My Profile
+        </h1>
+      </div>
 
       <div className="flex flex-col gap-y-8 items-center">
         {/* Profile Card */}

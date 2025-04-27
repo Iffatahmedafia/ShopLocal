@@ -14,6 +14,13 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
   const { user } = useSelector((state) => state.auth);
   const [favouritesCount, setFavouritesCount] = useState(0)
   const navigate = useNavigate()
+
+  const getFullImageUrl = (image) => {
+    if (image=="images/default.jpg") return "https://placehold.co/200"; // fallback
+    if (image.startsWith("http")) return image; // full URL, leave it
+    if (image.startsWith("/")) return image; // already absolute
+    return `/${image}`; // add leading slash
+  };
   
   
   
@@ -107,9 +114,9 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
    
     <div className="bg-white dark:bg-gray-800 h-auto flex flex-col rounded-xl shadow-lg overflow-hidden transition-transform transform hover:-translate-y-2 hover:shadow-xl group">
       {/* Product Image */}
-      <div className="flex justify-center items-center h-56 mb-3 bg-white dark:bg-gray-800 rounded-t-xl">
+      <div className="flex justify-center items-center mb-3 bg-white dark:bg-gray-800 rounded-t-xl">
       <img
-        src={product.image || "https://via.placeholder.com/200"}
+        src={getFullImageUrl(product.image)}
         alt={product.name}
         className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
       />

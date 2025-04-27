@@ -8,6 +8,7 @@ const VendorRegistration = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [isCanadianOwned, setIsCanadianOwned] = useState(true);
   const [step, setStep] = useState(1); // Multi-step form
 
   const {
@@ -47,8 +48,12 @@ const VendorRegistration = () => {
           supershop_store: data.supershop_store,
           website_link: data.website,
           province: data.province,
+          canadian_owned: data.canadian_owned,
+          origin_country: data.origin_country,
+          manufactured_in: data.manufactured_in,
           password: data.password,
           password2: data.confirmPassword,
+          disclaimer_agreed: data.disclaimer_agreed,
           is_brand: true,
         }),
       });
@@ -74,7 +79,7 @@ const VendorRegistration = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 transition duration-300">
       <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
-          Register
+          Register Business
         </h2>
         <form onSubmit={handleSubmit(handleSubmitForm)} className="mt-6">
           {/* Step 1: Personal Information */}
@@ -245,9 +250,63 @@ const VendorRegistration = () => {
             </div>
           )}
 
-          {/* Step 3: Password Fields */}
+          {/* Step 3: Canadien owned and Password Fields */}
           {step === 3 && (
             <div>
+              <div className="mb-4">
+                <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
+                  Is your business Canadian?
+                </label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="canadian_owned"
+                    name="canadian_owned"
+                    checked={isCanadianOwned}
+                    onChange={(e) => setIsCanadianOwned(e.target.checked)}
+                    className="w-5 h-5 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                  />
+                  <span className="text-gray-700 dark:text-gray-300">
+                    {isCanadianOwned ? "Yes" : "No"}
+                  </span>
+                </div>
+              </div>
+              {!isCanadianOwned && (
+                <div className="mb-4">
+                  <label className="block text-gray-700 dark:text-gray-300 font-semibold">
+                    Specify Origin Country
+                  </label>
+                  <input
+                    type="text"
+                    id="origin_country"
+                    name="origin_country"
+                    placeholder="Enter origin country"
+                    className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
+                    {...register("origin_country", {
+                      required: "Origin country is required if not Canadian owned"
+                    })}
+                  />
+                  {errors.origin_country && (
+                    <p className="text-red-500 text-sm mt-1">{errors.origin_country.message}</p>
+                  )}
+                </div>
+              )}
+              <div className="mb-4">
+                <label className="block text-gray-700 dark:text-gray-300 font-semibold">
+                  Products Manufactured In?
+                </label>
+                <input
+                  type="text"
+                  id="manufactured_in"
+                  name="manufactured_in"
+                  placeholder="City,Province,Country"
+                  className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
+                  {...register("manufactured_in", { required: "Manufactured country is required" })}
+                />
+                {errors.manufactured_in && (
+                  <p className="text-red-500 text-sm mt-1">{errors.manufactured_in.message}</p>
+                )}
+              </div>
               <div className="mb-4 relative">
                 <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                   Password
@@ -284,6 +343,28 @@ const VendorRegistration = () => {
                   <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
                 )}
               </div>
+              {/* Disclaimer Checkbox */}
+              <div className="mb-4">
+                <div className="flex items-start">
+                  <div className="flex items-center h-5">
+                    <input
+                      id="disclaimer_agreed"
+                      name="disclaimer_agreed"
+                      type="checkbox"
+                      {...register("disclaimer_agreed", { required: "You must agree before submitting." })}
+                      className="w-4 h-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                    />
+                  </div>
+                  <div className="ml-3 text-sm">
+                    <label htmlFor="disclaimer_agreed" className="font-medium text-gray-700 dark:text-gray-300">
+                      I confirm that all the information provided is true.
+                    </label>
+                  </div>
+                </div>
+                {errors.disclaimer_agreed && (
+                  <p className="text-red-500 text-sm mt-1">{errors.disclaimer_agreed.message}</p>
+                )}
+              </div>
             </div>
           )}
 
@@ -316,6 +397,11 @@ const VendorRegistration = () => {
             )}
           </div>
         </form>
+        {/* Sign Up Link */}
+        <p className="mt-4 text-center text-gray-700 dark:text-gray-300">
+          Return to Home{" "}
+          <a href= "/" className="text-red-600 hover:underline">Home</a>
+        </p>
       </div>
     </div>
   );

@@ -53,6 +53,7 @@ class CustomUser(AbstractUser):
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
     image = models.CharField(max_length=255, default='images/default.jpg')  # Set default image
+    is_trashed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -92,6 +93,10 @@ class Brand(models.Model):
     website_link = models.URLField(max_length=500, blank=True, null=True)  # Store URL
     province = models.CharField(max_length=255)
     status = models.CharField(default="Pending")
+    canadian_owned = models.BooleanField(default=True)
+    origin_country = models.CharField(max_length=100, blank=True, null=True)
+    manufactured_in = models.CharField(max_length=100,blank=True, null=True)
+    disclaimer_agreed = models.BooleanField(default=False)
     
     def __str__(self):
         return self.name
@@ -119,6 +124,7 @@ class Product(models.Model):
     sub_subcategory = models.ForeignKey(SubSubcategory, null=True, blank=True, on_delete=models.SET_NULL, related_name='products')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="products")
     brand_id = models.ForeignKey(Brand, null=True, on_delete=models.CASCADE, related_name="products")
+    is_trashed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -129,6 +135,13 @@ class FavoriteProduct(models.Model):
 
     class Meta:
         unique_together = ('user', 'product')
+
+class SavedBrand(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'brand')
 
 class UserInteraction(models.Model):
     ACTION_CHOICES = [

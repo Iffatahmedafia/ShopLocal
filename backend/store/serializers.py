@@ -74,6 +74,13 @@ class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
         fields = '__all__'
+
+    def validate(self, data):
+        if data.get('canadian_owned') is False and not data.get('origin_country'):
+            raise serializers.ValidationError("Origin country must be specified if not Canadian owned.")
+        if not data.get('disclaimer_agreed'):
+            raise serializers.ValidationError("You must agree to the disclaimer before registering.")
+        return data
        
 
     def create(self, validated_data):
@@ -93,13 +100,17 @@ class BrandSerializer(serializers.ModelSerializer):
         # Update brand fields
         instance.name = instance.user.name
         instance.email = instance.user.email
-        instance.registration = validated_data.get("registration", instance.registration)
+        # instance.registration = validated_data.get("registration", instance.registration)
         instance.category = validated_data.get("category", instance.category)
         instance.phone = validated_data.get("phone", instance.phone)
         instance.store_address = validated_data.get("store_address", instance.store_address)
         instance.supershop_store = validated_data.get("supershop_store", instance.supershop_store)
         instance.website_link = validated_data.get("website_link", instance.website_link)
         instance.province = validated_data.get("province", instance.province)
+        instance.canadian_owned = validated_data.get("canadian_owned", instance.canadian_owned)
+        instance.origin_country = validated_data.get("origin_country", instance.origin_country)
+        instance.manufactured_in = validated_data.get("manufactured_in", instance.manufactured_in)
+        instance.disclaimer_agreed = validated_data.get("disclaimer_agreed", instance.disclaimer_agreed)
 
         instance.save()
         return instance
@@ -109,11 +120,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['name', 'email']
 
-    def validate_email(self, value):
-        # Optionally add email validation logic (e.g., checking if it's unique)
-        if CustomUser.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Email is already in use.")
-        return value
+    # def validate_email(self, value):
+    #     # Optionally add email validation logic (e.g., checking if it's unique)
+    #     if CustomUser.objects.filter(email=value).exists():
+    #         raise serializers.ValidationError("Email is already in use.")
+    #     return value
 
 class PasswordUpdateSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only=True)

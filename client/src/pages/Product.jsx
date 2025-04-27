@@ -225,7 +225,9 @@ const Product = ({ updateFavouritesCount }) => {
         <div className="flex-1">
           <h2 className="text-2xl font-bold mb-6">Products</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-            {filteredProducts.map((product) => (
+          {filteredProducts.map((product) => {
+            console.log("Product Rendering", product);
+            return (
               <ProductCard 
                 key={product.id} 
                 product={product} 
@@ -233,7 +235,8 @@ const Product = ({ updateFavouritesCount }) => {
                 type="add"
                 onClick={() => logInteraction({ userId: user?.id, productId: product.id, action: "click" })}
               />
-            ))}
+            );
+          })}
           </div>
           {console.log("Recommended",recommended.length)}
           {recommended.length > 0 && (

@@ -22,7 +22,7 @@ def get_product_docs():
     products = Product.objects.all()
     docs = []
     for p in products:
-        text = f"Product: {p.name}. Tags: {p.tags}. Description: {p.description}. Category: {p.category.name if p.category else 'N/A'}"
+        text = f"Product: {p.name}. Tags: {getattr(p, 'tags', '')}. Description: {p.description}. Category: {p.category.name if p.category else 'N/A'}"
         docs.append(Document(page_content=text, metadata={"id": p.id}))
     return docs
 
@@ -47,7 +47,7 @@ def generate_recommendations(user_keywords):
                 "name": product.name,
                 "price": str(product.price),
                 "category": product.category.name if product.category else None,
-                "tags": product.tags,
+                "tags": getattr(product, 'tags', ''),
                 "image": product.image
             })
 
