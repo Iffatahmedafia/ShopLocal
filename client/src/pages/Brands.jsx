@@ -3,6 +3,7 @@ import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { useSearch } from "../SearchContext.jsx";
 import { fetchBrands, fetchCategories } from "../api.js";
+import BrandCard from "../components/BrandCard.jsx";
 
 const provinceOptions = [
   "Ontario",
@@ -172,59 +173,7 @@ const Brand = () => {
                 const categoryName =
                   categories.find((cat) => cat.id === brand.category)?.name || "N/A";
                 return (
-                  <div
-                    key={brand.id}
-                    className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl hover:scale-[1.02] transition duration-300 flex flex-col justify-between"
-                  >
-                    <div>
-                      <h2 className="text-2xl font-semibold text-center text-red-700 dark:text-white mb-2">
-                        {brand.name}
-                      </h2> 
-                      <p className="text-gray-600 dark:text-gray-300 text-sm text-center mb-1">
-                        Category:{" "}
-                        <span className="font-medium">{categoryName}</span>
-                      </p>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm text-center mb-2">
-                        Province:{" "}
-                        <span className="font-medium">{brand.province}</span>
-                      </p>
-                    </div>
-                    <hr className="my-4 border-gray-300 dark:border-gray-700" />
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-3">Where to Buy</h3>
-                      <div className="space-y-2">
-                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-                          Store:{" "}
-                          <span className="font-normal text-gray-600 dark:text-gray-400">
-                            {brand.store_address || "Not Available"}
-                          </span>
-                        </p>
-                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-                          Supermarket:{" "}
-                          <span className="font-normal text-gray-600 dark:text-gray-400">
-                            {brand.store_address || "Not Available"}
-                          </span>
-                        </p>
-                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-                          Website:{" "}
-                          {brand.website_link ? (
-                            <a
-                              href={brand.website_link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="underline text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                            >
-                              {new URL(brand.website_link).hostname}
-                            </a>
-                          ) : (
-                            <span className="font-normal text-gray-600 dark:text-gray-400">
-                              Not Available
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <BrandCard key={brand.id} brand={brand} category={categoryName} type="add" />   
                 );
               })}
             </div>

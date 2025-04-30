@@ -7,10 +7,10 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from store.authentication import CookieJWTAuthentication  # Import custom auth
 from rest_framework.views import APIView
 from rest_framework import generics
-from .serializers import RegisterSerializer, LoginSerializer, UserInteractionSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, CategorySerializer, SubCategorySerializer, SubSubCategorySerializer, ProductSerializer, FavoriteProductSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserInteractionSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, SavedBrandSerializer, CategorySerializer, SubCategorySerializer, SubSubCategorySerializer, ProductSerializer, FavoriteProductSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .models import Category, SubCategory, SubSubcategory, Brand, Product, FavoriteProduct, CustomUser, UserInteraction
+from .models import Category, SubCategory, SubSubcategory, Brand, SavedBrand, Product, FavoriteProduct, CustomUser, UserInteraction
 from django.conf import settings
 import jwt
 from rest_framework.exceptions import AuthenticationFailed
@@ -333,7 +333,7 @@ class ProductView(APIView):
             print(serializer.errors)  # Log the errors to the console
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # admin only
+    # Approve/ Reject Products(admin only)
     def put(self, request, product_id):
 
         user_data = checkAuth(request)
@@ -356,9 +356,6 @@ class ProductView(APIView):
         product.status = "Approved" if action == "Approved" else "Rejected"
         product.save()
         return Response({"message": f"Product {product.status.lower()} successfully."}, status=status.HTTP_200_OK)
-
-
-
 
 
 # Add Products to favourites
@@ -424,6 +421,72 @@ class FavoriteProductView(APIView):
         
         except FavoriteProduct.DoesNotExist:
             return Response({"error": "Favorite product not found"}, status=status.HTTP_404_NOT_FOUND)
+
+# Add Brand to saved collection
+class SavedBrandView(APIView):
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+    def post(self, request):
+        user = checkAuth(request)
+        # Get the user ID from the request (assuming user is authenticated)
+        user_id = user.id
+        print("User Id: ", user.id)
+        print("Incoming Request Data:", request.data)
+        
+        # Extract brand ID from the request data
+        brand_id = request.data.get("brand")
+        print("Brand Id:", brand_id)
+        # Check if the brand is already in the user's saved collection
+        if SavedBrand.objects.filter(user_id=user_id, brand_id=brand_id).exists():
+            return Response(
+                {"message": "This brand is already in your saved collection!"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        # Serialize the incoming data and validate it
+        request.data['user'] = user_id
+        serializer = SavedBrandSerializer(data=request.data)
+        if serializer.is_valid():
+            saved_brand = serializer.save()
+            return Response({"message": "Brand saved successfully!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
+    def get(self, request):
+        # Get the user ID from the checkAuth function
+        user = checkAuth(request)
+        user_id = user.id
+        
+        # Get all the saved brands for the user
+        saved_brands = SavedBrand.objects.filter(user_id=user_id).values_list("brand_id", flat=True)
+        print("Saved Brands", saved_brands)
+        brands = Brand.objects.filter(id__in = saved_brands)
+        print("Brands", brands)
+        # Serialize the brands matching id
+        serializer = BrandSerializer(brands, many=True)
+        
+        # Return the list of saved brands
+        return Response({"saved_brands": serializer.data}, status=status.HTTP_200_OK)
+
+    def delete(self, request, brand_id):
+        # Get the user ID from the request (again, assuming user is authenticated)
+        user = checkAuth(request)
+        print("User", user)
+        user_id = user.id
+        # user_id =  request.data.get('user') # Get the user ID
+        
+        try:
+            # Find the saved brand by user and brand ID
+            saved_brand = SavedBrand.objects.get(user_id=user_id, brand_id=brand_id)
+            
+            # Delete the Saved brand
+            saved_brand.delete()
+            
+            return Response({"message": "Brands removed from saved collection successfully!"}, status=status.HTTP_204_NO_CONTENT)
+        
+        except SavedBrand.DoesNotExist:
+            return Response({"error": "Saved brand not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
 
 
 class LogInteractionView(APIView):

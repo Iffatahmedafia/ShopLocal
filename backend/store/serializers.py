@@ -2,7 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
-from .models import Category, SubCategory, SubSubcategory, Product, FavoriteProduct, Brand, UserInteraction
+from .models import Category, SubCategory, SubSubcategory, Product, FavoriteProduct, Brand, SavedBrand, UserInteraction
 
 
 CustomUser = get_user_model()  # Get the correct user model dynamically
@@ -200,6 +200,13 @@ class FavoriteProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FavoriteProduct
+        fields = '__all__'
+
+
+class SavedBrandSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SavedBrand
         fields = '__all__'
 
 class UserInteractionSerializer(serializers.ModelSerializer):

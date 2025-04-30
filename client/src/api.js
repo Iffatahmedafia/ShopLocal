@@ -86,6 +86,20 @@ export const fetchFavorites = async () => {
   }
 };
 
+export const fetchSavedBrands = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/saved_brands/`, {
+      withCredentials: true, // Correct way to send user ID
+       
+      });
+      return response.data.saved_brands
+
+  } catch (error) {
+    console.error("Error fetching Saved Brands:", error);
+    return [];
+  }
+};
+
 export const addFavourites = async () => {
   try {
     const response = await axios.post(`${API_URL}/products/`);

@@ -6,7 +6,7 @@ export const getNavLinksByRole = (role) => {
     { link: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard />, roles: ['admin', 'user','brand'] },
     { link: 'brandlist', label: 'Brands', icon: <Tag />, roles: ['admin'] },
     { link: 'brand_detail', label: 'Brand Detail', icon: <Tag />, roles: ['brand'] },
-    { link: 'saved_brand', label: 'Saved Brand', icon: <Tag />, roles: ['user'] },
+    { link: 'saved_brands', label: 'Saved Brand', icon: <Tag />, roles: ['user'] },
     { link: 'productlist', label: 'Products', icon: <Box />, roles: ['admin', 'brand'] },
     { link: 'favorites', label: "Favourite Product", icon: <FaHeart />, roles: ['user'] },
     { link: 'categories', label: 'Categories', icon: <List />, roles: ['admin'] },

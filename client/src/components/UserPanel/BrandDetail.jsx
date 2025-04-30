@@ -30,7 +30,12 @@ const BrandDetail = ({ onSave }) => {
             (brand) => brand.user === user.id
           );
         }
-        setBrands(filtered);
+        setBrands(filtered[0]);
+        setFormData({
+          about: filtered[0].about || "",
+          onlineStore: filtered[0].website_link || "",
+          offlineStore: filtered[0].store_address || "",
+        });
       };
       getBrands();
     
@@ -77,7 +82,7 @@ const BrandDetail = ({ onSave }) => {
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Brand Name</label>
           <input
             type="text"
-            value={brand?.name || "N/A"}
+            value={brands?.name || "N/A"}
             disabled
             className="mt-1 p-2 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border border-gray-300 text-gray-900 dark:text-white"
           />
@@ -88,7 +93,7 @@ const BrandDetail = ({ onSave }) => {
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
           <input
             type="email"
-            value={brand?.email || "N/A"}
+            value={brands?.email || "N/A"}
             disabled
             className="mt-1 p-2 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border border-gray-300 text-gray-900 dark:text-white"
           />
@@ -99,7 +104,7 @@ const BrandDetail = ({ onSave }) => {
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
           <input
             type="text"
-            value={brand?.category?.name || "N/A"}
+            value={brands?.category?.name || "N/A"}
             disabled
             className="mt-1 p-2 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border border-gray-300 text-gray-900 dark:text-white"
           />
@@ -138,11 +143,26 @@ const BrandDetail = ({ onSave }) => {
 
         {/* Offline Store */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Offline Store Name(s)</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Retail Store</label>
           <input
             type="text"
             name="offlineStore"
             value={formData.offlineStore}
+            onChange={handleChange}
+            disabled={!isEditing}
+            placeholder="e.g. your store address"
+            className={`mt-1 p-2 block w-full rounded-md border border-gray-300 dark:border-gray-600 ${
+              isEditing ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-red-500 focus:ring-red-500" : "bg-gray-100 text-gray-400"
+            }`}
+          />
+        </div>
+        {/* Supermarkets Store */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Supermarket Name(s)</label>
+          <input
+            type="text"
+            name="supermarketStore"
+            value={formData.supermarketStore}
             onChange={handleChange}
             disabled={!isEditing}
             placeholder="e.g., Walmart, Target"

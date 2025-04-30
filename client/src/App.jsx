@@ -19,6 +19,7 @@ import Dashboard from "./components/UserPanel/Dashboard.jsx";
 import Categories from "./pages/AdminPanel/Categories.jsx";
 import Users from "./pages/AdminPanel/Users.jsx";
 import BrandList from "./pages/AdminPanel/BrandList.jsx";
+import SavedBrands from "./pages/SavedBrands.jsx";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setCredentials } from "./redux/slices/authSlice";
@@ -143,6 +144,7 @@ function App() {
               <Route path="/categories" element={<Categories />} />
               <Route path="/users" element={<Users />} />
               <Route path="/favorites" element={<FavoriteProduct updateFavouritesCount={setFavouritesCount} />} />
+              <Route path="/saved_brands" element={<SavedBrands />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/security" element={<ProfilePage />} />
             </Route>
