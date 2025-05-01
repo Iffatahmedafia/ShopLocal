@@ -85,6 +85,7 @@ class Brand(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="Brand")
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
+    about = models.TextField(blank=True, null=True)
     registration = models.CharField(max_length=255, unique=True, blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)

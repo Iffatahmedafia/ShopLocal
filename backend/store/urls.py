@@ -20,12 +20,13 @@ urlpatterns = [
     path('password/update/', PasswordUpdateView.as_view(), name='update_password'),
     path('brands/', BrandView.as_view(), name='get_brands'),
     path('brand/create/', BrandView.as_view(), name='brand_register'),
+    path('brands/update/<int:brand_id>/', BrandView.as_view(), name='brand_update'),
     path('brands/<int:brand_id>/status/', BrandView.as_view(), name='brand-status-update'),
     path('product/create/', ProductView.as_view(), name='add_product'),
     path('products/<int:product_id>/status/', ProductView.as_view(), name='product-status-update'),
     path('saved_brands/add/', SavedBrandView.as_view(), name='save_brand'),
     path('saved_brands/', SavedBrandView.as_view(), name='get_saved_brand'),
-     path('saved_brands/remove/<int:brand_id>/', SavedBrandView.as_view(), name='delete_saved_brand'),
+    path('saved_brands/remove/<int:brand_id>/', SavedBrandView.as_view(), name='delete_saved_brand'),
     
  
     # URL for adding to favorites (POST)

@@ -286,6 +286,27 @@ class BrandView(APIView):
         brand.save()
         return Response({"message": f"Brand {brand.status.lower()} successfully."}, status=status.HTTP_200_OK)
 
+    def patch(self, request, brand_id):
+        """
+        Partially update the brand details (not user details).
+        Only brand-specific fields can be updated.
+        """
+        print(brand_id)
+        print(request.data)
+        try:
+            brand = Brand.objects.get(id=brand_id)  # Get the brand by its ID
+        except Brand.DoesNotExist:
+            raise NotFound("Brand not found.")
+
+        # Ensure the user cannot be modified (only brand fields are allowed)
+        brand_serializer = BrandSerializer(brand, data=request.data, partial=True)
+
+        if brand_serializer.is_valid():
+            brand_serializer.save()  # Update brand fields
+            return Response({"message": "Brand details updated successfully!"}, status=status.HTTP_200_OK)
+        
+        return Response(brand_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Get all categories
 class CategoryListView(generics.ListAPIView):

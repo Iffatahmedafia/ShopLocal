@@ -76,10 +76,12 @@ class BrandSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, data):
-        if data.get('canadian_owned') is False and not data.get('origin_country'):
-            raise serializers.ValidationError("Origin country must be specified if not Canadian owned.")
-        if not data.get('disclaimer_agreed'):
-            raise serializers.ValidationError("You must agree to the disclaimer before registering.")
+        # Only run this validation during creation
+        if self.instance is None:  # This means we're creating, not updating
+            if data.get('canadian_owned') is False and not data.get('origin_country'):
+                raise serializers.ValidationError("Origin country must be specified if not Canadian owned.")
+            if not data.get('disclaimer_agreed'):
+                raise serializers.ValidationError("You must agree to the disclaimer before registering.")
         return data
        
 
@@ -89,31 +91,31 @@ class BrandSerializer(serializers.ModelSerializer):
         brand = Brand.objects.create(user=user, **validated_data)
         return brand
 
-    def update(self, instance, validated_data):
-        # Update user fields
-        user_data = validated_data.pop("user", None)
-        if user_data:
-            instance.user.name = user_data.get("name", instance.user.name)
-            instance.user.email = user_data.get("email", instance.user.email)
-            instance.user.save()
+    # def update(self, instance, validated_data):
+    #     # Update user fields
+    #     user_data = validated_data.pop("user", None)
+    #     if user_data:
+    #         instance.user.name = user_data.get("name", instance.user.name)
+    #         instance.user.email = user_data.get("email", instance.user.email)
+    #         instance.user.save()
 
-        # Update brand fields
-        instance.name = instance.user.name
-        instance.email = instance.user.email
-        # instance.registration = validated_data.get("registration", instance.registration)
-        instance.category = validated_data.get("category", instance.category)
-        instance.phone = validated_data.get("phone", instance.phone)
-        instance.store_address = validated_data.get("store_address", instance.store_address)
-        instance.supershop_store = validated_data.get("supershop_store", instance.supershop_store)
-        instance.website_link = validated_data.get("website_link", instance.website_link)
-        instance.province = validated_data.get("province", instance.province)
-        instance.canadian_owned = validated_data.get("canadian_owned", instance.canadian_owned)
-        instance.origin_country = validated_data.get("origin_country", instance.origin_country)
-        instance.manufactured_in = validated_data.get("manufactured_in", instance.manufactured_in)
-        instance.disclaimer_agreed = validated_data.get("disclaimer_agreed", instance.disclaimer_agreed)
+    #     # Update brand fields
+    #     instance.name = instance.user.name
+    #     instance.email = instance.user.email
+    #     # instance.registration = validated_data.get("registration", instance.registration)
+    #     instance.category = validated_data.get("category", instance.category)
+    #     instance.phone = validated_data.get("phone", instance.phone)
+    #     instance.store_address = validated_data.get("store_address", instance.store_address)
+    #     instance.supershop_store = validated_data.get("supershop_store", instance.supershop_store)
+    #     instance.website_link = validated_data.get("website_link", instance.website_link)
+    #     instance.province = validated_data.get("province", instance.province)
+    #     instance.canadian_owned = validated_data.get("canadian_owned", instance.canadian_owned)
+    #     instance.origin_country = validated_data.get("origin_country", instance.origin_country)
+    #     instance.manufactured_in = validated_data.get("manufactured_in", instance.manufactured_in)
+    #     instance.disclaimer_agreed = validated_data.get("disclaimer_agreed", instance.disclaimer_agreed)
 
-        instance.save()
-        return instance
+    #     instance.save()
+    #     return instance
 
 class UserUpdateSerializer(serializers.ModelSerializer): 
     class Meta: 

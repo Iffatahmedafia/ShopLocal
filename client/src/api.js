@@ -133,3 +133,33 @@ export const updateProductStatus = async (productId, status) => {
     throw error;
   }
 };
+
+export const updateBrand = async (brandId, formData) => {
+  try {
+    const response = await axios.patch(`${API_URL}/brands/update/${brandId}/`,
+      {
+        about: formData.about,
+        phone: formData.phone,
+        province: formData.province,
+        category: formData.category,
+        website_link: formData.onlineStore,
+        store_address: formData.offlineStore,
+        supershop_store: formData.supermarketStore,
+        canadian_owned: formData.canadian_owned,
+        origin_country: formData.origin_country,
+        manufactured_in: formData.manufactured_in,
+        disclaimer_agreed: formData.disclaimer_agreed
+      },
+      {
+        withCredentials: true, // Sends cookies
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Update brand failed:", error.response?.data || error.message);
+    throw error;
+  }
+};
