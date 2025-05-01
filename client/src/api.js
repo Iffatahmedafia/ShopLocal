@@ -147,8 +147,7 @@ export const updateBrand = async (brandId, formData) => {
         supershop_store: formData.supermarketStore,
         canadian_owned: formData.canadian_owned,
         origin_country: formData.origin_country,
-        manufactured_in: formData.manufactured_in,
-        disclaimer_agreed: formData.disclaimer_agreed
+        manufactured_in: formData.manufactured_in
       },
       {
         withCredentials: true, // Sends cookies
