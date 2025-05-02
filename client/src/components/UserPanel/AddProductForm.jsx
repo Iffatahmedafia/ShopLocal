@@ -1,25 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import axios from "axios";
+import debounce from "lodash/debounce";
+import { useSelector } from "react-redux";
 import { fetchCategories, fetchSubCategories, fetchSubSubCategories, fetchBrands } from "../../api";
 import DialogWrapper from "../DialogWrapper";
-import axios from "axios";
-import { useSelector } from "react-redux";
+
 
 const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
   const { user } = useSelector((state) => state.auth);
   console.log("User:", user)
   const [categories, setCategories] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [subcategories, setSubcategories] = useState([]);
   const [selectedsubcategory, setSelectedsubcategory] = useState("");
   const [subsubcategories, setSubSubcategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [image, setImage] = useState(null);
   const [currentStep, setCurrentStep] = useState(1); // Manage form steps
+  const [suggestedTags, setSuggestedTags] = useState([]);
+  const [tagsInput, setTagsInput] = useState('');
+  const [generatingTags, setGeneratingTags] = useState(false);
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
 
@@ -74,27 +81,69 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
     }
   };
 
+  const generateTagsFromAI = async (description) => {
+    try {
+      setGeneratingTags(true);
+      const res = await axios.post("http://localhost:8000/api/generate-tags/", { text: description });
+      const tags = res.data.tags;
+      setSuggestedTags(tags);
+      setTagsInput(tags.join(', '));
+    } catch (error) {
+      toast.error("Failed to generate tags");
+    } finally {
+      setGeneratingTags(false);
+    }
+  };
+
+  const debouncedGenerateTags = useCallback(
+    debounce((desc) => generateTagsFromAI(desc), 800),
+    []
+  );
+
+  const handleDescriptionChange = (e) => {
+    const value = e.target.value;
+    setValue("description", value);
+    // debouncedGenerateTags(value); 
+  };
+
+
+  const handleSubcategoryChange = (e) => {
+    const subcategoryId = parseInt(e.target.value);
+    setSelectedsubcategory(subcategoryId);
+    setValue("subcategory", subcategoryId);
+  
+    const selectedSub = subcategories.find(sub => sub.id === subcategoryId);
+    if (selectedSub?.category?.id) {
+      setSelectedCategoryId(selectedSub.category.id);
+      setValue("category", selectedSub.category.id); // auto-fill category field
+    }
+  };
+
+  
   const handleSubmitForm = async (data) => {
     // Form submission logic here
     console.log(data);
+    const tagList = data.tags.split(',').map(t => t.trim()).filter(Boolean);
     try {
       const response = await axios.post("http://localhost:8000/api/product/create/", {
           name: data.name,
           description: data.description,
           brand_id: data.brand,
           price: data.price,
-          subcategory_id: parseInt(data.category),
-          sub_subcategory_id: parseInt(data.subcategory),
+          subcategory_id: parseInt(data.subcategory),
+          sub_subcategory_id: parseInt(data.subsubcategory),
+          category: parseInt(data.category),
           supershop_store: data.store,
           online_store: data.website,
+          tags: tagList,
         },{ withCredentials: true }
       )
 
       console.log(response.data);
-      toast.success("Product registered successfully!");
+      toast.success("Product addded successfully!");
     } catch (error) {
       console.error("Error:", error);
-      toast.error(error.response?.data?.error || "Something went wrong");
+      toast.error(error.response?.data?.error || "Error saving product.");
   }
   };
 
@@ -111,7 +160,7 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
     <DialogWrapper open={open} setOpen={setOpen} title={title}>
       <form
         onSubmit={handleSubmit(handleSubmitForm)}
-        className="space-y-4 max-h-[80vh] overflow-hidden"
+        className="space-y-4 max-h-[80vh] overflow-y-auto"
       >
         {/* Step 1 - Product Image */}
         {currentStep === 1 && (
@@ -143,7 +192,7 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
         {/* Step 2 - Product Name and Description */}
         {currentStep === 2 && (
           <div>
-            <div className="mb-2">
+            <div className="mb-4">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                 Product Name
               </label>
@@ -159,8 +208,8 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
                 <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
               )}
             </div>
-
-            <div className="mb-2">
+            
+            <div className="mb-4">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                 Product Description
               </label>
@@ -170,12 +219,33 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
                 name="description"
                 className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
                 placeholder="Enter Product Description"
-                {...register("description")}
+                {...register("description",{ required: "Description is required" })}
+                onChange={handleDescriptionChange}
               />
               {errors.description && (
                 <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
               )}
             </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 dark:text-gray-300 font-semibold">
+                Tags (comma separated)
+              </label>
+              <input
+                type="text"
+                id="tags"
+                name="tags"
+                // value={tagsInput}
+                // onChange={(e) => setTagsInput(e.target.value)}
+                className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
+                placeholder="e.g. bluetooth, wireless, fitness"
+                {...register("tags", { required: "Tags is required" })}
+              />
+               {errors.tags && (
+                <p className="text-red-500 text-sm mt-1">{errors.tags.message}</p>
+              )}
+              {/* {generatingTags && <p className="text-sm text-gray-500 mt-1">Suggesting tags...</p>} */}
+            </div>
+
 
             <div className="flex justify-between gap-2">
               <button
@@ -188,7 +258,7 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
               <button
                 type="button"
                 onClick={handleNextStep}
-                className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition"
+                className="w-full bg-red-700 hover:bg-red-800 text-white py-2 rounded-lg font-semibold transition"
               >
                 Next
               </button>
@@ -199,7 +269,7 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
         {/* Step 3 - Product Brand and Price */}
         {currentStep === 3 && (
           <div>
-            <div className="mb-2">
+            <div className="mb-4">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                 Select Brand
               </label>
@@ -237,7 +307,7 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
               )}
             </div> */}
 
-            <div className="mb-2">
+            <div className="mb-4">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                 Product Price
               </label>
@@ -265,7 +335,7 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
               <button
                 type="button"
                 onClick={handleNextStep}
-                className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition"
+                className="w-full bg-red-700 hover:bg-red-800 text-white py-2 rounded-lg font-semibold transition"
               >
                 Next
               </button>
@@ -276,43 +346,26 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
         {/* Step 4 - Category, Store, and Online Link */}
         {currentStep === 4 && (
           <div>
-            <div className="mb-2">
+            <input
+                type="hidden"
+                id="category"
+                {...register("category", { required: "Category is required" })}
+              />
+            <div className="mb-4">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                 Select Product Category
-              </label>
-              <select
-                id="category"
-                name="category"
-                className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
-                {...register("category", { required: "Category is required",
-                  onChange: (e) => setSelectedsubcategory(e.target.value)
-                })}
-              >
-                <option value="">Select a category</option>
-                {subcategories.map((category, index) => (
-                  <option key={index} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-              {errors.category && (
-                <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>
-              )}
-            </div>
-            <div className="mb-2">
-              <label className="block text-gray-700 dark:text-gray-300 font-semibold">
-                Select Product SubCategory
               </label>
               <select
                 id="subcategory"
                 name="subcategory"
                 className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
-                {...register("subcategory", { required: "SubCategory is required" })}
+                {...register("subcategory", { required: "Category is required"
+                 
+                })}
+                onChange={handleSubcategoryChange}
               >
-                <option value="">Select a subcategory</option>
-                {subsubcategories
-                .filter((subSub) => subSub.subcategory.id === parseInt(selectedsubcategory))
-                .map((subcategory, index) => (
+                <option value="">Select a category</option>
+                {subcategories.map((subcategory, index) => (
                   <option key={index} value={subcategory.id}>
                     {subcategory.name}
                   </option>
@@ -322,17 +375,40 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
                 <p className="text-red-500 text-sm mt-1">{errors.subcategory.message}</p>
               )}
             </div>
-
-            <div className="mb-2">
+            <div className="mb-4">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
-                Product Retail Store/SuperMarket (if any)
+                Select Product SubCategory
+              </label>
+              <select
+                id="subsubcategory"
+                name="subsubcategory"
+                className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
+                {...register("subsubcategory", { required: "SubCategory is required" })}
+              >
+                <option value="">Select a subcategory</option>
+                {subsubcategories
+                .filter((subSub) => subSub.subcategory.id === parseInt(selectedsubcategory))
+                .map((subsubcategory, index) => (
+                  <option key={index} value={subsubcategory.id}>
+                    {subsubcategory.name}
+                  </option>
+                ))}
+              </select>
+              {errors.subsubcategory && (
+                <p className="text-red-500 text-sm mt-1">{errors.subsubcategory.message}</p>
+              )}
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-700 dark:text-gray-300 font-semibold">
+                Product Retail Store/SuperMarket Name(s) (if any)
               </label>
               <input
                 type="text"
                 id="store"
                 name="store"
                 className="w-full mt-1 p-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring focus:ring-red-500"
-                placeholder="Enter Product Retail Store/SuperMarket Name"
+                placeholder="Dollarama, Food Basics"
                 {...register("store")}
               />
               {errors.store && (
@@ -340,7 +416,7 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
               )}
             </div>
 
-            <div className="mb-2">
+            <div className="mb-4">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                 Product Online Store Link (if any)
               </label>

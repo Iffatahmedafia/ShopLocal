@@ -10,13 +10,13 @@ const DialogWrapper = ({ open, setOpen, title, children }) => {
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
-          enterFrom="opacity-0 backdrop-blur-0"
-          enterTo="opacity-100 backdrop-blur-sm"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
           leave="ease-in duration-200"
-          leaveFrom="opacity-100 backdrop-blur-sm"
-          leaveTo="opacity-0 backdrop-blur-0"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 transition-all" />
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" />
         </Transition.Child>
 
         {/* Modal Panel */}
@@ -25,28 +25,30 @@ const DialogWrapper = ({ open, setOpen, title, children }) => {
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95 translate-y-4"
-              enterTo="opacity-100 scale-100 translate-y-0"
+              enterFrom="opacity-0 scale-90"
+              enterTo="opacity-100 scale-100"
               leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100 translate-y-0"
-              leaveTo="opacity-0 scale-95 translate-y-4"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-90"
             >
-              <Dialog.Panel className="w-full max-w-lg transform overflow-hidden bg-white dark:bg-gray-900 p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-white dark:bg-gray-900 p-6 text-left shadow-2xl transition-all">
                 {/* Header */}
-                <div className="flex justify-center items-center mb-4 relative">
-                  <Dialog.Title className="absolute left-1/2 transform -translate-x-1/2 text-2xl font-semibold text-gray-800 dark:text-white">
+                <div className="flex items-center mb-4">
+                  <h2 className="text-xl font-semibold text-gray-800 dark:text-white flex-grow text-center">
                     {title}
-                  </Dialog.Title>
+                  </h2>
                   <button
                     onClick={() => setOpen(false)}
-                    className="ml-auto text-gray-500 hover:text-red-500"
+                    className="text-gray-500 hover:text-red-500"
                   >
                     <X size={20} />
                   </button>
                 </div>
 
-                {/* Form or children */}
-                {children}
+                {/* Body */}
+                <div className="mt-2">
+                  {children}
+                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>

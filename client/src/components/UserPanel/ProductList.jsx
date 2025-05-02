@@ -136,7 +136,7 @@ const handleAdminAction = async (product, newStatus) => {
         ):(
         <p className="text-center text-gray-500">No brands yet.</p>
       )}
-        <AddProductForm open={isModalOpen} setOpen={setIsModalOpen} title="Add New Product" onSubmit={handleAdd} />
+        <AddProductForm open={isModalOpen} setOpen={setIsModalOpen} title="Add Product" onSubmit={handleAdd} />
         
        
      

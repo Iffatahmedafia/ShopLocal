@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from huggingface_hub import InferenceClient
 from langchain_core.documents import Document
 # from langchain_community.llms import HuggingFaceEndpoint
 from langchain_huggingface import HuggingFaceEndpoint
@@ -13,10 +14,27 @@ load_dotenv()
 hf_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
 
 llm = HuggingFaceEndpoint(
-    repo_id="mistralai/Mistral-7B-Instruct-v0.1",
-    temperature=0.5,
+    repo_id="fabiochiu/t5-base-tag-generation",
+    task="text2text-generation",
     huggingfacehub_api_token=hf_token
 )
+
+client = InferenceClient(
+    model="fabiochiu/t5-base-tag-generation",
+    token=hf_token
+)
+
+def generate_tags_from_description(description, max_tags=5):
+    prompt = description.strip()
+    try:
+        output = client.text_generation(prompt, max_new_tokens=50)
+        tags = [tag.strip().lower() for tag in output.split(",") if tag.strip()]
+        return tags[:max_tags]
+    except Exception as e:
+        print("Error generating tags:", e)
+        return []
+
+
 
 def get_product_docs():
     products = Product.objects.all()
@@ -52,3 +70,14 @@ def generate_recommendations(user_keywords):
             })
 
     return structured_output
+
+# def generate_tags_from_description(description, max_tags=5):
+#     prompt = description.strip()
+#     try:
+#         response = llm.invoke(prompt)
+#         tag_string = response.strip().lower()
+#         tags = [tag.strip() for tag in tag_string.split(",") if tag.strip()]
+#         return tags[:max_tags]
+#     except Exception as e:
+#         print("Error generating tags:", e)
+#         return []

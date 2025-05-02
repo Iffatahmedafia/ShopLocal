@@ -17,7 +17,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from django.core.mail import send_mail
 from rest_framework import status
 from datetime import datetime, timedelta
-from .llm_mistral import generate_recommendations
+from .llm_mistral import generate_recommendations, generate_tags_from_description
 
 
 
@@ -343,6 +343,10 @@ class ProductView(APIView):
         # Add the user explicitly to the request data
         request.data['user'] = user.id
         print(request.data)
+
+        # Get tags as list
+        if isinstance(request.data.get("tags"), str):
+            request.data["tags"] = [tag.strip() for tag in request.data["tags"].split(",") if tag.strip()]
        
         # Serialize the incoming data and validate it
        
@@ -351,7 +355,32 @@ class ProductView(APIView):
             product = serializer.save()
             return Response({"message": "Product added successfully!"}, status=status.HTTP_201_CREATED)
         else:
-            print(serializer.errors)  # Log the errors to the console
+            print("Validation Errors:",serializer.errors)  # Log the errors to the console
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, product_id):
+        user = checkAuth(request)
+        print("User ID:", user.id)
+
+        try:
+            product = Product.objects.get(id=product_id, user=user)
+        except Product.DoesNotExist:
+            return Response({"message": "Product not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Normalize tags if passed as comma-separated string
+        tags = request.data.get("tags")
+        if isinstance(tags, str):
+            request.data["tags"] = [tag.strip() for tag in tags.split(",") if tag.strip()]
+
+        # Explicitly preserve the user on update (in case it's not in data)
+        request.data["user"] = user.id
+
+        serializer = ProductSerializer(product, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Product updated successfully!"}, status=status.HTTP_200_OK)
+        else:
+            print("Update errors:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # Approve/ Reject Products(admin only)
@@ -534,3 +563,12 @@ class LLMRecommendationView(APIView):
             return Response({"recommendations": results})
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class GenerateTagsFromDescriptionView(APIView):
+    def post(self, request):
+        desc = request.data.get("text", "")
+        if not desc:
+            return Response({"error": "No description provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        tags = generate_tags_from_description(desc)
+        return Response({"tags": tags})

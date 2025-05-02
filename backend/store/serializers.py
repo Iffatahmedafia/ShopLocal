@@ -174,18 +174,20 @@ class ProductSerializer(serializers.ModelSerializer):
     sub_subcategory_id = serializers.PrimaryKeyRelatedField(
         queryset=SubSubcategory.objects.all(), source='sub_subcategory', write_only=True
     )
+    category = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(), required=False
+    )
 
     # For read
     subcategory = SubCategorySerializer(read_only=True)  # Show full subcategory details
     sub_subcategory = SubSubCategorySerializer(read_only=True)
-    category = serializers.SerializerMethodField()  # Get category directly
+    computed_category = serializers.SerializerMethodField()  # Get category directly
 
     class Meta:
         model = Product
         fields = '__all__'
 
-    def get_category(self, obj):
-        # Try sub_subcategory > subcategory > None
+    def get_computed_category(self, obj):
         if obj.sub_subcategory and obj.sub_subcategory.subcategory and obj.sub_subcategory.subcategory.category:
             return {
                 "id": obj.sub_subcategory.subcategory.category.id,
@@ -197,6 +199,25 @@ class ProductSerializer(serializers.ModelSerializer):
                 "name": obj.subcategory.category.name
             }
         return None
+
+    def create(self, validated_data):
+        # Auto-fill category from subcategory if not provided
+        if not validated_data.get('category') and validated_data.get('subcategory'):
+            validated_data['category'] = validated_data['subcategory'].category
+
+        # Set tags from raw input (if present)
+        tags = self.initial_data.get('tags')
+        if tags and isinstance(tags, list):
+            validated_data['tags'] = tags
+
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        tags = self.initial_data.get('tags')
+        if tags and isinstance(tags, list):
+            validated_data['tags'] = tags
+
+        return super().update(instance, validated_data)
 
 class FavoriteProductSerializer(serializers.ModelSerializer):
 
