@@ -26,7 +26,10 @@ const ProductList = () => {
   console.log("User:", user)
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [type, setType] = useState("");
   const [products, setProducts] = useState([])
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedTab, setSelectedTab] = useState("Pending");
 
 
@@ -83,14 +86,33 @@ const handleAdminAction = async (product, newStatus) => {
   };
     
 
-  const handleAdd = (product) => {
-    console.log("Product Added:", product);
+  const handleAddOrEditProduct = (product) => {
+    if (product.id) {
+      // If editing, update product in state
+      setProducts((prevProducts) => prevProducts.map((p) => (p.id === product.id ? product : p)));
+    } else {
+      // If adding, append new product
+      setProducts((prevProducts) => [...prevProducts, product]);
+    }
+  };
+
+
+  const handleAdd = () => {
+    console.log("Product Added");
+    setIsModalOpen(true)
+    setTitle("Add Product")
+    setType("add")
+    setSelectedProduct(null)
     // axios.post("/api/products", productData)...
   };
 
   // Edit Category
   const handleEdit = (product) => {
-    console.log("Editing Category:", product);
+    console.log("Editing Product:", product);
+    setIsModalOpen(true)
+    setTitle("Edit Product")
+    setType("edit")
+    setSelectedProduct(product)
   
   };
 
@@ -108,7 +130,7 @@ const handleAdminAction = async (product, newStatus) => {
         {/* Add Task Button */}
         <div className="flex justify-center md:justify-end p-3 mt-4">
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleAdd}
             className="py-3 px-6 text-white bg-red-700 hover:to-red-800 rounded-lg transition-all"
           >
             + Add Product
@@ -126,7 +148,7 @@ const handleAdminAction = async (product, newStatus) => {
         />
           <Table
               columns={columns}
-              data={filteredProduct.map((product) => ({ id: product.id, image: product.image, name: product.name, brand: product.brand, description: product.description, price: product.price, retail_store: product.retail_store, online_store: product.online_store, status: product.status }))}
+              data={filteredProduct.map((product) => ({ id: product.id, image: product.image, name: product.name, brand: product.brand_id, description: product.description, price: product.price, category:product.category, subcategory: product.subcategory, sub_subcategory:product.sub_subcategory, retail_store: product.retail_store, supershop_store: product.supershop_store, online_store: product.online_store, tags: (product.tags || []).join(', '), status: product.status }))}
               onEdit={handleEdit}
               onDelete={handleDelete}
               isAdmin = {user?.is_admin}
@@ -136,7 +158,7 @@ const handleAdminAction = async (product, newStatus) => {
         ):(
         <p className="text-center text-gray-500">No brands yet.</p>
       )}
-        <AddProductForm open={isModalOpen} setOpen={setIsModalOpen} title="Add Product" onSubmit={handleAdd} />
+        <AddProductForm open={isModalOpen} setOpen={setIsModalOpen} title={title} type={type} productData={selectedProduct} onSubmit={handleAddOrEditProduct} />
         
        
      

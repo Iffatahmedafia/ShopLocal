@@ -8,7 +8,7 @@ import { fetchCategories, fetchSubCategories, fetchSubSubCategories, fetchBrands
 import DialogWrapper from "../DialogWrapper";
 
 
-const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
+const AddProductForm = ({ open, setOpen, title, type, productData, onSubmit }) => {
   const { user } = useSelector((state) => state.auth);
   console.log("User:", user)
   const [categories, setCategories] = useState([]);
@@ -27,8 +27,42 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm();
+
+  useEffect(() => {
+    if (type === "edit" && open && productData) {
+      console.log("Edit",productData)
+      reset({
+        name: productData.name || '',
+        description: productData.description || '',
+        tags: productData.tags || '',
+        price: productData.price || '',
+        brand: productData.brand || '',
+        subcategory: productData.subcategory.id || '',
+        subsubcategory: productData.sub_subcategory.id || '',
+        category: productData.category || '',
+        store: productData.supershop_store || '',
+        website: productData.online_store || '',
+      });
+      setImage(productData.image_url || null); // If you store image preview
+      setSelectedsubcategory(productData.subcategory.id || '');
+      setSelectedCategoryId(productData.category || '');
+  }
+}, [type, open, productData, reset]);
+
+  useEffect(() => {
+    if (!open) {
+      reset();               // Clear form data
+      setImage(null);        // Reset image preview
+      setCurrentStep(1);     // Reset to step 1
+      setSuggestedTags([]);  // Clear any tag suggestions
+      setTagsInput('');
+      setSelectedsubcategory('');
+      setSelectedCategoryId('');
+    }
+  }, [open, reset]);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -122,25 +156,42 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
   
   const handleSubmitForm = async (data) => {
     // Form submission logic here
-    console.log(data);
+    console.log("Submitted Product Data", data);
     const tagList = data.tags.split(',').map(t => t.trim()).filter(Boolean);
+    const FormData = { 
+      ...data,
+      supershop_store: data.store,
+      online_store: data.website,
+      tags: tagList };
+      
     try {
-      const response = await axios.post("http://localhost:8000/api/product/create/", {
-          name: data.name,
-          description: data.description,
-          brand_id: data.brand,
-          price: data.price,
-          subcategory_id: parseInt(data.subcategory),
-          sub_subcategory_id: parseInt(data.subsubcategory),
-          category: parseInt(data.category),
-          supershop_store: data.store,
-          online_store: data.website,
-          tags: tagList,
-        },{ withCredentials: true }
-      )
+      if (productData) {
+        // If task exists, make PUT request to update it
+        const response = await axios.patch(`http://localhost:8000/api/product/update/${productData.id}`,FormData, 
+          { withCredentials: true }
+        );
+        console.log(response.data);
+        toast.success("Product updated successfully!");
+      }
+      else{
+        const response = await axios.post("http://localhost:8000/api/product/create/", {
+            name: data.name,
+            description: data.description,
+            brand_id: data.brand,
+            price: data.price,
+            subcategory_id: parseInt(data.subcategory),
+            sub_subcategory_id: parseInt(data.subsubcategory),
+            category: parseInt(data.category),
+            supershop_store: data.store,
+            online_store: data.website,
+            tags: tagList,
+          },{ withCredentials: true }
+        )
 
-      console.log(response.data);
-      toast.success("Product addded successfully!");
+        console.log(response.data);
+        toast.success("Product addded successfully!");
+    }
+      onSubmit(FormData)
     } catch (error) {
       console.error("Error:", error);
       toast.error(error.response?.data?.error || "Error saving product.");
@@ -269,6 +320,7 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
         {/* Step 3 - Product Brand and Price */}
         {currentStep === 3 && (
           <div>
+            {type === "add" && (
             <div className="mb-4">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                 Select Brand
@@ -290,6 +342,7 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
                 <p className="text-red-500 text-sm mt-1">{errors.brand.message}</p>
               )}
             </div>
+            )}
             {/* <div className="mb-2">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                 Brand Name
@@ -351,6 +404,7 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
                 id="category"
                 {...register("category", { required: "Category is required" })}
               />
+            {type === "add" && (
             <div className="mb-4">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                 Select Product Category
@@ -375,6 +429,8 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
                 <p className="text-red-500 text-sm mt-1">{errors.subcategory.message}</p>
               )}
             </div>
+            )}
+            {type === "add" && (
             <div className="mb-4">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                 Select Product SubCategory
@@ -398,7 +454,7 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
                 <p className="text-red-500 text-sm mt-1">{errors.subsubcategory.message}</p>
               )}
             </div>
-
+            )}
             <div className="mb-4">
               <label className="block text-gray-700 dark:text-gray-300 font-semibold">
                 Product Retail Store/SuperMarket Name(s) (if any)
@@ -446,7 +502,7 @@ const AddProductForm = ({ open, setOpen, title, onSubmit }) => {
               type="submit"
               className="w-full py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg font-medium"
             >
-              Add Product
+              {type === "add" ? "Add Product" : "Save Changes"}
             </button>
             </div>
           </div>
