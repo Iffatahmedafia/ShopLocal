@@ -407,6 +407,25 @@ class ProductView(APIView):
         product.save()
         return Response({"message": f"Product {product.status.lower()} successfully."}, status=status.HTTP_200_OK)
 
+    # Trash/Restore product
+    def patch(self, request, product_id):
+        user_data = checkAuth(request)
+        
+        if not user_data:
+            return Response({"message": "Unauthorized."}, status=status.HTTP_403_FORBIDDEN)
+        print("User Data", user_data)
+        print("User Id: ", user_data.id)
+
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({"message": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        product.is_trashed = not product.is_trashed
+        product.save()
+        return Response({"message": f"Product trashed successfully."}, status=status.HTTP_200_OK)
+
+
 
 # Add Products to favourites
 class FavoriteProductView(APIView):

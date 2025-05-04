@@ -20,6 +20,7 @@ import Categories from "./pages/AdminPanel/Categories.jsx";
 import Users from "./pages/AdminPanel/Users.jsx";
 import BrandList from "./pages/AdminPanel/BrandList.jsx";
 import SavedBrands from "./pages/SavedBrands.jsx";
+import Trash from "./pages/Shared/Trash.jsx";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setCredentials } from "./redux/slices/authSlice";
@@ -139,6 +140,7 @@ function App() {
           <Route element={<ProtectedRoute favouritesCount={favouritesCount} />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/productlist" element={<ProductList />} />
+              <Route path="/trash" element={<Trash />} />
               <Route path="/brand_detail" element={<BrandDetail />} />
               <Route path="/brandlist" element={<BrandList />} />
               <Route path="/categories" element={<Categories />} />

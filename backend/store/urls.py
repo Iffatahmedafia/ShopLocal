@@ -24,6 +24,7 @@ urlpatterns = [
     path('brands/<int:brand_id>/status/', BrandView.as_view(), name='brand-status-update'),
     path('product/create/', ProductView.as_view(), name='add_product'),
     path('product/update/<int:product_id>', ProductView.as_view(), name='update_product'),
+    path('product/trash/<int:product_id>/', ProductView.as_view(), name='trash_product'),
     path('products/<int:product_id>/status/', ProductView.as_view(), name='product-status-update'),
     path('saved_brands/add/', SavedBrandView.as_view(), name='save_brand'),
     path('saved_brands/', SavedBrandView.as_view(), name='get_saved_brand'),

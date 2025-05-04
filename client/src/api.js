@@ -134,6 +134,18 @@ export const updateProductStatus = async (productId, status) => {
   }
 };
 
+export const deleteProduct = async (productId) => {
+  try {
+    const response = await axios.patch(`${API_URL}/product/trash/${productId}/`,{},
+      { withCredentials: true }
+    );
+    return response
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw error;
+  }
+};
+
 export const updateBrand = async (brandId, formData) => {
   try {
     const response = await axios.patch(`${API_URL}/brands/update/${brandId}/`,

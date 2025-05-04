@@ -79,7 +79,7 @@ const Table = ({
 return (
   <div className="w-full max-w-4xl mx-auto">
     {/* Search */}
-    <div className="flex justify-start mb-4 px-2">
+    <div className="flex justify-end mb-4 px-2">
       <div className="relative w-56">
         <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
           <FiSearch />
