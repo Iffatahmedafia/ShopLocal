@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { toast } from 'react-toastify';
-import Table from '../Table';
+import { FaClock, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+
 import { fetchProducts, updateProductStatus, deleteProduct } from "../../api";
-import DialogWrapper from "../DialogWrapper";
+import Table from '../Table';
+import Tabs from "../Tabs";
 import AddProductForm from "./AddProductForm";
 import DeleteModal from "../DeleteModal";
 
-import Tabs from "../Tabs";
 
 // / Define table columns
 const columns = [
@@ -55,9 +56,9 @@ const ProductList = () => {
     }, [user]);
 
     const tabOptions = [
-      { value: "Pending", label: "Pending" },
-      { value: "Approved", label: "Approved" },
-      { value: "Declined", label: "Rejected" },
+      { value: "Pending", label: "Pending", icon: <FaClock size={18} /> },
+      { value: "Approved", label: "Approved", icon: <FaCheckCircle size={18} /> },
+      { value: "Rejected", label: "Rejected", icon: <FaTimesCircle size={18} />  },
     ];
 
     const filteredProduct = products.filter((product) => {
@@ -157,17 +158,15 @@ const handleAdminAction = async (product, newStatus) => {
 
   return (
     <div className="p-2">
-        {/* Add Task Button */}
-        <div className="flex justify-center md:justify-end p-3 mt-4">
+        {/* Add Product Button */}
+        <div className="flex justify-between items-center p-3 mt-4 md:px-12">
+          <h2 className="text-2xl font-bold">Products</h2>
           <button
             onClick={handleAdd}
-            className="py-3 px-6 text-white bg-red-700 hover:to-red-800 rounded-lg transition-all"
+            className="py-2 px-4 text-white bg-red-700 hover:bg-red-800 rounded-lg transition-all"
           >
             + Add Product
           </button>
-        </div>
-        <div className="md:ml-12">
-          <h2 className="text-2xl font-bold text-center md:text-start mb-4">Products</h2>
         </div>
         {products.length> 0 ? (
         <div className="">

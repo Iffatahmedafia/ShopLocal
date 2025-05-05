@@ -97,16 +97,16 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen p-2">
-        {/* Add Task Button */}
-        <div className="flex justify-center md:justify-end p-3">
+        {/* Add Categories Button */}
+        <div className="flex justify-between items-center p-3 mt-4 md:px-12">
+          <h2 className="text-2xl font-bold">Categories</h2>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="py-3 px-6 text-white bg-red-700 hover:to-red-800 rounded-lg transition-all"
+            className="py-2 px-4 text-white bg-red-700 hover:bg-red-800 rounded-lg transition-all"
           >
-            + Add Category
+            + Add Categories
           </button>
         </div>
-        <h2 className="text-2xl font-bold text-center md:text-start mb-4">Categories</h2>
        
         <div className="">
         <Tabs

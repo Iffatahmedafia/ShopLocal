@@ -95,6 +95,13 @@ const BrandCard = ({ brand, category, type }) => {
             <h2 className="text-2xl font-semibold text-center text-red-700 dark:text-white mb-2">
             {brand.name}
             </h2> 
+            {brand.canadian_owned && (
+            <div className="text-center my-2">
+                <span className="inline-block bg-red-100 text-red-800 dark:bg-red-800 dark:text-white px-2.5 py-0.5 rounded-full text-sm font-medium">
+                    🇨🇦 Canadian Owned
+                </span>
+            </div>
+            )}
             <p className="text-gray-600 dark:text-gray-300 text-sm text-center mb-1">
             Category:{" "}
             <span className="font-medium">{category}</span>
@@ -143,7 +150,7 @@ const BrandCard = ({ brand, category, type }) => {
                 onClick={() => handleSave(brand.id)}
                 className="mt-4 w-full flex items-center justify-center gap-2 bg-red-700 hover:bg-red-800 text-white py-2 rounded-lg transition-all duration-300 font-semibold shadow-md hover:shadow-lg active:scale-95"
                 >
-                <FiHeart size={18} className="transition-transform duration-300 group-hover:scale-110" /> Save
+                     Save
                 </button>
                 ):(
                 <button

@@ -45,15 +45,13 @@ function MultiSelect({ options, selected, setSelected, label }) {
           >
             <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-700 py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none">
               {options.map((option, index) => (
-                <Listbox.Option
-                  key={index}
-                  value={option}
-                  as={Fragment}
-                >
+                <Listbox.Option key={index} value={option} as={Fragment}>
                   {({ active, selected: isSelected }) => (
                     <li
                       className={`relative cursor-default select-none py-2 pl-10 pr-4 flex items-center gap-2 ${
-                        active ? "bg-red-100 dark:bg-red-700 text-black dark:text-white" : "text-gray-900 dark:text-white"
+                        active
+                          ? "bg-red-100 dark:bg-red-700 text-black dark:text-white"
+                          : "text-gray-900 dark:text-white"
                       }`}
                       onClick={() => toggleSelection(option)}
                     >
@@ -63,7 +61,11 @@ function MultiSelect({ options, selected, setSelected, label }) {
                         readOnly
                         className="h-4 w-4 accent-red-700"
                       />
-                      <span className={`block truncate ${isSelected ? "font-medium" : "font-normal"}`}>
+                      <span
+                        className={`block truncate ${
+                          isSelected ? "font-medium" : "font-normal"
+                        }`}
+                      >
                         {option}
                       </span>
                     </li>
@@ -84,12 +86,14 @@ const Brand = () => {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedProvinces, setSelectedProvinces] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [isCanadianOwned, setIsCanadianOwned] = useState(false);
 
   const { query } = useSearch();
 
   useEffect(() => {
     const getBrands = async () => {
       const data = await fetchBrands();
+      console.log("Fetched Brands", data)
       setBrands(data);
     };
     getBrands();
@@ -103,19 +107,45 @@ const Brand = () => {
     getCategories();
   }, []);
 
-  const uniqueBrandNames = [...new Set(brands.map((b) => b.name))];
-  const uniqueCategoryNames = [...new Set(categories.map((c) => c.name))];
+  // Filter brand dropdown based on Canadian Owned if checked
+  const filteredBrandList = brands.filter((brand) =>
+    isCanadianOwned ? brand.canadian_owned : true
+  );
+
+  const uniqueBrandNames = [
+    ...new Set(filteredBrandList.map((b) => b.name)),
+  ];
+  const uniqueCategoryNames = [
+    ...new Set(categories.map((c) => c.name)),
+  ];
 
   const filteredBrands = brands.filter((brand) => {
     const brandCategoryName =
       categories.find((cat) => cat.id === brand.category)?.name || "";
 
+    const brandMatch =
+      selectedBrands.length === 0 || selectedBrands.includes(brand.name);
+
+    const provinceMatch =
+      selectedProvinces.length === 0 ||
+      selectedProvinces.includes(brand.province);
+
+    const categoryMatch =
+      selectedCategories.length === 0 ||
+      selectedCategories.includes(brandCategoryName);
+
+    const canadianOwnedMatch = !isCanadianOwned || brand.canadian_owned;
+
+    const searchMatch =
+      brand.name.toLowerCase().includes(query.toLowerCase()) ||
+      brandCategoryName.toLowerCase().includes(query.toLowerCase());
+
     return (
-      (selectedBrands.length === 0 || selectedBrands.includes(brand.name)) &&
-      (selectedProvinces.length === 0 || selectedProvinces.includes(brand.province)) &&
-      (selectedCategories.length === 0 || selectedCategories.includes(brandCategoryName)) &&
-      (brand.name.toLowerCase().includes(query.toLowerCase()) ||
-        brandCategoryName.toLowerCase().includes(query.toLowerCase()))
+      brandMatch &&
+      provinceMatch &&
+      categoryMatch &&
+      canadianOwnedMatch &&
+      searchMatch
     );
   });
 
@@ -125,6 +155,18 @@ const Brand = () => {
         {/* Sidebar */}
         <aside className="w-full md:w-1/4 bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md">
           <h3 className="text-xl font-bold mb-4">Filters</h3>
+
+          <div className="mb-4">
+            <label className="inline-flex items-center">
+              <input
+                type="checkbox"
+                checked={isCanadianOwned}
+                onChange={(e) => setIsCanadianOwned(e.target.checked)}
+                className="h-4 w-4 text-red-700 border-gray-300 rounded focus:ring-red-500"
+              />
+              <span className="ml-2 font-semibold">Canadian Owned</span>
+            </label>
+          </div>
 
           <MultiSelect
             options={uniqueBrandNames}
@@ -150,6 +192,7 @@ const Brand = () => {
               setSelectedBrands([]);
               setSelectedProvinces([]);
               setSelectedCategories([]);
+              setIsCanadianOwned(false);
             }}
             className="w-full mt-4 bg-red-700 hover:bg-red-800 text-white py-2 rounded-lg"
           >
@@ -165,15 +208,23 @@ const Brand = () => {
               <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
                 No brands match your filters.
               </h3>
-              <p className="text-gray-500 dark:text-gray-500 mt-2">Try adjusting your filters or search keywords.</p>
+              <p className="text-gray-500 dark:text-gray-500 mt-2">
+                Try adjusting your filters or search keywords.
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
               {filteredBrands.map((brand) => {
                 const categoryName =
-                  categories.find((cat) => cat.id === brand.category)?.name || "N/A";
+                  categories.find((cat) => cat.id === brand.category)?.name ||
+                  "N/A";
                 return (
-                  <BrandCard key={brand.id} brand={brand} category={categoryName} type="add" />   
+                  <BrandCard
+                    key={brand.id}
+                    brand={brand}
+                    category={categoryName}
+                    type="add"
+                  />
                 );
               })}
             </div>

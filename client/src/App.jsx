@@ -15,7 +15,7 @@ import Sidebar from "./components/Sidebar.jsx";
 import MobileSidebar from "./components/MobileSidebar.jsx";
 import ProductList from "./components/UserPanel/ProductList.jsx";
 import BrandDetail from "./components/UserPanel/BrandDetail.jsx";
-import Dashboard from "./components/UserPanel/Dashboard.jsx";
+import Dashboard from "./pages/Shared/Dashboard.jsx";
 import Categories from "./pages/AdminPanel/Categories.jsx";
 import Users from "./pages/AdminPanel/Users.jsx";
 import BrandList from "./pages/AdminPanel/BrandList.jsx";
