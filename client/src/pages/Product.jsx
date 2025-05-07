@@ -6,6 +6,8 @@ import { fetchProducts, fetchBrands, fetchCategories } from "../api";
 import { logInteraction } from "../utils/logInteraction.js";
 import ProductCard from "../components/ProductCard";
 import { useSearch } from '../SearchContext.jsx';
+import axios from "axios";
+
 
 
 
@@ -82,30 +84,38 @@ const Product = ({ updateFavouritesCount }) => {
 
   useEffect(() => {
     const fetchRecommendations = async () => {
-      if (!user) return;
-      // Mock data (remove when backend is ready)
-    const mockData = [
-      {
-        id: 999,
-        name: "Test Apple Watch Ultra",
-        image: "https://via.placeholder.com/200",
-        price: "799.00",
-        category: "Electronics",
-        tags: ["smartwatch", "apple"]
-      },
-      {
-        id: 998,
-        name: "Mock Samsung Galaxy Buds",
-        image: "https://via.placeholder.com/200",
-        price: "129.99",
-        category: "Electronics",
-        tags: ["audio", "wireless"]
+      console.log("User state: ", user);
+      if (!user) {
+        console.log("No user, skipping request.");
+        return;
       }
-    ];
+    // Mock data (remove when backend is ready)
+    // const mockData = [
+    //   {
+    //     id: 999,
+    //     name: "Test Apple Watch Ultra",
+    //     image: "https://via.placeholder.com/200",
+    //     price: "799.00",
+    //     category: "Electronics",
+    //     tags: ["smartwatch", "apple"]
+    //   },
+    //   {
+    //     id: 998,
+    //     name: "Mock Samsung Galaxy Buds",
+    //     image: "https://via.placeholder.com/200",
+    //     price: "129.99",
+    //     category: "Electronics",
+    //     tags: ["audio", "wireless"]
+    //   }
+    // ];
       try {
-        // const response = await axios.get("/api/recommendations/");
-        // setRecommended(response.data.recommendations || []);
-        setRecommended(mockData);
+        console.log("Fetching recommendations...");
+        const response = await axios.get("http://localhost:8000/api/recommendations/", {
+          withCredentials: true,
+        });
+        console.log("Recommendation", response.data.recommendations);
+        setRecommended(response.data.recommendations || []);
+        // setRecommended(mockData)
       } catch (error) {
         console.error("Error fetching recommendations:", error);
       }
@@ -211,7 +221,7 @@ const Product = ({ updateFavouritesCount }) => {
 
           {/* Reset Filters Button */}
           <button
-            className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+            className="w-full bg-red-700 hover:bg-red-800 text-white py-2 rounded-lg"
             onClick={() => {
               setSelectedBrands([]);
               setSelectedBrandCategories([]);
@@ -226,7 +236,6 @@ const Product = ({ updateFavouritesCount }) => {
           <h2 className="text-2xl font-bold mb-6">Products</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
           {filteredProducts.map((product) => {
-            console.log("Product Rendering", product);
             return (
               <ProductCard 
                 key={product.id} 

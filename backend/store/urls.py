@@ -1,7 +1,7 @@
 # backend/urls.py
 
 from django.urls import path
-from .views import RegisterView, BrandView, LoginView, ForgotPasswordView, ResetPasswordView, CategoryListView, SubCategoryListView, SubSubCategoryListView, ProductListView, ProductView, FavoriteProductView, SavedBrandView, CheckAuthView, UserProfileView, UserListView, PasswordUpdateView, GenerateTagsFromDescriptionView
+from .views import RegisterView, BrandView, LoginView, ForgotPasswordView, ResetPasswordView, CategoryListView, SubCategoryListView, SubSubCategoryListView, ProductListView, ProductView, FavoriteProductView, SavedBrandView, CheckAuthView, UserProfileView, UserListView, PasswordUpdateView, LogInteractionView, LLMRecommendationView, GenerateTagsFromDescriptionView, ChatbotAPIView
 
 
 urlpatterns = [
@@ -30,6 +30,9 @@ urlpatterns = [
     path('saved_brands/', SavedBrandView.as_view(), name='get_saved_brand'),
     path('saved_brands/remove/<int:brand_id>/', SavedBrandView.as_view(), name='delete_saved_brand'),
     path("generate-tags/", GenerateTagsFromDescriptionView.as_view(), name="generate-tags"),
+    path('interactions/', LogInteractionView.as_view(), name='log_interaction'),
+    path('recommendations/', LLMRecommendationView.as_view(), name='get_recommendations'),
+    path('chatbot/', ChatbotAPIView.as_view(), name='chat-bot'),
     
  
     # URL for adding to favorites (POST)

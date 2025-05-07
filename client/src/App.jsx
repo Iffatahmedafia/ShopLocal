@@ -27,6 +27,7 @@ import { setCredentials } from "./redux/slices/authSlice";
 import { SearchProvider } from './SearchContext.jsx';
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 import { ToastContainer } from "react-toastify";
+import Chatbot from "./components/Chatbot.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
 const fetchUser = async (dispatch) => {
@@ -97,6 +98,7 @@ const ProtectedRoute = ({ favouritesCount }) => {
         >
           <Outlet />
         </div>
+        <Chatbot />
       </div>
     </div>
   )  
@@ -111,6 +113,7 @@ function Layout({ favouritesCount }) {
     <div>
       {!hideNavbar && <Navbar count={favouritesCount} />}
       <Outlet /> {/* Renders the child routes inside Layout */}
+      <Chatbot />
     </div>
   );
 }

@@ -1,7 +1,8 @@
 // utils/logInteraction.js
+
 import axios from "axios";
 
-export const logInteraction = ({ userId, productId = null, action = "view", searchQuery = "" }) => {
+export const logInteraction = async ({ userId, productId = null, action = "view", searchQuery = "" }) => {
   const data = {
     user: userId,
     product: productId,
@@ -9,7 +10,11 @@ export const logInteraction = ({ userId, productId = null, action = "view", sear
     search_query: searchQuery,
   };
 
-  axios.post("/api/interactions/", data)
-    .then(() => console.log("Logged:", data))
-    .catch((err) => console.error("Interaction log failed:", err));
+  try {
+    await axios.post("http://localhost:8000/api/interactions/", data);
+    console.log("Logged:", data);
+  } catch (err) {
+    console.error("Interaction log failed:", err);
+  }
 };
+

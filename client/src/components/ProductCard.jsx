@@ -32,7 +32,7 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
 
   useEffect(() => {
     getFavorites();
-  }, []);
+  }, [user]);
 
   const handleFavourites = async (productId) => {
 
@@ -112,7 +112,9 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
 
   return (
    
-    <div className="bg-white dark:bg-gray-800 h-auto flex flex-col rounded-xl shadow-lg overflow-hidden transition-transform transform hover:-translate-y-2 hover:shadow-xl group">
+    <div className="bg-white dark:bg-gray-800 h-auto flex flex-col rounded-xl shadow-lg overflow-hidden transition-transform transform hover:-translate-y-2 hover:shadow-xl group cursor-pointer"
+      onClick={onClick}
+    >
       {/* Product Image */}
       <div className="flex justify-center items-center mb-3 bg-white dark:bg-gray-800 rounded-t-xl">
       <img

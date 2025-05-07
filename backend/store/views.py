@@ -7,7 +7,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from store.authentication import CookieJWTAuthentication  # Import custom auth
 from rest_framework.views import APIView
 from rest_framework import generics
-from .serializers import RegisterSerializer, LoginSerializer, UserInteractionSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, SavedBrandSerializer, CategorySerializer, SubCategorySerializer, SubSubCategorySerializer, ProductSerializer, FavoriteProductSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserInteractionSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, SavedBrandSerializer, CategorySerializer, SubCategorySerializer, SubSubCategorySerializer, ProductSerializer, FavoriteProductSerializer,BrandChatbotSerializer,ProductChatbotSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .models import Category, SubCategory, SubSubcategory, Brand, SavedBrand, Product, FavoriteProduct, CustomUser, UserInteraction
@@ -18,6 +18,10 @@ from django.core.mail import send_mail
 from rest_framework import status
 from datetime import datetime, timedelta
 from .llm_mistral import generate_recommendations, generate_tags_from_description
+# import openai
+import os
+from rapidfuzz import fuzz
+
 
 
 
@@ -557,9 +561,9 @@ class SavedBrandView(APIView):
 
 
 
-
 class LogInteractionView(APIView):
     def post(self, request):
+        print("User Interaction Data",request.data)
         serializer = UserInteractionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -568,20 +572,35 @@ class LogInteractionView(APIView):
 
 class LLMRecommendationView(APIView):
     def get(self, request):
-        user = request.user
-        interactions = UserInteraction.objects.filter(user=user).order_by('-timestamp')[:10]
+        user = checkAuth(request)
+        if not user:
+            return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        print("User", user)
+
+        interactions = UserInteraction.objects.filter(user_id=user.id).order_by('-timestamp')[:10]
+        print("Interaction",interactions)
         tags = []
         for i in interactions:
             if i.search_query:
                 tags.append(i.search_query)
             if i.product and i.product.tags:
-                tags.extend(i.product.tags)
+                if isinstance(i.product.tags, str):
+                    tags.extend(i.product.tags.split(","))
+                else:
+                    tags.extend(i.product.tags)
+        print(f"Tags found: {tags}")
         keywords = list(set(tags))[:5]
+
         try:
             results = generate_recommendations(keywords)
+            print("Recommendation result:", results)
             return Response({"recommendations": results})
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class GenerateTagsFromDescriptionView(APIView):
     def post(self, request):
@@ -591,3 +610,62 @@ class GenerateTagsFromDescriptionView(APIView):
 
         tags = generate_tags_from_description(desc)
         return Response({"tags": tags})
+
+# openai.api_key = os.getenv("OPENAI_API_KEY")
+
+class ChatbotAPIView(APIView):
+    def post(self, request):
+        print("Chatbot view")
+        user_message = request.data.get("message", "").lower()
+
+        # Exact/partial match
+        matched_products = Product.objects.filter(name__icontains=user_message, is_trashed=False)[:5]
+        matched_brands = Brand.objects.filter(name__icontains=user_message)[:5]
+
+        # If no matches found, try fuzzy logic
+        if not matched_products.exists():
+            all_products = Product.objects.filter(is_trashed=False)
+            for product in all_products:
+                if fuzz.partial_ratio(user_message, product.name.lower()) > 80:
+                    matched_products |= Product.objects.filter(id=product.id)
+
+        if not matched_brands.exists():
+            all_brands = Brand.objects.all()
+            for brand in all_brands:
+                if fuzz.partial_ratio(user_message, brand.name.lower()) > 80:
+                    matched_brands |= Brand.objects.filter(id=brand.id)
+
+        # Return results if any
+        if matched_products.exists() or matched_brands.exists():
+            product_data = ProductChatbotSerializer(matched_products, many=True).data
+            brand_data = BrandChatbotSerializer(matched_brands, many=True).data
+            return Response({
+                "type": "suggestions",
+                "products": product_data,
+                "brands": brand_data,
+                "message": "Here are some suggestions from our database."
+            })
+
+        # If nothing matched
+        return Response({
+            "type": "fallback",
+            "message": "Sorry, I couldn’t find anything matching your request."
+        }, status=200)
+
+        # # If no DB matches, fallback to OpenAI
+        # try:
+        #     response = openai.ChatCompletion.create(
+        #         model="gpt-3.5-turbo",
+        #         messages=[
+        #             {"role": "system", "content": "You are a helpful assistant for a local shopping website."},
+        #             {"role": "user", "content": user_message}
+        #         ]
+        #     )
+        #     ai_reply = response['choices'][0]['message']['content']
+        #     return Response({"type": "chat", "message": ai_reply})
+        # except Exception as e:
+        #     print("OpenAI Error:", e)
+        #     return Response({
+        #         "type": "fallback",
+        #         "message": "Sorry, I couldn’t process your request. Please try again later."
+        #     }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

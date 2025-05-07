@@ -237,3 +237,14 @@ class UserInteractionSerializer(serializers.ModelSerializer):
         model = UserInteraction
         fields = '__all__'
         
+class ProductChatbotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'price', 'online_store']
+
+class BrandChatbotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
+        fields = ['id', 'name', 'website_link']
+
+        
