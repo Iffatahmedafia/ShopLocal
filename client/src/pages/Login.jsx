@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { set, useForm } from 'react-hook-form';
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useDispatch } from "react-redux";
@@ -18,8 +18,10 @@ const Login = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState:{ errors },
   } = useForm();
+
 
 
   const handleSubmitForm = async (data) => {
@@ -33,6 +35,7 @@ const Login = () => {
         body: JSON.stringify({
           email: data.email,
           password: data.password,
+          remember_me: data.rememberMe,
         }),
         credentials: "include",
       });
@@ -44,6 +47,14 @@ const Login = () => {
         dispatch(setCredentials({ user: result.user }));
         // Cookies.set("accessToken", result.tokens.access, { expires: 7 }); // Store token in cookies
         toast.success("Login successful!");
+
+         // ✅ Store or clear email based on Remember Me
+      if (data.rememberMe) {
+        localStorage.setItem("rememberedEmail", data.email);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+      }
+
         // Delay navigation by 1 second
         setTimeout(() => {
           navigate('/');
@@ -55,6 +66,14 @@ const Login = () => {
       console.error("Error:", error);
     }
   };
+
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberedEmail");
+    if (savedEmail) {
+      setValue("email", savedEmail);
+      setRememberMe(true);
+    }
+  }, [setValue]);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 transition duration-300">

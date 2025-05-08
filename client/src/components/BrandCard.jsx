@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FiHeart } from "react-icons/fi";
-import { Trash2 } from "lucide-react";
+import { Trash2, Star, StarOff } from "lucide-react";
 import { toast } from 'react-toastify';
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -92,7 +92,7 @@ const BrandCard = ({ brand, category, type }) => {
         className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl hover:scale-[1.02] transition duration-300 flex flex-col justify-between"
         >
         <div>
-            <h2 className="text-2xl font-semibold text-center text-red-700 dark:text-white mb-2">
+            <h2 className="text-2xl font-semibold text-center dark:text-white mb-2">
             {brand.name}
             </h2> 
             {brand.canadian_owned && (
@@ -150,7 +150,7 @@ const BrandCard = ({ brand, category, type }) => {
                 onClick={() => handleSave(brand.id)}
                 className="mt-4 w-full flex items-center justify-center gap-2 bg-red-700 hover:bg-red-800 text-white py-2 rounded-lg transition-all duration-300 font-semibold shadow-md hover:shadow-lg active:scale-95"
                 >
-                     Save
+                <Star className="w-5 h-5 group-hover:scale-110 transition-transform" /> Save
                 </button>
                 ):(
                 <button

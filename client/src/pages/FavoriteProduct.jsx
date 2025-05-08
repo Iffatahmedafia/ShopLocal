@@ -50,8 +50,8 @@ const FavoriteProduct = ({ updateFavouritesCount }) => {
 
 
   return (
-    <div className="md:ml-12 mt-12 p-2">
-      <h2 className="text-2xl font-bold text-center md:text-start mb-4">Favourite Products</h2>
+    <div className="md:ml-12 mt-6 p-6 md:p-2">
+      <h2 className="text-2xl font-bold text-center text-start mb-4">Favourite Products</h2>
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
         {favorites.length > 0 ? (
           favorites.map((product) => (

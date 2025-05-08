@@ -26,7 +26,7 @@ const ProfileCard = () => {
 
 
   return (
-      <div className="w-full max-w-md flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-black/50">
+      <div className="w-full max-w-md flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-black/50 border border-gray-300 dark:border-gray-700">
         {/* User Avatar */}
         <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center text-4xl dark:text-white font-bold shadow-md">
           🧑

@@ -70,20 +70,27 @@ class LoginView(APIView):
         if serializer.is_valid():
             email = serializer.validated_data['email']
             password = serializer.validated_data['password']
+            remember_me = request.data.get("remember_me", False)
+
             user = authenticate(email=email, password=password)
             if user:
                 tokens = get_tokens_for_user(user)
                 response = Response({"user": {"id": user.id, "email": user.email, "name": user.name, "is_admin": user.is_admin, "is_brand": user.is_brand }}, status=status.HTTP_200_OK)
+
+                max_age = 60*60*24*7 if remember_me else 60*60*24  # 7 days if remember me is checked, else 1 day
+                
                 response.set_cookie(
                     key="accessToken", 
-                    value=tokens["access"], 
+                    value=tokens["access"],
+                    max_age=max_age,
                     httponly=True, 
                     secure=False,  # Set to True in production with HTTPS
                     samesite="Lax"
                 )
                 response.set_cookie(
                     key="refreshToken", 
-                    value=tokens["refresh"], 
+                    value=tokens["refresh"],
+                    max_age=max_age,
                     httponly=True, 
                     secure=False, 
                     samesite="Lax"

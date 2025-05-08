@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { setCredentials } from "./redux/slices/authSlice";
+import { SearchProvider } from './SearchContext.jsx';
+import { ThemeProvider } from "./context/ThemeContext.jsx";
+
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import Product from "./pages/Product";
@@ -21,14 +30,9 @@ import Users from "./pages/AdminPanel/Users.jsx";
 import BrandList from "./pages/AdminPanel/BrandList.jsx";
 import SavedBrands from "./pages/SavedBrands.jsx";
 import Trash from "./pages/Shared/Trash.jsx";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { setCredentials } from "./redux/slices/authSlice";
-import { SearchProvider } from './SearchContext.jsx';
-import { ThemeProvider } from "./context/ThemeContext.jsx";
-import { ToastContainer } from "react-toastify";
 import Chatbot from "./components/Chatbot.jsx";
-import "react-toastify/dist/ReactToastify.css";
+import Breadcrumb from "./components/Breadcrumb.jsx";
+
 
 const fetchUser = async (dispatch) => {
   try {
@@ -60,6 +64,7 @@ const ProtectedRoute = ({ favouritesCount }) => {
   const { user } = useSelector((state) => state.auth);
   const [sidebarOpen, setSidebarOpen] = useState(true);  // Control sidebar visibility
   const [isMobile, setIsMobile] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -96,6 +101,9 @@ const ProtectedRoute = ({ favouritesCount }) => {
             !isMobile ? (sidebarOpen ? 'ml-64' : 'ml-0') : ''
           }`}
         >
+          <div className="mt-4 md:mt-12 md:ml-6">
+            {location.pathname !== '/' && <Breadcrumb />}
+          </div>  
           <Outlet />
         </div>
         <Chatbot />
@@ -120,12 +128,25 @@ function Layout({ favouritesCount }) {
 
 function App() {
   const [favouritesCount, setFavouritesCount] = useState(0);
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchUser(dispatch); // Call when the page loads
+    const init = async () => {
+      await fetchUser(dispatch);
+      setLoading(false);
+    };
+    init();
   }, [dispatch]);
-  
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-xl font-semibold">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <ThemeProvider>
     <SearchProvider> {/* Wrap the entire app with SearchProvider */}

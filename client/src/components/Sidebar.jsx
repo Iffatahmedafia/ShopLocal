@@ -62,21 +62,40 @@ const Sidebar = () => {
           {/* Divider */}
         <div className="border-t border-gray-300 dark:border-gray-600 my-4"></div>
 
+         {/* Settings */}
+        {linkData
+        .filter(el => el.label === 'Settings')
+        .map((el) => (
+          <Link
+            key={el.label}
+            to={el.link}
+            className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-300 ${
+              path === el.link.split("/")[0]
+                ? "bg-red-100 text-red-700"
+                : "text-gray-700 dark:text-white hover:bg-red-100 hover:text-red-700"
+            }`}
+          >
+            {el.icon}
+            <span>{el.label}</span>
+          </Link>
+        ))}
+
           {/* Settings Button with Dropdown */}
-          <div>
+          {/* <div>
             <button
               className="w-full flex items-center justify-between p-2 text-lg text-gray-700 dark:text-white hover:bg-red-100 hover:text-red-700 rounded-lg transition-all duration-300"
               onClick={() => setOpenSettings(!openSettings)}
             >
               <span className="flex items-center gap-3">
-                <MdSettings />
-                <span>Settings</span>
+                <MdSettings size={22} />
+                <Link to="/profile" className="block px-3 py-1 flex items-center gap-2 rounded-md text-gray-600 hover:bg-red-100 hover:text-red-700"> 
+                      Settings
+                </Link>
               </span>
-              {openSettings ? <FaChevronUp /> : <FaChevronDown />}
-            </button>
+            </button> */}
 
             {/* Sub-links under Settings */}
-            {openSettings && (
+            {/* {openSettings && (
               <div className="ml-8 mt-1 space-y-2">
                 <ul className="ml-4 list-disc space-y-2">
                   <li>
@@ -86,11 +105,10 @@ const Sidebar = () => {
                   </li>
                 </ul>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

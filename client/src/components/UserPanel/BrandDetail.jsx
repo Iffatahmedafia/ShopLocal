@@ -90,7 +90,7 @@ const BrandDetail = () => {
   if (!brand) return <p>Loading...</p>;
 
   return (
-    <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mt-10 relative">
+    <div className="w-full max-w-2xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mt-10 relative border border-gray-300 dark:border-gray-700">
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Brand Details</h2>
         <button

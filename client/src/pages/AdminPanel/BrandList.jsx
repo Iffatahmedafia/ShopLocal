@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { toast } from 'react-toastify';
+import { FaClock, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+
 import { fetchBrands, updateBrandStatus } from "../../api";
 import Table from "../../components/Table";
+import Tabs from "../../components/Tabs";
 
 
 
@@ -29,6 +32,12 @@ const BrandList = () => {
   const [brands, setBrands] = useState([])
   const [selectedTab, setSelectedTab] = useState("Pending");
 
+  const tabOptions = [
+        { value: "Pending", label: "Pending", icon: <FaClock size={18} /> },
+        { value: "Approved", label: "Approved", icon: <FaCheckCircle size={18} /> },
+        { value: "Rejected", label: "Rejected", icon: <FaTimesCircle size={18} />  },
+      ];
+
 
   useEffect(() => {
       const getBrands = async () => {
@@ -39,6 +48,18 @@ const BrandList = () => {
       };
       getBrands();
     }, []);
+
+    const filteredBrand = brands.filter((brand) => {
+      if (selectedTab === "Pending") {
+        return brand.status === "Pending";
+      } else if (selectedTab === "Approved") {
+        return brand.status === "Approved";
+      } else if (selectedTab === "Declined" || selectedTab === "Rejected") {
+        return brand.status === "Declined" || brand.status === "Rejected";
+      } else {
+        return true; // fallback: show all
+      }
+    });
 
   const handleAdminAction = async (brand, newStatus) => {
     console.log("Approving or Declining brand")
@@ -91,9 +112,14 @@ const BrandList = () => {
         </div>
        {brands.length> 0 ? (
         <div className="">
+          <Tabs
+          tabs={tabOptions}
+          selectedTab={selectedTab}
+          onTabChange={setSelectedTab}
+        />
           <Table
               columns={columns}
-              data={brands.map((brand) => ({ id: brand.id, name: brand.name, email: brand.email, phone: brand.phone, province: brand.province, store_address: brand.store_address, website_link: brand.website_link, status: brand.status }))}
+              data={filteredBrand.map((brand) => ({ id: brand.id, name: brand.name, email: brand.email, phone: brand.phone, province: brand.province, store_address: brand.store_address, website_link: brand.website_link, status: brand.status }))}
               onEdit={handleEdit}
               onDelete={handleDelete}
               isAdmin={user?.is_admin}

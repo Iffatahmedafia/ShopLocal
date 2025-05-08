@@ -9,6 +9,7 @@ import {
   Tags,
   ThumbsDown,
   ShoppingBag,
+  Star, StarOff
 } from "lucide-react";
 
 const cardConfig = {
@@ -43,9 +44,9 @@ const cardConfig = {
     role: "admin",
   },
   fav_brands: {
-    icon: <Heart className="h-6 w-6 text-pink-600" />,
+    icon: <Star className="h-6 w-6 text-pink-600" />,
     title: "Saved Brands",
-    bg: "bg-pink-100 dark:bg-pink-800",
+    bg: "bg-red-100 dark:bg-red-800",
     role: "user",
   },
   products: {
@@ -75,7 +76,7 @@ const cardConfig = {
   fav_products: {
     icon: <Heart className="h-6 w-6 text-fuchsia-600" />,
     title: "Favourite Products",
-    bg: "bg-fuchsia-100 dark:bg-fuchsia-800",
+    bg: "bg-red-100 dark:bg-red-800",
     role: "user",
   },
   Categories: {

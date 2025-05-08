@@ -110,7 +110,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-6 mt-6">
+    <div className="md:ml-12 p-6 md:p-2 mt-6">
       <h2 className="text-2xl font-bold mb-6">Dashboard Overview</h2>
       {!loading && <DashboardCards stats={stats} role={role} />}
     </div>

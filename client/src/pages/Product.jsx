@@ -7,6 +7,7 @@ import { logInteraction } from "../utils/logInteraction.js";
 import ProductCard from "../components/ProductCard";
 import { useSearch } from '../SearchContext.jsx';
 import axios from "axios";
+import Breadcrumb from "../components/Breadcrumb.jsx";
 
 
 
