@@ -35,6 +35,9 @@ import Breadcrumb from "./components/Breadcrumb.jsx";
 
 
 const fetchUser = async (dispatch) => {
+  const localUser = localStorage.getItem("user");
+  if (localUser) return; // Already stored
+
   try {
     const response = await fetch("http://localhost:8000/api/check_auth/", {
       method: "GET",

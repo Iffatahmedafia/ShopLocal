@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import axios from "axios";
@@ -18,6 +18,7 @@ const AddProductForm = ({ open, setOpen, title, type, productData, onSubmit }) =
   const [subsubcategories, setSubSubcategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [image, setImage] = useState(null);
+  const fileInputRef = useRef(null); // reference for hidden file input
   const [currentStep, setCurrentStep] = useState(1); // Manage form steps
   const [suggestedTags, setSuggestedTags] = useState([]);
   const [tagsInput, setTagsInput] = useState('');
@@ -26,6 +27,7 @@ const AddProductForm = ({ open, setOpen, title, type, productData, onSubmit }) =
   const {
     register,
     handleSubmit,
+    trigger,
     setValue,
     reset,
     formState: { errors },
@@ -107,6 +109,10 @@ const AddProductForm = ({ open, setOpen, title, type, productData, onSubmit }) =
   const filtered_brand = brands.filter((brand) => brand.user == user.id)
   console.log(filtered_brand)
 
+  
+  const triggerFileSelect = () => {
+    fileInputRef.current.click();
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -199,9 +205,23 @@ const AddProductForm = ({ open, setOpen, title, type, productData, onSubmit }) =
   };
 
   // Handle step navigation
-  const handleNextStep = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, 4)); // Max step is 4
+  const handleNextStep = async () => {
+    let fieldsToValidate = [];
+  
+    if (currentStep === 2) {
+      fieldsToValidate = ["name", "description","tags"];
+    } else if (currentStep === 3) {
+      fieldsToValidate = ["price", "brand"];
+    }
+  
+    if (fieldsToValidate.length > 0) {
+      const isValid = await trigger(fieldsToValidate);
+      if (!isValid) return; // prevent next step if invalid
+    }
+  
+    setCurrentStep((prev) => Math.min(prev + 1, 4)); // limit max step
   };
+  
 
   const handlePreviousStep = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1)); // Min step is 1
@@ -219,7 +239,41 @@ const AddProductForm = ({ open, setOpen, title, type, productData, onSubmit }) =
             <label className="block text-gray-700 dark:text-gray-300 font-semibold">
               Product Image
             </label>
-            <input
+            <div className="flex flex-col items-center space-y-4 mt-4 w-full">
+              {/* Avatar */}
+              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600">
+                {image ? (
+                  <img
+                    src={image}
+                    alt="Avatar Preview"
+                    className="object-cover w-full h-full"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center w-full h-full bg-gray-200 dark:bg-gray-700 text-gray-500">
+                    No Image
+                  </div>
+                )}
+              </div>
+
+              {/* Upload Button */}
+              <button
+                type="button"
+                onClick={triggerFileSelect}
+                className="w-full border border-red-700 text-red-700 hover:bg-red-700 hover:text-white px-4 py-2 rounded-lg font-semibold transition"
+              >
+                Upload Image
+              </button>
+
+              {/* Hidden file input */}
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </div>
+            {/* <input
               type="file"
               accept="image/*"
               onChange={handleImageChange}
@@ -229,7 +283,7 @@ const AddProductForm = ({ open, setOpen, title, type, productData, onSubmit }) =
               <div className="mt-2">
                 <img src={image} alt="Product" className="w-32 h-32 object-cover" />
               </div>
-            )}
+            )} */}
             <button
               type="button"
               onClick={handleNextStep}

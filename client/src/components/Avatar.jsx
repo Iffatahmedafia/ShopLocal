@@ -15,9 +15,18 @@ const Avatar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const logoutHandler = () => {
+  const logoutHandler = async () => {
+    // try {
+    //   await fetch("http://localhost:8000/api/logout/", {
+    //     method: "POST",
+    //     credentials: "include", // Include cookies
+    //   });
+    // } catch (error) {
+    //   console.error("Logout API call failed:", error);
+    // }
+  
     dispatch(logout());
-  navigate('/');
+    navigate("/");
   };
 
   return (
