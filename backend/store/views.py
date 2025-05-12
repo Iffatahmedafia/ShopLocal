@@ -1,7 +1,7 @@
 # backend/views.py
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import SessionAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from store.authentication import CookieJWTAuthentication  # Import custom auth
@@ -443,8 +443,9 @@ class FavoriteProductView(APIView):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
     def post(self, request):
+        # user = request.user
+        # print("User", user)
         user = checkAuth(request)
-        # Get the user ID from the request (assuming user is authenticated)
         user_id = user.id
         print("User Id: ", user.id)
         print("Incoming Request Data:", request.data)
@@ -469,6 +470,8 @@ class FavoriteProductView(APIView):
     
     def get(self, request):
         # Get the user ID from the checkAuth function
+        # user = request.user
+        # print("User", user)
         user = checkAuth(request)
         user_id = user.id
         
@@ -485,10 +488,10 @@ class FavoriteProductView(APIView):
 
     def delete(self, request, product_id):
         # Get the user ID from the request (again, assuming user is authenticated)
+        # user = request.user
         user = checkAuth(request)
         print("User", user)
         user_id = user.id
-        # user_id =  request.data.get('user') # Get the user ID
         
         try:
             # Find the favorite product by user and product ID
@@ -583,21 +586,40 @@ class LLMRecommendationView(APIView):
         if not user:
             return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        print("User", user)
+        print("User ID:", user.id)
 
         interactions = UserInteraction.objects.filter(user_id=user.id).order_by('-timestamp')[:10]
-        print("Interaction",interactions)
+        print("Total Interactions Retrieved:", len(interactions))
+
         tags = []
+
         for i in interactions:
+            print(f"[{i.timestamp}] Action: {i.action}, Query: {i.search_query}, Product: {i.product}")
+            
+            # Add search query if available
             if i.search_query:
-                tags.append(i.search_query)
-            if i.product and i.product.tags:
-                if isinstance(i.product.tags, str):
-                    tags.extend(i.product.tags.split(","))
-                else:
-                    tags.extend(i.product.tags)
-        print(f"Tags found: {tags}")
+                cleaned_query = i.search_query.strip().lower()
+                if cleaned_query:
+                    tags.append(cleaned_query)
+
+            # Add product tags if available
+            if i.product and getattr(i.product, 'tags', None):
+                raw_tags = i.product.tags
+                if isinstance(raw_tags, str):
+                    tags.extend([t.strip().lower() for t in raw_tags.split(",") if t.strip()])
+                elif isinstance(raw_tags, list):
+                    tags.extend([t.strip().lower() for t in raw_tags if isinstance(t, str)])
+
+        print(f"Extracted Tags: {tags}")
+
+        # Final keyword set
         keywords = list(set(tags))[:5]
+        print("Final keywords used for recommendation:", keywords)
+
+        # Optional fallback if no meaningful tags found
+        if not keywords:
+            keywords = ["popular", "electronics", "new"]
+            print("Fallback keywords used:", keywords)
 
         try:
             results = generate_recommendations(keywords)

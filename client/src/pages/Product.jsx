@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Navbar from "../components/Navbar";
+import axios from "axios";
+
 import { fetchProducts, fetchBrands, fetchCategories } from "../api";
 import { logInteraction } from "../utils/logInteraction.js";
+import { useSearch } from "../context/SearchContext.jsx";
 import ProductCard from "../components/ProductCard";
-import { useSearch } from '../SearchContext.jsx';
-import axios from "axios";
 import Breadcrumb from "../components/Breadcrumb.jsx";
 
 

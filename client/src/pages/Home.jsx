@@ -1,21 +1,19 @@
 import { useState, useEffect } from "react";
 import { FiSun, FiMoon, FiShoppingCart, FiHeart } from "react-icons/fi";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
-import Navbar from "../components/Navbar"
-import Sidebar from "../components/Sidebar";
 import { useSelector } from "react-redux";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import { fetchCategories } from "../api";
-import { fetchSubCategories } from "../api";
-import { fetchProducts } from "../api";
-import { toast } from 'react-toastify';
 import axios from "axios";
 import Cookies from "js-cookie";
-import ProductCard from "../components/ProductCard";
+
+import { fetchCategories, fetchSubCategories, fetchProducts } from "../api";
 import { useTheme } from "../context/ThemeContext"; 
+import { toast } from 'react-toastify';
+import ProductCard from "../components/ProductCard";
+
 
 const categories = [
   { name: "Electronics", image: "test.jpg" },

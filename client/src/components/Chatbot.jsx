@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaCommentDots } from "react-icons/fa"; // Using the comment icon for the chat button
 import { FaRobot } from "react-icons/fa";
+
 import ChatWindow from "./ChatWindow"; // Your existing chat window component
 
 const Chatbot = () => {

@@ -4,9 +4,9 @@ import { FaUserCircle, FaFolder, FaList, FaShoppingBag, FaTag, FaStore, FaCogs, 
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { MdLabel } from 'react-icons/md';   // Material Design
-import { fetchCategories } from "../api";
-import { fetchSubCategories, fetchFavorites, fetchSubSubCategories } from "../api";
-import { useSearch } from '../SearchContext.jsx'
+
+import { fetchCategories, fetchSubCategories, fetchFavorites, fetchSubSubCategories } from "../api";
+import { useSearch } from "../context/SearchContext.jsx"
 import { useTheme } from "../context/ThemeContext.jsx";
 import Avatar from "./Avatar";
 

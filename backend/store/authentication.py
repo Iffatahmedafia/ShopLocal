@@ -8,14 +8,17 @@ CustomUser = get_user_model()
 
 class CookieJWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
-        token = request.COOKIES.get("accessToken")  # Read token from cookies
-        if not token:
-            return None  # No token, return None
+        access_token = request.COOKIES.get("accessToken")
+        if not access_token:
+            return None  # Let other authentication classes try
 
         try:
-            payload = jwt.decode(token, "ghfgfgdfd", algorithms=["HS256"])  # Decode token
-            user = CustomUser.objects.get(id=payload["user_id"])  # Get user from DB
-        except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
-            raise AuthenticationFailed("Invalid or expired token")
-
-        return (user, None)  # Return authenticated user
+            payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
+            user = CustomUser.objects.get(id=payload["user_id"])
+            return (user, None)
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed("Token has expired")
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed("Invalid token")
+        except CustomUser.DoesNotExist:
+            raise AuthenticationFailed("User not found")

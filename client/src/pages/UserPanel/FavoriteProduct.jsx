@@ -2,8 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import ProductCard from "../components/ProductCard";
-import { fetchFavorites } from "../api";
+
+import ProductCard from "../../components/ProductCard";
+import { fetchFavorites } from "../../api";
 
 
 const FavoriteProduct = ({ updateFavouritesCount }) => {

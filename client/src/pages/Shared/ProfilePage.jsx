@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { FaUserEdit, FaKey } from "react-icons/fa";
-import UpdateProfileForm from "../components/UpdateProfileForm";
-import ChangePasswordForm from "../components/ChangePasswordForm";
-import ProfileCard from "../components/ProfileCard";
+
+import UpdateProfileForm from "../../components/UpdateProfileForm"
+import ChangePasswordForm from "../../components/ChangePasswordForm"
+import ProfileCard from "../../components/ProfileCard";
 
 const ProfilePage = () => {
   const [selectedTab, setSelectedTab] = useState("profile");

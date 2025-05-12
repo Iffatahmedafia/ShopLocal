@@ -3,9 +3,12 @@ import { set, useForm } from 'react-hook-form';
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { setCredentials } from "../redux/slices/authSlice";
-import Cookies from "js-cookie";
 import { toast } from 'react-toastify';
+
+
+import { setCredentials } from "../../redux/slices/authSlice";
+import { getCookie } from "../../utils/ExtractCookie";
+
 
 
 const Login = () => {
@@ -13,6 +16,9 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const csrfToken = getCookie('csrftoken');
+  console.log('CSRF Token:', csrfToken);
  
   
   const {

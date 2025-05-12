@@ -4,8 +4,10 @@ import { FaUser, FaUserLock } from "react-icons/fa";
 import { IoLogOutOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../redux/slices/authSlice"
 import { Link } from "react-router-dom";
+
+import { logout } from "../redux/slices/authSlice"
+
 
 
 const Avatar = () => {

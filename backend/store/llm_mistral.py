@@ -47,11 +47,17 @@ def get_product_docs():
 def get_vector_index():
     docs = get_product_docs()
     try:
-        embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+        embedding_model = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2",
+            model_kwargs={
+                "device": "cpu",  # Force CPU
+                "trust_remote_code": True  # Avoid meta tensor issues
+            }
+        )
         return FAISS.from_documents(docs, embedding_model)
+
     except RuntimeError as e:
-        if "Numpy is not available" in str(e):
-            print("Numpy runtime issue detected in HuggingFaceEmbeddings.")
+        print("Error while building vector index:", e)
         raise
 
 
@@ -72,7 +78,8 @@ def generate_recommendations(user_keywords):
                 "price": str(product.price),
                 "category": product.category.name if product.category else None,
                 "tags": getattr(product, 'tags', ''),
-                "image": product.image.url if product.image else None
+                "image": product.image if product.image else None
+
             })
     print("Structured output preview:", structured_output)
 

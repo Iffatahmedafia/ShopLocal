@@ -6,30 +6,36 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { setCredentials } from "./redux/slices/authSlice";
-import { SearchProvider } from './SearchContext.jsx';
+import { SearchProvider } from './context/SearchContext.jsx'
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 
 import Home from "./pages/Home";
-import Navbar from "./components/Navbar";
 import Product from "./pages/Product";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Brand from "./pages/Brands.jsx"
+
+import Login from "./pages/Authentication/Login.jsx";
+import Register from "./pages/Authentication/Register.jsx";
 import ForgotPassword from "./pages/Authentication/ForgotPassword.jsx";
 import ResetPassword from "./pages/Authentication/ResetPassword.jsx";
-import VendorRegistration from "./components/VendorRegistration.jsx";
-import ProfilePage from "./pages/ProfilePage";
-import FavoriteProduct from "./pages/FavoriteProduct";
-import Brand from "./pages/Brands.jsx"
-import Sidebar from "./components/Sidebar.jsx";
-import MobileSidebar from "./components/MobileSidebar.jsx";
-import ProductList from "./components/UserPanel/ProductList.jsx";
-import BrandDetail from "./components/UserPanel/BrandDetail.jsx";
+import VendorRegistration from "./pages/Authentication/VendorRegistration.jsx";
+
+import ProfilePage from "./pages/Shared/ProfilePage.jsx";
 import Dashboard from "./pages/Shared/Dashboard.jsx";
+import ProductList from "./pages/Shared/ProductList.jsx";
+import Trash from "./pages/Shared/Trash.jsx";
+
+import BrandDetail from "./pages/BrandPanel/BrandDetail.jsx";
+
 import Categories from "./pages/AdminPanel/Categories.jsx";
 import Users from "./pages/AdminPanel/Users.jsx";
 import BrandList from "./pages/AdminPanel/BrandList.jsx";
-import SavedBrands from "./pages/SavedBrands.jsx";
-import Trash from "./pages/Shared/Trash.jsx";
+
+import FavoriteProduct from "./pages/UserPanel/FavoriteProduct.jsx";
+import SavedBrand from "./pages/UserPanel/SavedBrand.jsx";
+
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar.jsx";
+import MobileSidebar from "./components/MobileSidebar.jsx";
 import Chatbot from "./components/Chatbot.jsx";
 import Breadcrumb from "./components/Breadcrumb.jsx";
 
@@ -173,7 +179,7 @@ function App() {
               <Route path="/categories" element={<Categories />} />
               <Route path="/users" element={<Users />} />
               <Route path="/favorites" element={<FavoriteProduct updateFavouritesCount={setFavouritesCount} />} />
-              <Route path="/saved_brands" element={<SavedBrands />} />
+              <Route path="/saved_brands" element={<SavedBrand />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/security" element={<ProfilePage />} />
             </Route>

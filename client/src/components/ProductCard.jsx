@@ -4,8 +4,9 @@ import { toast } from 'react-toastify';
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { fetchFavorites } from "../api";
 import { Edit, Trash2 } from "lucide-react";
+
+import { fetchFavorites } from "../api";
 
 
 

@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useForm } from 'react-hook-form';
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { toast } from 'react-toastify';
-import { fetchCategories } from "../api";
+
+import { fetchCategories } from "../../api";
 
 const VendorRegistration = () => {
   const [showPassword, setShowPassword] = useState(false);

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import { useSearch } from "../SearchContext.jsx";
+
+import { useSearch } from "../context/SearchContext.jsx"
 import { fetchBrands, fetchCategories } from "../api.js";
 import BrandCard from "../components/BrandCard.jsx";
 import Breadcrumb from "../components/Breadcrumb.jsx";

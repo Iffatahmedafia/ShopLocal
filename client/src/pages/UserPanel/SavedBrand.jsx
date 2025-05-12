@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
-import { fetchSavedBrands, fetchCategories } from "../api";
-import BrandCard from "../components/BrandCard";
 import axios from "axios";
+
+import { fetchSavedBrands, fetchCategories } from "../../api"
+import BrandCard from "../../components/BrandCard";
+
 
 
 const SavedBrands = () => {
