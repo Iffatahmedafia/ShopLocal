@@ -1,0 +1,1258 @@
+### Instruction:
+hi
+
+### Response:
+Hi there! How can I help you today?
+
+### Instruction:
+hello
+
+### Response:
+Hello! Looking for a product or brand?
+
+### Instruction:
+hey
+
+### Response:
+Hey! What would you like to shop for today?
+
+### Instruction:
+good morning
+
+### Response:
+Good morning! Let me know if you need suggestions.
+
+### Instruction:
+good evening
+
+### Response:
+Good evening! Looking for anything specific?
+
+### Instruction:
+Tell me about the product Iphone 14.
+
+### Response:
+Product Name: Iphone 14
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $899.00
+Buy here: https://apple.com
+
+### Instruction:
+I want a iphone 14
+
+### Response:
+Product Name: Iphone 14
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $899.00
+Buy here: https://apple.com
+
+### Instruction:
+I'm looking for a uncategorized
+
+### Response:
+Product Name: Iphone 14
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $899.00
+Buy here: https://apple.com
+
+### Instruction:
+Do you have any uncategorized items?
+
+### Response:
+Product Name: Iphone 14
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $899.00
+Buy here: https://apple.com
+
+### Instruction:
+Can you suggest something like iphone 14?
+
+### Response:
+Product Name: Iphone 14
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $899.00
+Buy here: https://apple.com
+
+### Instruction:
+Any recommendations in uncategorized?
+
+### Response:
+Product Name: Iphone 14
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $899.00
+Buy here: https://apple.com
+
+### Instruction:
+I'm furnishing my home, do you have any uncategorized?
+
+### Response:
+Product Name: Iphone 14
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $899.00
+Buy here: https://apple.com
+
+### Instruction:
+I need a iphone 14 under $899.00
+
+### Response:
+Product Name: Iphone 14
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $899.00
+Buy here: https://apple.com
+
+### Instruction:
+Looking for affordable uncategorized under $100
+
+### Response:
+Product Name: Iphone 14
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $899.00
+Buy here: https://apple.com
+
+### Instruction:
+I want a iphone 14 with good reviews
+
+### Response:
+Product Name: Iphone 14
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $899.00
+Buy here: https://apple.com
+
+### Instruction:
+Can I buy a iphone 14 online?
+
+### Response:
+Product Name: Iphone 14
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $899.00
+Buy here: https://apple.com
+
+### Instruction:
+I need a uncategorized and something else too
+
+### Response:
+Product Name: Iphone 14
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $899.00
+Buy here: https://apple.com
+
+### Instruction:
+Tell me about the product Samsung Galaxy.
+
+### Response:
+Product Name: Samsung Galaxy
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $540.99
+Buy here: https://samsung.com
+
+### Instruction:
+I want a samsung galaxy
+
+### Response:
+Product Name: Samsung Galaxy
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $540.99
+Buy here: https://samsung.com
+
+### Instruction:
+I'm looking for a uncategorized
+
+### Response:
+Product Name: Samsung Galaxy
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $540.99
+Buy here: https://samsung.com
+
+### Instruction:
+Do you have any uncategorized items?
+
+### Response:
+Product Name: Samsung Galaxy
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $540.99
+Buy here: https://samsung.com
+
+### Instruction:
+Can you suggest something like samsung galaxy?
+
+### Response:
+Product Name: Samsung Galaxy
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $540.99
+Buy here: https://samsung.com
+
+### Instruction:
+Any recommendations in uncategorized?
+
+### Response:
+Product Name: Samsung Galaxy
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $540.99
+Buy here: https://samsung.com
+
+### Instruction:
+I'm furnishing my home, do you have any uncategorized?
+
+### Response:
+Product Name: Samsung Galaxy
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $540.99
+Buy here: https://samsung.com
+
+### Instruction:
+I need a samsung galaxy under $540.99
+
+### Response:
+Product Name: Samsung Galaxy
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $540.99
+Buy here: https://samsung.com
+
+### Instruction:
+Looking for affordable uncategorized under $100
+
+### Response:
+Product Name: Samsung Galaxy
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $540.99
+Buy here: https://samsung.com
+
+### Instruction:
+I want a samsung galaxy with good reviews
+
+### Response:
+Product Name: Samsung Galaxy
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $540.99
+Buy here: https://samsung.com
+
+### Instruction:
+Can I buy a samsung galaxy online?
+
+### Response:
+Product Name: Samsung Galaxy
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $540.99
+Buy here: https://samsung.com
+
+### Instruction:
+I need a uncategorized and something else too
+
+### Response:
+Product Name: Samsung Galaxy
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $540.99
+Buy here: https://samsung.com
+
+### Instruction:
+Tell me about the product Asus Zenbook.
+
+### Response:
+Product Name: Asus Zenbook
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $999.99
+Buy here: https://asus.com
+
+### Instruction:
+I want a asus zenbook
+
+### Response:
+Product Name: Asus Zenbook
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $999.99
+Buy here: https://asus.com
+
+### Instruction:
+I'm looking for a uncategorized
+
+### Response:
+Product Name: Asus Zenbook
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $999.99
+Buy here: https://asus.com
+
+### Instruction:
+Do you have any uncategorized items?
+
+### Response:
+Product Name: Asus Zenbook
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $999.99
+Buy here: https://asus.com
+
+### Instruction:
+Can you suggest something like asus zenbook?
+
+### Response:
+Product Name: Asus Zenbook
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $999.99
+Buy here: https://asus.com
+
+### Instruction:
+Any recommendations in uncategorized?
+
+### Response:
+Product Name: Asus Zenbook
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $999.99
+Buy here: https://asus.com
+
+### Instruction:
+I'm furnishing my home, do you have any uncategorized?
+
+### Response:
+Product Name: Asus Zenbook
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $999.99
+Buy here: https://asus.com
+
+### Instruction:
+I need a asus zenbook under $999.99
+
+### Response:
+Product Name: Asus Zenbook
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $999.99
+Buy here: https://asus.com
+
+### Instruction:
+Looking for affordable uncategorized under $100
+
+### Response:
+Product Name: Asus Zenbook
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $999.99
+Buy here: https://asus.com
+
+### Instruction:
+I want a asus zenbook with good reviews
+
+### Response:
+Product Name: Asus Zenbook
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $999.99
+Buy here: https://asus.com
+
+### Instruction:
+Can I buy a asus zenbook online?
+
+### Response:
+Product Name: Asus Zenbook
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $999.99
+Buy here: https://asus.com
+
+### Instruction:
+I need a uncategorized and something else too
+
+### Response:
+Product Name: Asus Zenbook
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $999.99
+Buy here: https://asus.com
+
+### Instruction:
+Tell me about the product Cotton leggings.
+
+### Response:
+Product Name: Cotton leggings
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $60.00
+Buy here: https://george.com
+
+### Instruction:
+I want a cotton leggings
+
+### Response:
+Product Name: Cotton leggings
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $60.00
+Buy here: https://george.com
+
+### Instruction:
+I'm looking for a uncategorized
+
+### Response:
+Product Name: Cotton leggings
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $60.00
+Buy here: https://george.com
+
+### Instruction:
+Do you have any uncategorized items?
+
+### Response:
+Product Name: Cotton leggings
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $60.00
+Buy here: https://george.com
+
+### Instruction:
+Can you suggest something like cotton leggings?
+
+### Response:
+Product Name: Cotton leggings
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $60.00
+Buy here: https://george.com
+
+### Instruction:
+Any recommendations in uncategorized?
+
+### Response:
+Product Name: Cotton leggings
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $60.00
+Buy here: https://george.com
+
+### Instruction:
+I'm furnishing my home, do you have any uncategorized?
+
+### Response:
+Product Name: Cotton leggings
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $60.00
+Buy here: https://george.com
+
+### Instruction:
+I need a cotton leggings under $60.00
+
+### Response:
+Product Name: Cotton leggings
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $60.00
+Buy here: https://george.com
+
+### Instruction:
+Looking for affordable uncategorized under $100
+
+### Response:
+Product Name: Cotton leggings
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $60.00
+Buy here: https://george.com
+
+### Instruction:
+I want a cotton leggings with good reviews
+
+### Response:
+Product Name: Cotton leggings
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $60.00
+Buy here: https://george.com
+
+### Instruction:
+Can I buy a cotton leggings online?
+
+### Response:
+Product Name: Cotton leggings
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $60.00
+Buy here: https://george.com
+
+### Instruction:
+I need a uncategorized and something else too
+
+### Response:
+Product Name: Cotton leggings
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $60.00
+Buy here: https://george.com
+
+### Instruction:
+Tell me about the product Chair.
+
+### Response:
+Product Name: Chair
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $299.50
+Buy here: https://localstore.com
+
+### Instruction:
+I want a chair
+
+### Response:
+Product Name: Chair
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $299.50
+Buy here: https://localstore.com
+
+### Instruction:
+I'm looking for a uncategorized
+
+### Response:
+Product Name: Chair
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $299.50
+Buy here: https://localstore.com
+
+### Instruction:
+Do you have any uncategorized items?
+
+### Response:
+Product Name: Chair
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $299.50
+Buy here: https://localstore.com
+
+### Instruction:
+Can you suggest something like chair?
+
+### Response:
+Product Name: Chair
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $299.50
+Buy here: https://localstore.com
+
+### Instruction:
+Any recommendations in uncategorized?
+
+### Response:
+Product Name: Chair
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $299.50
+Buy here: https://localstore.com
+
+### Instruction:
+I'm furnishing my home, do you have any uncategorized?
+
+### Response:
+Product Name: Chair
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $299.50
+Buy here: https://localstore.com
+
+### Instruction:
+I need a chair under $299.50
+
+### Response:
+Product Name: Chair
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $299.50
+Buy here: https://localstore.com
+
+### Instruction:
+Looking for affordable uncategorized under $100
+
+### Response:
+Product Name: Chair
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $299.50
+Buy here: https://localstore.com
+
+### Instruction:
+I want a chair with good reviews
+
+### Response:
+Product Name: Chair
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $299.50
+Buy here: https://localstore.com
+
+### Instruction:
+Can I buy a chair online?
+
+### Response:
+Product Name: Chair
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $299.50
+Buy here: https://localstore.com
+
+### Instruction:
+I need a uncategorized and something else too
+
+### Response:
+Product Name: Chair
+Description: No description available.
+Category: Uncategorized
+Tags: No tags listed
+Price: $299.50
+Buy here: https://localstore.com
+
+### Instruction:
+Tell me about the product Conditioner.
+
+### Response:
+Product Name: Conditioner
+Description: Conditioner for hair
+Category: Beauty & Personal Care
+Tags: Silky, Strong, Smooth
+Price: $15.00
+Buy here: https://test2.com
+
+### Instruction:
+I want a conditioner
+
+### Response:
+Product Name: Conditioner
+Description: Conditioner for hair
+Category: Beauty & Personal Care
+Tags: Silky, Strong, Smooth
+Price: $15.00
+Buy here: https://test2.com
+
+### Instruction:
+I'm looking for a beauty & personal care
+
+### Response:
+Product Name: Conditioner
+Description: Conditioner for hair
+Category: Beauty & Personal Care
+Tags: Silky, Strong, Smooth
+Price: $15.00
+Buy here: https://test2.com
+
+### Instruction:
+Do you have any beauty & personal care items?
+
+### Response:
+Product Name: Conditioner
+Description: Conditioner for hair
+Category: Beauty & Personal Care
+Tags: Silky, Strong, Smooth
+Price: $15.00
+Buy here: https://test2.com
+
+### Instruction:
+Can you suggest something like conditioner?
+
+### Response:
+Product Name: Conditioner
+Description: Conditioner for hair
+Category: Beauty & Personal Care
+Tags: Silky, Strong, Smooth
+Price: $15.00
+Buy here: https://test2.com
+
+### Instruction:
+Any recommendations in beauty & personal care?
+
+### Response:
+Product Name: Conditioner
+Description: Conditioner for hair
+Category: Beauty & Personal Care
+Tags: Silky, Strong, Smooth
+Price: $15.00
+Buy here: https://test2.com
+
+### Instruction:
+I'm furnishing my home, do you have any beauty & personal care?
+
+### Response:
+Product Name: Conditioner
+Description: Conditioner for hair
+Category: Beauty & Personal Care
+Tags: Silky, Strong, Smooth
+Price: $15.00
+Buy here: https://test2.com
+
+### Instruction:
+I need a conditioner under $15.00
+
+### Response:
+Product Name: Conditioner
+Description: Conditioner for hair
+Category: Beauty & Personal Care
+Tags: Silky, Strong, Smooth
+Price: $15.00
+Buy here: https://test2.com
+
+### Instruction:
+Looking for affordable beauty & personal care under $100
+
+### Response:
+Product Name: Conditioner
+Description: Conditioner for hair
+Category: Beauty & Personal Care
+Tags: Silky, Strong, Smooth
+Price: $15.00
+Buy here: https://test2.com
+
+### Instruction:
+I want a conditioner with good reviews
+
+### Response:
+Product Name: Conditioner
+Description: Conditioner for hair
+Category: Beauty & Personal Care
+Tags: Silky, Strong, Smooth
+Price: $15.00
+Buy here: https://test2.com
+
+### Instruction:
+Can I buy a conditioner online?
+
+### Response:
+Product Name: Conditioner
+Description: Conditioner for hair
+Category: Beauty & Personal Care
+Tags: Silky, Strong, Smooth
+Price: $15.00
+Buy here: https://test2.com
+
+### Instruction:
+I need a beauty & personal care and something else too
+
+### Response:
+Product Name: Conditioner
+Description: Conditioner for hair
+Category: Beauty & Personal Care
+Tags: Silky, Strong, Smooth
+Price: $15.00
+Buy here: https://test2.com
+
+### Instruction:
+Tell me about the product Argan Shampoo.
+
+### Response:
+Product Name: Argan Shampoo
+Description: shampoo
+Category: Uncategorized
+Tags: Silky, Shiny
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+I want a argan shampoo
+
+### Response:
+Product Name: Argan Shampoo
+Description: shampoo
+Category: Uncategorized
+Tags: Silky, Shiny
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+I'm looking for a uncategorized
+
+### Response:
+Product Name: Argan Shampoo
+Description: shampoo
+Category: Uncategorized
+Tags: Silky, Shiny
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+Do you have any uncategorized items?
+
+### Response:
+Product Name: Argan Shampoo
+Description: shampoo
+Category: Uncategorized
+Tags: Silky, Shiny
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+Can you suggest something like argan shampoo?
+
+### Response:
+Product Name: Argan Shampoo
+Description: shampoo
+Category: Uncategorized
+Tags: Silky, Shiny
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+Any recommendations in uncategorized?
+
+### Response:
+Product Name: Argan Shampoo
+Description: shampoo
+Category: Uncategorized
+Tags: Silky, Shiny
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+I'm furnishing my home, do you have any uncategorized?
+
+### Response:
+Product Name: Argan Shampoo
+Description: shampoo
+Category: Uncategorized
+Tags: Silky, Shiny
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+I need a argan shampoo under $10.00
+
+### Response:
+Product Name: Argan Shampoo
+Description: shampoo
+Category: Uncategorized
+Tags: Silky, Shiny
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+Looking for affordable uncategorized under $100
+
+### Response:
+Product Name: Argan Shampoo
+Description: shampoo
+Category: Uncategorized
+Tags: Silky, Shiny
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+I want a argan shampoo with good reviews
+
+### Response:
+Product Name: Argan Shampoo
+Description: shampoo
+Category: Uncategorized
+Tags: Silky, Shiny
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+Can I buy a argan shampoo online?
+
+### Response:
+Product Name: Argan Shampoo
+Description: shampoo
+Category: Uncategorized
+Tags: Silky, Shiny
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+I need a uncategorized and something else too
+
+### Response:
+Product Name: Argan Shampoo
+Description: shampoo
+Category: Uncategorized
+Tags: Silky, Shiny
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+Tell me about the product Moisturizer.
+
+### Response:
+Product Name: Moisturizer
+Description: Soothing Cream
+Category: Uncategorized
+Tags: Glow
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+I want a moisturizer
+
+### Response:
+Product Name: Moisturizer
+Description: Soothing Cream
+Category: Uncategorized
+Tags: Glow
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+I'm looking for a uncategorized
+
+### Response:
+Product Name: Moisturizer
+Description: Soothing Cream
+Category: Uncategorized
+Tags: Glow
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+Do you have any uncategorized items?
+
+### Response:
+Product Name: Moisturizer
+Description: Soothing Cream
+Category: Uncategorized
+Tags: Glow
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+Can you suggest something like moisturizer?
+
+### Response:
+Product Name: Moisturizer
+Description: Soothing Cream
+Category: Uncategorized
+Tags: Glow
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+Any recommendations in uncategorized?
+
+### Response:
+Product Name: Moisturizer
+Description: Soothing Cream
+Category: Uncategorized
+Tags: Glow
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+I'm furnishing my home, do you have any uncategorized?
+
+### Response:
+Product Name: Moisturizer
+Description: Soothing Cream
+Category: Uncategorized
+Tags: Glow
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+I need a moisturizer under $10.00
+
+### Response:
+Product Name: Moisturizer
+Description: Soothing Cream
+Category: Uncategorized
+Tags: Glow
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+Looking for affordable uncategorized under $100
+
+### Response:
+Product Name: Moisturizer
+Description: Soothing Cream
+Category: Uncategorized
+Tags: Glow
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+I want a moisturizer with good reviews
+
+### Response:
+Product Name: Moisturizer
+Description: Soothing Cream
+Category: Uncategorized
+Tags: Glow
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+Can I buy a moisturizer online?
+
+### Response:
+Product Name: Moisturizer
+Description: Soothing Cream
+Category: Uncategorized
+Tags: Glow
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+I need a uncategorized and something else too
+
+### Response:
+Product Name: Moisturizer
+Description: Soothing Cream
+Category: Uncategorized
+Tags: Glow
+Price: $10.00
+Buy here: https://test.com
+
+### Instruction:
+Tell me about the product Lamb.
+
+### Response:
+Product Name: Lamb
+Description: No description available.
+Category: Uncategorized
+Tags: Fresh
+Price: $10.60
+Buy here: https://foodbasics.com, https://walmart.com
+
+### Instruction:
+I want a lamb
+
+### Response:
+Product Name: Lamb
+Description: No description available.
+Category: Uncategorized
+Tags: Fresh
+Price: $10.60
+Buy here: https://foodbasics.com, https://walmart.com
+
+### Instruction:
+I'm looking for a uncategorized
+
+### Response:
+Product Name: Lamb
+Description: No description available.
+Category: Uncategorized
+Tags: Fresh
+Price: $10.60
+Buy here: https://foodbasics.com, https://walmart.com
+
+### Instruction:
+Do you have any uncategorized items?
+
+### Response:
+Product Name: Lamb
+Description: No description available.
+Category: Uncategorized
+Tags: Fresh
+Price: $10.60
+Buy here: https://foodbasics.com, https://walmart.com
+
+### Instruction:
+Can you suggest something like lamb?
+
+### Response:
+Product Name: Lamb
+Description: No description available.
+Category: Uncategorized
+Tags: Fresh
+Price: $10.60
+Buy here: https://foodbasics.com, https://walmart.com
+
+### Instruction:
+Any recommendations in uncategorized?
+
+### Response:
+Product Name: Lamb
+Description: No description available.
+Category: Uncategorized
+Tags: Fresh
+Price: $10.60
+Buy here: https://foodbasics.com, https://walmart.com
+
+### Instruction:
+I'm furnishing my home, do you have any uncategorized?
+
+### Response:
+Product Name: Lamb
+Description: No description available.
+Category: Uncategorized
+Tags: Fresh
+Price: $10.60
+Buy here: https://foodbasics.com, https://walmart.com
+
+### Instruction:
+I need a lamb under $10.60
+
+### Response:
+Product Name: Lamb
+Description: No description available.
+Category: Uncategorized
+Tags: Fresh
+Price: $10.60
+Buy here: https://foodbasics.com, https://walmart.com
+
+### Instruction:
+Looking for affordable uncategorized under $100
+
+### Response:
+Product Name: Lamb
+Description: No description available.
+Category: Uncategorized
+Tags: Fresh
+Price: $10.60
+Buy here: https://foodbasics.com, https://walmart.com
+
+### Instruction:
+I want a lamb with good reviews
+
+### Response:
+Product Name: Lamb
+Description: No description available.
+Category: Uncategorized
+Tags: Fresh
+Price: $10.60
+Buy here: https://foodbasics.com, https://walmart.com
+
+### Instruction:
+Can I buy a lamb online?
+
+### Response:
+Product Name: Lamb
+Description: No description available.
+Category: Uncategorized
+Tags: Fresh
+Price: $10.60
+Buy here: https://foodbasics.com, https://walmart.com
+
+### Instruction:
+I need a uncategorized and something else too
+
+### Response:
+Product Name: Lamb
+Description: No description available.
+Category: Uncategorized
+Tags: Fresh
+Price: $10.60
+Buy here: https://foodbasics.com, https://walmart.com
+
+### Instruction:
+Tell me about the brand test1.
+
+### Response:
+Brand Name: test1
+Description: test1 is a trusted brand listed in our store.
+Visit: https://test1.com
+
+### Instruction:
+Tell me about the brand Local.
+
+### Response:
+Brand Name: Local
+Description: Local is a trusted brand listed in our store.
+Visit: https://local.com
+
+### Instruction:
+Tell me about the brand Royale.
+
+### Response:
+Brand Name: Royale
+Description: Royale is a trusted brand listed in our store.
+Visit: https://test.com
+
+### Instruction:
+Tell me about the brand Royale1.
+
+### Response:
+Brand Name: Royale1
+Description: Royale1 is a trusted brand listed in our store.
+Visit: https://test.com
+
+### Instruction:
+Tell me about the brand Attitude.
+
+### Response:
+Brand Name: Attitude
+Description: Attitude is a trusted brand listed in our store.
+Visit: https://test.com
+

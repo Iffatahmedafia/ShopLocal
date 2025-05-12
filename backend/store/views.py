@@ -17,7 +17,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from django.core.mail import send_mail
 from rest_framework import status
 from datetime import datetime, timedelta
-from .llm_mistral import generate_recommendations, generate_tags_from_description
+from .llm_mistral import generate_recommendations, generate_tags_from_description, generate_chat_response
 # import openai
 import os
 from rapidfuzz import fuzz
@@ -675,11 +675,15 @@ class ChatbotAPIView(APIView):
                 "message": "Here are some suggestions from our database."
             })
 
+        # Fallback to LLM-generated RAG response
+        ai_reply = generate_chat_response(user_message)
+        return Response({"type": "chat", "message": ai_reply})
+
         # If nothing matched
-        return Response({
-            "type": "fallback",
-            "message": "Sorry, I couldn’t find anything matching your request."
-        }, status=200)
+        # return Response({
+        #     "type": "fallback",
+        #     "message": "Sorry, I couldn’t find anything matching your request."
+        # }, status=200)
 
         # # If no DB matches, fallback to OpenAI
         # try:

@@ -1,0 +1,6 @@
+FROM mistral
+
+ADAPTER ./store/training_data/chatbot_finetune_data.txt
+
+TEMPLATE "<s>[INST] {{ .Prompt }} [/INST]"
+

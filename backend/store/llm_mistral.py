@@ -10,6 +10,10 @@ from .models import Product
 
 load_dotenv()
 
+data_path = os.path.join(os.path.dirname(__file__), "training_data", "chatbot_finetune_data.txt")
+
+
+
 # Fetch token
 hf_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
 
@@ -23,6 +27,30 @@ client = InferenceClient(
     model="fabiochiu/t5-base-tag-generation",
     token=hf_token
 )
+
+def generate_chat_response(user_input, top_k=1, similarity_threshold=0.6):
+    with open(data_path, "r") as f:
+        raw = f.read()
+
+    blocks = raw.split("### Instruction:")
+    docs = []
+    for block in blocks:
+        if "### Response:" in block:
+            q, a = block.split("### Response:")
+            docs.append(Document(page_content=a.strip(), metadata={"instruction": q.strip()}))
+
+    # Load embedding model
+    embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    vectorstore = FAISS.from_documents(docs, embedding_model)
+
+    # Embed the query and documents
+    query_embedding = embedding_model.embed_query(user_input)
+    results = vectorstore.similarity_search_with_score_by_vector(query_embedding, k=top_k)
+
+    if results and results[0][1] >= similarity_threshold:
+        return results[0][0].page_content
+    else:
+        return "Sorry, I couldn't find anything relevant to your message."
 
 def generate_tags_from_description(description, max_tags=5):
     prompt = description.strip()
