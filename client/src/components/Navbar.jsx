@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { MdLabel } from 'react-icons/md';   // Material Design
 
 import { fetchCategories, fetchSubCategories, fetchFavorites, fetchSubSubCategories } from "../api";
+import { logInteraction } from "../utils/logInteraction.js";
 import { useSearch } from "../context/SearchContext.jsx"
 import { useTheme } from "../context/ThemeContext.jsx";
 import Avatar from "./Avatar";
@@ -61,8 +62,19 @@ const Navbar = ({ count }) => {
   const handleSearch = (event) => {
     updateSearchQuery(event.target.value);
   };
-  console.log(count)
+ 
 
+  const handleSearchClick = () => {
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery) return;
+  
+    if (user) {
+      logInteraction({ userId: user.id, searchQuery: trimmedQuery, action: "search" });
+    }
+  
+    navigate(`/products?search=${encodeURIComponent(trimmedQuery)}`);
+  };
+  
   
     useEffect(() => {
       const getCategories = async () => {
@@ -107,12 +119,14 @@ const Navbar = ({ count }) => {
     
     useEffect(() => {
       const getFavorites = async () => {
-        const data = await fetchFavorites();
-        setFavoritecount(data.length);
+        if (user) {
+          const data = await fetchFavorites();
+          setFavoritecount(data.length);
+        }
       };
-      getFavorites();
-    }, []);
     
+      getFavorites();
+    }, [user]); 
   
  
 
@@ -291,7 +305,9 @@ const Navbar = ({ count }) => {
               value={query}
               onChange={handleSearch}
             />
-            <button className="bg-red-700 px-4 py-2 text-white rounded-r-lg hover:bg-red-800">
+            <button className="bg-red-700 px-4 py-2 text-white rounded-r-lg hover:bg-red-800"
+            onClick={handleSearchClick}
+            >
               Search
             </button>
             {/* <button className="bg-red-700 text-white px-3 py-2 hover:bg-red-700 flex items-center gap-2">

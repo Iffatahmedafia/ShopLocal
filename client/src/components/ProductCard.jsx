@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { FiHeart } from "react-icons/fi";
 import { toast } from 'react-toastify';
 import axios from "axios";
@@ -17,7 +17,7 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
   const navigate = useNavigate()
 
   const getFullImageUrl = (image) => {
-    if (image=="images/default.jpg") return "https://placehold.co/200"; // fallback
+    if (!image || image === "images/default.jpg") return "https://placehold.co/200";
     if (image.startsWith("http")) return image; // full URL, leave it
     if (image.startsWith("/")) return image; // already absolute
     return `/${image}`; // add leading slash
@@ -25,15 +25,17 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
   
   
   
-  const getFavorites = async () => {
-    const data = await fetchFavorites();
-    setFavouritesCount(data.length);
-    updateFavouritesCount(data.length)
-  };
-
+  const getFavorites = useCallback(async () => {
+    if (user) {
+      const data = await fetchFavorites();
+      setFavouritesCount(data.length);
+      updateFavouritesCount(data.length);
+    }
+  }, [user, updateFavouritesCount]);
+  
   useEffect(() => {
     getFavorites();
-  }, [user]);
+  }, [getFavorites]);
 
   const handleFavourites = async (productId) => {
 
@@ -128,7 +130,7 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
       {/* Product Details */}
       <div className="p-4 flex flex-col flex-grow">
         <h3 className="text-xl font-bold text-gray-900 dark:text-white">{product.name}</h3>
-        <p className="text-gray-500 dark:text-gray-400 font-medium">Brand: {product.brand}</p>
+        <p className="text-gray-500 dark:text-gray-400 font-medium">Brand: {product.brandName || "N/A"}</p>
        
         {/* Where to Buy */}
         <div className="mt-4 flex-grow">

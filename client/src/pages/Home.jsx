@@ -11,6 +11,7 @@ import Cookies from "js-cookie";
 
 import { fetchCategories, fetchSubCategories, fetchProducts } from "../api";
 import { useTheme } from "../context/ThemeContext"; 
+import { useSearch } from "../context/SearchContext"
 import { toast } from 'react-toastify';
 import ProductCard from "../components/ProductCard";
 
@@ -38,6 +39,7 @@ const Home = ({ updateFavouritesCount }) => {
   const [categories, setCategories] = useState([])
   const [subcategories, setSubcategories] = useState([])
   const [products, setProducts] = useState([])
+  const { query } = useSearch();
 
 
 
@@ -68,6 +70,12 @@ const Home = ({ updateFavouritesCount }) => {
       getProducts();
   }
   }, [categories]);
+
+  const filteredProducts = products.filter((product) => {
+    return (
+      product.name.toLowerCase().includes(query.toLowerCase())
+    );
+  });
 
   const handleFavourites = async (productId) => {
 
@@ -180,7 +188,7 @@ const Home = ({ updateFavouritesCount }) => {
             modules={[Pagination]}
             className="pb-16" // Space for dots
             >
-            {products.map((product, index) => (
+            {filteredProducts.map((product, index) => (
               <SwiperSlide key={index}>
                 <ProductCard key={product.id} product={product} updateFavouritesCount={updateFavouritesCount} type="add" />
               </SwiperSlide>

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import Fuse from "fuse.js";
 
 import { fetchProducts, fetchBrands, fetchCategories } from "../api";
 import { logInteraction } from "../utils/logInteraction.js";
@@ -23,7 +24,18 @@ const Product = ({ updateFavouritesCount }) => {
   const [selectedBrandCategories, setSelectedBrandCategories] = useState([]); // State for selected brand categories
   const [products, setProducts] = useState([]);
   const [recommended, setRecommended] = useState([]);
-  const { query } = useSearch();
+  const { query, updateSearchQuery } = useSearch();
+
+  // Load search query from URL on page load
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const searchQuery = params.get("search");
+    if (searchQuery) {
+      updateSearchQuery(searchQuery);
+    } else {
+      updateSearchQuery(""); // ✅ Clear if no query in URL
+    }
+  }, [location.search]);
 
   useEffect(() => {
       const getBrands = async () => {
@@ -77,11 +89,12 @@ const Product = ({ updateFavouritesCount }) => {
     getProducts();
   }, [subsubcategoryId, subcategoryId, categoryId]);
 
-  useEffect(() => {
-    if (user && query.trim().length > 0) {
-      logInteraction({ userId: user.id, searchQuery: query, action: "search" });
-    }
-  }, [query]);
+  // useEffect(() => {
+  //   if (user && query.trim().length > 0) {
+  //     logInteraction({ userId: user.id, searchQuery: query, action: "search" });
+  //   }
+  // }, [query]);
+
 
   useEffect(() => {
     const fetchRecommendations = async () => {
@@ -146,20 +159,34 @@ const Product = ({ updateFavouritesCount }) => {
     const brand = brands.find((b) => b.id === brandId);
     return brand ? brand.name : '';
   };
+  const getCategoryName = (categoryId) => {
+    const category = categories.find((c) => c.id === categoryId);
+    return category ? category.name : '';
+  };
+
+  // Step 1: Apply Fuse.js if query is present
+  let baseProducts = products;
+  if (query.trim()) {
+    const fuse = new Fuse(products, {
+      keys: ["name", "brand.name", "category.name", "tags"],
+      threshold: 0.4,
+    });
+    baseProducts = fuse.search(query).map(result => result.item);
+  }
   
-  const filteredProducts = products.filter((product) => {
-    const brandName = getBrandName(product.brand_id);
-    const categoryName = product.category?.name ?? '';
+  // Step 2: Apply brand/category filters on top
+const filteredProducts = baseProducts.filter((product) => {
+  const brandName = getBrandName(product.brand_id);
+  const categoryName = getCategoryName(product.category);
+
+  const brandMatch =
+    selectedBrands.length === 0 || selectedBrands.includes(brandName);
+  const categoryMatch =
+    selectedBrandCategories.length === 0 || selectedBrandCategories.includes(categoryName);
+
+  return brandMatch && categoryMatch;
+});
   
-    return (
-      (selectedBrands.length === 0 || selectedBrands.includes(brandName)) &&
-      (selectedBrandCategories.length === 0 || selectedBrandCategories.includes(categoryName)) &&
-      (
-        product.name.toLowerCase().includes(query.toLowerCase()) ||
-        brandName.toLowerCase().includes(query.toLowerCase())
-      )
-    );
-  });
   
 
   const handleBrandSelection = (e) => {
@@ -235,33 +262,53 @@ const Product = ({ updateFavouritesCount }) => {
         {/* Product Grid */}
         <div className="flex-1">
           <h2 className="text-2xl font-bold mb-6">Products</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-          {filteredProducts.map((product) => {
-            return (
-              <ProductCard 
-                key={product.id} 
-                product={product} 
-                updateFavouritesCount={updateFavouritesCount} 
-                type="add"
-                onClick={() => logInteraction({ userId: user?.id, productId: product.id, action: "click" })}
-              />
-            );
-          })}
-          </div>
+          {filteredProducts.length === 0 ? (
+              <p className="text-center text-gray-500 dark:text-gray-400 py-6">
+                No products match your filters or search.
+              </p>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                {filteredProducts.map((product) => {
+                  const brandName = brands.find((brand) => brand.id == product.brand_id)?.name ||
+                  "N/A"
+                  return (
+                    <ProductCard 
+                      key={product.id} 
+                      product={{ ...product, brandName }} 
+                      updateFavouritesCount={updateFavouritesCount} 
+                      type="add"
+                      onClick={() => {
+                        if (user) {
+                          logInteraction({ userId: user.id, productId: product.id, action: "click" });
+                        }
+                      }}
+                    />
+                  )
+                })}
+              </div>
+            )}
           {console.log("Recommended",recommended.length)}
           {recommended.length > 0 && (
           <div className="my-12 border-t border-gray-300 dark:border-gray-700 pt-8">
             <h3 className="text-2xl font-bold mb-4">Recommended For You</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              {recommended.map((item, index) => (
+              {recommended.map((item, index) => {
+                const brandName = brands.find((brand) => brand.id == item.brand_id)?.name ||
+                "N/A"
+                return (
                 <ProductCard 
                   key={`rec-${index}`} 
-                  product={item} 
+                  product={{ ...item, brandName }} 
                   updateFavouritesCount={updateFavouritesCount} 
                   type="recommend"
-                  onClick={() => logInteraction({ userId: user?.id, productId: item.id, action: "click" })}
+                  onClick={() => {
+                    if (user) {
+                      logInteraction({ userId: user.id, productId: item.id, action: "click" });
+                    }
+                  }}
                 />
-              ))}
+                )
+              })}
             </div>
           </div>
           )}
