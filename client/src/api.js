@@ -174,3 +174,14 @@ export const updateBrand = async (brandId, formData) => {
     throw error;
   }
 };
+
+export const getBrandAnalytics = async () => {
+  return await axios.get(`${API_URL}/brand/analytics`, {
+    withCredentials: true
+  });
+};
+export const getAdminAnalytics = async () => {
+  return await axios.get(`${API_URL}/admin/analytics`, {
+    withCredentials: true
+  })
+}

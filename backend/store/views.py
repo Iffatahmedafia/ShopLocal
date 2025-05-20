@@ -14,6 +14,8 @@ from .models import Category, SubCategory, SubSubcategory, Brand, SavedBrand, Pr
 from django.conf import settings
 import jwt
 from rest_framework.exceptions import AuthenticationFailed
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
 from django.core.mail import send_mail
 from rest_framework import status
 from datetime import datetime, timedelta
@@ -702,3 +704,97 @@ class ChatbotAPIView(APIView):
         #         "type": "fallback",
         #         "message": "Sorry, I couldn’t process your request. Please try again later."
         #     }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class BrandAnalyticsView(APIView):
+    def get(self, request):
+     
+        user = checkAuth(request)
+        if not user:
+            return Response({"error": "Unauthorized"}, status=401)
+
+        try:
+            brand = Brand.objects.get(user=user)
+            print("Brand", brand)
+        except Brand.DoesNotExist:
+            return Response({"error": "Brand not found"}, status=404)
+       
+
+        this_month = datetime.now().month
+
+        products = Product.objects.filter(brand_id=brand.id, is_trashed=False)
+        print(products)
+        interactions = UserInteraction.objects.filter(product__in=products)
+
+        print("Interactions", interactions)
+      # Aggregate analytics
+        data = {
+            "most_viewed": interactions.filter(action="view")
+                .values("product__name")
+                .annotate(total=Count("id"))
+                .order_by("-total")[:5],
+
+            "most_clicked": interactions.filter(action="click")
+                .values("product__name")
+                .annotate(total=Count("id"))
+                .order_by("-total")[:5],
+
+            "most_searched": interactions.filter(action="search")
+                .values("search_query")
+                .annotate(total=Count("id"))
+                .order_by("-total")[:5],
+
+            "monthly_products": products
+                .annotate(month=TruncMonth("created_at"))
+                .values("month")
+                .annotate(count=Count("id"))
+                .order_by("month"),
+
+            "status_count": products
+                .values("status")
+                .annotate(count=Count("id")),
+        }
+
+        return Response(data)
+
+class AdminAnalyticsView(APIView):
+    def get(self, request):
+        user = checkAuth(request)
+        if not user:
+            return Response({"error": "Unauthorized"}, status=401)
+        data = {
+                # Number of products each brand has
+                "brands_product_count": Brand.objects.annotate(
+                    product_count=Count("products")
+                ).values("name", "product_count"),
+
+                # Approved vs. rejected brands
+                "approved_vs_rejected_brands": {
+                    "approved": Brand.objects.filter(status="Approved").count(),
+                    "rejected": Brand.objects.filter(status="Rejected").count()
+                },
+
+                # Number of products in each category
+                "products_by_category": Category.objects.annotate(
+                    count=Count("products")
+                ).values("name", "count"),
+
+                # Top 5 most viewed categories
+                "most_viewed_categories": UserInteraction.objects.filter(action="view")
+                    .values("product__category__name")
+                    .annotate(count=Count("id"))
+                    .order_by("-count")[:5],
+
+                # Top 5 most viewed brands
+                "most_viewed_brands": UserInteraction.objects.filter(action="view")
+                    .values("product__brand_id__name")
+                    .annotate(count=Count("id"))
+                    .order_by("-count")[:5],
+
+                # Product counts by brand (general)
+                "products_by_brand": Product.objects.values("brand_id__name")
+                    .annotate(count=Count("id"))
+                    .order_by("-count"),
+            }
+
+        return Response(data)

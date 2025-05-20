@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
+import { getBrandAnalytics, getAdminAnalytics } from "../../api";
+import BarChartComponent from "../../components/BarChart";
+import PieChartComponent from "../../components/PieChart";
+
 import {
   fetchUsers,
   fetchBrands,
@@ -23,6 +27,7 @@ const Dashboard = () => {
   const [favorites, setFavorites] = useState([]);
   const [savedBrands, setSavedBrands] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [data, setData] = useState({});
 
   const role = user?.is_admin
     ? "admin"
@@ -84,6 +89,29 @@ const Dashboard = () => {
   }, [role, navigate]);
 
   useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        let res;
+        if (role === "brand") {
+          res = await getBrandAnalytics();
+        } else if (role === "admin") {
+          res = await getAdminAnalytics();
+        } else {
+          console.warn("Unsupported role:", role);
+          return;
+        }
+  
+        setData(res.data);
+      } catch (error) {
+        console.error("Failed to fetch analytics", error);
+      }
+    };
+  
+    fetchAnalytics();
+  }, [role]);
+  
+
+  useEffect(() => {
     const getSavedBrandData = async () => {
       const data = await fetchSavedBrands();
       if (!data) {
@@ -114,7 +142,51 @@ const Dashboard = () => {
     <div className="md:ml-12 p-6 md:p-2 mt-6">
       <h2 className="text-2xl font-bold mb-6">Dashboard Overview</h2>
       {!loading && <DashboardCards stats={stats} role={role} />}
+      {role ==='brand' && (
+        <div>
+          <h3>Most Viewed Products</h3>
+          <BarChartComponent data={data.most_viewed || []} xKey="product__name" yKey="total" />
+
+          <h3>Most Clicked Products</h3>
+          <BarChartComponent data={data.most_clicked || []} xKey="product__name" yKey="total" />
+
+          <h3>Most Searched Keywords</h3>
+          <BarChartComponent data={data.most_searched || []} xKey="search_query" yKey="total" />
+
+          <h3>Products Added per Month</h3>
+          <BarChartComponent data={data.monthly_products || []} xKey="month" yKey="count" />
+
+          <h3>Approved vs Rejected Products</h3>
+          <PieChartComponent data={data.status_count || []} dataKey="count" nameKey="status" />
+        </div>
+        )}
+      {role ==='admin' && (
+        <div>
+          <h3>Brands by Product Count</h3>
+          <BarChartComponent data={data.brands_product_count || []} xKey="name" yKey="product_count" />
+
+          <h3>Approved vs Rejected Brands</h3>
+          <PieChartComponent
+            data={Object.entries(data.approved_vs_rejected_brands || {}).map(([key, value]) => ({ name: key, count: value }))}
+            dataKey="count"
+            nameKey="name"
+          />
+
+          <h3>Products by Category</h3>
+          <BarChartComponent data={data.products_by_category || []} xKey="name" yKey="count" />
+
+          <h3>Most Viewed Categories</h3>
+          <BarChartComponent data={data.most_viewed_categories || []} xKey="product__category__name" yKey="count" />
+
+          <h3>Most Viewed Brands</h3>
+          <BarChartComponent data={data.most_viewed_brands || []} xKey="product__brand_id__name" yKey="count" />
+
+          <h3>Product Counts by Brand</h3>
+          <BarChartComponent data={data.products_by_brand || []} xKey="brand_id__name" yKey="count" />
+        </div>
+      )}
     </div>
+    
   );
 };
 
