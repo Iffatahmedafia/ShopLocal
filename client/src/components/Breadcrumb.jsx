@@ -30,7 +30,7 @@ const Breadcrumb = () => {
             <li key={to} className="flex items-center">
               <span className="mx-2">/</span>
               {isLast ? (
-                <span className="text-gray-700">{formatBreadcrumbName(value)}</span>
+                <span className="text-gray-700 dark:text-white">{formatBreadcrumbName(value)}</span>
               ) : (
                 <Link to={to} className="text-blue-600 hover:underline">
                   {formatBreadcrumbName(value)}

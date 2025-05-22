@@ -202,7 +202,7 @@ const Navbar = ({ count }) => {
           {/* Theme Toggle Button */}
           <button
                 onClick={toggleDarkMode}
-                className="mr-4 p-2 rounded-full bg-white shadow-lg hover:bg-red-200 dark:bg-gray-700 transition"
+                className="mr-4 p-2 rounded-full bg-white shadow-lg hover:bg-red-200 dark:bg-gray-700 dark:hover:bg-red-700 transition"
               >
                 {darkMode ? <FiSun size={16} /> : <FiMoon size={18} />}
           </button>

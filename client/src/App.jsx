@@ -106,7 +106,7 @@ const ProtectedRoute = ({ favouritesCount }) => {
 
         {/* Main Content Area */}
         <div
-          className={`flex-1 transition-all duration-300 overflow-y-auto ${
+          className={`flex-1 transition-all duration-300 overflow-y-auto dark:bg-gray-900 dark:text-white ${
             !isMobile ? (sidebarOpen ? 'ml-64' : 'ml-0') : ''
           }`}
         >

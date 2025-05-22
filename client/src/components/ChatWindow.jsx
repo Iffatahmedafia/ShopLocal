@@ -57,11 +57,11 @@ const ChatWindow = ({ closeChat }) => {
         <button className="text-red-500 cursor-pointer" onClick={closeChat}>Close</button>
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-gray-100 p-2 space-y-2">
+      <div className="flex-1 overflow-y-auto bg-gray-100 dark:bg-gray-900 dark:text-white p-2 space-y-2">
         {messages.map((msg, idx) => (
           <div
             key={idx}
-            className={`p-2 rounded-md ${msg.type === "user" ? "bg-blue-100 self-end" : "bg-gray-200 self-start"}`}
+            className={`p-2 rounded-md ${msg.type === "user" ? "bg-blue-100 dark:bg-blue-600 self-end" : "bg-gray-200 dark:bg-gray-700 self-start"}`}
           >
             <p>{msg.message}</p>
             {msg.link && (
@@ -74,7 +74,7 @@ const ChatWindow = ({ closeChat }) => {
         {loading && <div className="italic text-gray-500">Typing...</div>} {/* 👈 Loader */}
       </div>
 
-      <div className="flex items-center p-2 bg-gray-200">
+      <div className="flex items-center p-2 bg-gray-200 dark:bg-gray-700">
         <input
           type="text"
           value={input}

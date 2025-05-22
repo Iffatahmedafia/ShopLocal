@@ -46,13 +46,13 @@ const cardConfig = {
   fav_brands: {
     icon: <Star className="h-6 w-6 text-pink-600" />,
     title: "Saved Brands",
-    bg: "bg-red-100 dark:bg-red-800",
+    bg: "bg-red-100 dark:bg-red-700",
     role: "user",
   },
   products: {
     icon: <ShoppingBag className="h-6 w-6 text-purple-600" />,
     title: "Total Products",
-    bg: "bg-purple-100 dark:bg-purple-800",
+    bg: "bg-purple-100 dark:bg-purple-700",
     role: "admin,brand",
   },
   pending_products: {
@@ -76,7 +76,7 @@ const cardConfig = {
   fav_products: {
     icon: <Heart className="h-6 w-6 text-fuchsia-600" />,
     title: "Favourite Products",
-    bg: "bg-red-100 dark:bg-red-800",
+    bg: "bg-red-100 dark:bg-red-700",
     role: "user",
   },
   Categories: {
