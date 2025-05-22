@@ -143,37 +143,42 @@ const Dashboard = () => {
       <h2 className="text-2xl font-bold mb-6">Dashboard Overview</h2>
       {!loading && <DashboardCards stats={stats} role={role} />}
       {role ==='brand' && (
-        <div>
+        <div className="mt-6">
+
+          <h3>Product Status</h3>
+          <PieChartComponent data={data.status_count || []} dataKey="count" nameKey="status" />
+
           <h3>Most Viewed Products</h3>
           <BarChartComponent data={data.most_viewed || []} xKey="product__name" yKey="total" />
 
           <h3>Most Clicked Products</h3>
           <BarChartComponent data={data.most_clicked || []} xKey="product__name" yKey="total" />
 
-          <h3>Most Searched Keywords</h3>
-          <BarChartComponent data={data.most_searched || []} xKey="search_query" yKey="total" />
+          {/* <h3>Most Searched Keywords</h3>
+          <BarChartComponent data={data.most_searched || []} xKey="search_query" yKey="total" /> */}
 
-          <h3>Products Added per Month</h3>
+          <h3>Products Added by Month</h3>
           <BarChartComponent data={data.monthly_products || []} xKey="month" yKey="count" />
-
-          <h3>Approved vs Rejected Products</h3>
-          <PieChartComponent data={data.status_count || []} dataKey="count" nameKey="status" />
+          
         </div>
         )}
       {role ==='admin' && (
-        <div>
-          <h3>Brands by Product Count</h3>
-          <BarChartComponent data={data.brands_product_count || []} xKey="name" yKey="product_count" />
+        <div className="mt-6">
 
-          <h3>Approved vs Rejected Brands</h3>
+          <h3>Brand Status Count</h3>
           <PieChartComponent
             data={Object.entries(data.approved_vs_rejected_brands || {}).map(([key, value]) => ({ name: key, count: value }))}
             dataKey="count"
             nameKey="name"
           />
+          <h3>Brands by Product Count</h3>
+          <BarChartComponent data={data.brands_product_count || []} xKey="name" yKey="product_count" />
 
           <h3>Products by Category</h3>
           <BarChartComponent data={data.products_by_category || []} xKey="name" yKey="count" />
+
+          <h3>Products by Brand</h3>
+          <BarChartComponent data={data.products_by_brand || []} xKey="brand_id__name" yKey="count" />
 
           <h3>Most Viewed Categories</h3>
           <BarChartComponent data={data.most_viewed_categories || []} xKey="product__category__name" yKey="count" />
@@ -181,8 +186,7 @@ const Dashboard = () => {
           <h3>Most Viewed Brands</h3>
           <BarChartComponent data={data.most_viewed_brands || []} xKey="product__brand_id__name" yKey="count" />
 
-          <h3>Product Counts by Brand</h3>
-          <BarChartComponent data={data.products_by_brand || []} xKey="brand_id__name" yKey="count" />
+          
         </div>
       )}
     </div>

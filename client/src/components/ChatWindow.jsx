@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const ChatWindow = ({ closeChat }) => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    { type: "bot", message: "Hi, how can I help you today?" } // 👈 Initial welcome message
+  ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false); // 👈 Loading state
 
@@ -12,6 +14,7 @@ const ChatWindow = ({ closeChat }) => {
     const userMessage = { type: "user", message: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
+    setLoading(true)
 
     try {
       const res = await axios.post("http://localhost:8000/api/chatbot/", { message: input });
@@ -29,7 +32,7 @@ const ChatWindow = ({ closeChat }) => {
         res.data.products.forEach((product) => {
           suggestions.push({
             type: "bot",
-            message: `Product: ${product.name} - $${product.price}`,
+            message: `${product.name}\n💰 Price: CAD ${product.price}`,
             link: product.online_store || "",
           });
         });
@@ -63,7 +66,7 @@ const ChatWindow = ({ closeChat }) => {
             <p>{msg.message}</p>
             {msg.link && (
               <a href={msg.link} target="_blank" rel="noopener noreferrer" className="text-blue-500 text-sm">
-                Visit link
+                Visit Website
               </a>
             )}
           </div>

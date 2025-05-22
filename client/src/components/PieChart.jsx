@@ -1,11 +1,11 @@
 import React from "react";
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from "recharts";
 
-const COLORS = ["#0088FE", "#FF8042", "#00C49F", "#FFBB28"];
+const COLORS = ["#8884d8", "#3A86FF", "#0088FE", "#6B7280", "#B91C1C","#9B5DE5", "#3A86FF", "#00C49F"];
 
 export default function PieChartComponent({ data, dataKey, nameKey }) {
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="50%" height={300}>
       <PieChart>
         <Tooltip />
         <Pie

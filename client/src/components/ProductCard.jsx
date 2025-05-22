@@ -136,7 +136,7 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
         <div className="mt-4 flex-grow">
         <h3 className="text-md font-semibold dark:text-gray-100 mb-3">Where to Buy</h3>
           <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">
-            <span className="font-semibold">Retail Store:</span> {product.offline_store || "Not Available"}
+            <span className="font-semibold">Retail Store:</span> {product.retail_store || "Not Available"}
           </p>
           <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">
             <span className="font-semibold">Online: </span> 

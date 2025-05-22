@@ -19,7 +19,7 @@ const Chatbot = () => {
       </div>
 
       {isChatOpen && (
-        <div className="fixed bottom-20 right-8 z-50 w-80 h-96 bg-white shadow-xl rounded-lg border border-gray-300">
+        <div className="fixed bottom-20 right-8 z-50 w-90 h-96 bg-white shadow-xl rounded-lg border border-gray-300">
           <ChatWindow closeChat={() => setIsChatOpen(false)} />
         </div>
       )}

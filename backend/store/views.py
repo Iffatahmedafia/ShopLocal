@@ -19,6 +19,7 @@ from django.db.models.functions import TruncMonth
 from django.core.mail import send_mail
 from rest_framework import status
 from datetime import datetime, timedelta
+from django.utils.dateformat import DateFormat
 from .llm_mistral import generate_recommendations, generate_tags_from_description, generate_chat_response
 # import openai
 import os
@@ -723,10 +724,25 @@ class BrandAnalyticsView(APIView):
         this_month = datetime.now().month
 
         products = Product.objects.filter(brand_id=brand.id, is_trashed=False)
-        print(products)
+        print("Products",products)
         interactions = UserInteraction.objects.filter(product__in=products)
 
-        print("Interactions", interactions)
+
+        monthly_data = products.annotate(
+            month=TruncMonth("created_at")
+        ).values("month").annotate(
+            count=Count("id")
+        ).order_by("month")
+
+        # Format the month for the response
+        monthly_products = [
+            {"month": DateFormat(item["month"]).format("F Y"), "count": item["count"]}
+            for item in monthly_data
+            ]
+
+        status = products.values("status").annotate(count=Count("id"))
+        print("Product Status", status)
+
       # Aggregate analytics
         data = {
             "most_viewed": interactions.filter(action="view")
@@ -744,11 +760,7 @@ class BrandAnalyticsView(APIView):
                 .annotate(total=Count("id"))
                 .order_by("-total")[:5],
 
-            "monthly_products": products
-                .annotate(month=TruncMonth("created_at"))
-                .values("month")
-                .annotate(count=Count("id"))
-                .order_by("month"),
+            "monthly_products" : monthly_products,
 
             "status_count": products
                 .values("status")

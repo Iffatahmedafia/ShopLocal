@@ -103,6 +103,9 @@ def generate_recommendations(user_keywords):
             structured_output.append({
                 "id": product.id,
                 "name": product.name,
+                "brand_id": product.brand_id.id if product.brand_id else None,
+                "retail_store": product.retail_store,
+                "online_store": product.online_store,
                 "price": str(product.price),
                 "category": product.category.name if product.category else None,
                 "tags": getattr(product, 'tags', ''),

@@ -119,11 +119,22 @@ const Home = ({ updateFavouritesCount }) => {
       <div className="bg-slate dark:bg-gray-900 text-gray-900 dark:text-white transition duration-300">
 
         {/* Hero Section */}
-        <header className="relative w-full h-[400px] bg-cover bg-center" style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}>
-          <div className="absolute inset-0 bg-gray-100 bg-opacity-50 flex flex-col justify-center items-center text-center">
+        <header className="relative w-full h-[400px] md:h-[500px] bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/hero_images/hero_banner.png')",
+            backgroundColor: "gray-100",
+          }}
+        >
+          <div
+            className="absolute inset-0 flex flex-col justify-center items-center text-center"
+            style={{ backgroundColor: "rgba(255, 255, 255, 0.3)" }} // semi-transparent overlay
+          >
             <h1 className="text-4xl md:text-6xl font-bold">Find Your Perfect Local Products</h1>
-            <p className="mt-4 text-lg text-gray-700">Explore our local shops and their collections.</p>
-            <a href="/shop" className="mt-6 px-6 py-3 bg-red-700 hover:bg-red-600 text-white font-semibold rounded-lg">
+            <p className="mt-4 text-lg text-gray-700 text-white">Explore our local shops and their collections.</p>
+            <a
+              href="/shop"
+              className="mt-6 px-6 py-3 bg-red-700 hover:bg-red-600 text-white font-semibold rounded-lg"
+            >
               Shop Now
             </a>
           </div>
