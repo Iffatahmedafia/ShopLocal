@@ -181,7 +181,7 @@ const Navbar = ({ count }) => {
 
   return (
     <>
-    <nav className="bg-black dark:text-white shadow-md px-4 py-2 flex justify-between items-center"> 
+    <nav className="bg-black dark:bg-gray-700 dark:text-white shadow-md px-4 py-2 flex justify-between items-center"> 
         {/* Logo */}
         <a href="/" className="text-xl font-bold text-white ml-2 md:ml-6 whitespace-nowrap">Shop Local</a>
         {user && ( 
@@ -192,7 +192,7 @@ const Navbar = ({ count }) => {
      
         <div className="flex items-center space-x-6">
           {/* Favorite Button */}
-          <button className="relative bg-white dark:bg-gray-700 p-2 rounded-full shadow-lg hover:bg-red-200 dark:hover:bg-red-700 transition">
+          <button className="relative bg-white dark:bg-gray-800 p-2 rounded-full shadow-lg hover:bg-red-200 dark:hover:bg-red-700 transition">
             <FiHeart size={16} onClick={() => user? (navigate('/favorites')) : (navigate('/login'))} className="text-gray-600 dark:text-gray-300" />
             {user && count > 0 && ( 
               <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white px-2 py-1 rounded-full">{count}</span>
@@ -202,7 +202,7 @@ const Navbar = ({ count }) => {
           {/* Theme Toggle Button */}
           <button
                 onClick={toggleDarkMode}
-                className="mr-4 p-2 rounded-full bg-white shadow-lg hover:bg-red-200 dark:bg-gray-700 dark:hover:bg-red-700 transition"
+                className="mr-4 p-2 rounded-full bg-white shadow-lg hover:bg-red-200 dark:bg-gray-800 dark:hover:bg-red-700 transition"
               >
                 {darkMode ? <FiSun size={16} /> : <FiMoon size={18} />}
           </button>

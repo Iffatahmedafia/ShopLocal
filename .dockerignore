@@ -1,0 +1,30 @@
+# Ignore Python virtual envs
+venv/
+venv12/
+
+# Bytecode and cache
+*.pyc
+__pycache__/
+
+# Git
+.git
+.gitignore
+
+# Node modules (will be installed inside container)
+node_modules/
+
+# Env files (if you want to exclude)
+.env
+
+# VSCode settings
+.vscode/
+
+# Logs
+*.log
+
+# Mac system files
+.DS_Store
+
+# Local build artifacts
+dist/
+build/

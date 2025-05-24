@@ -1,12 +1,27 @@
-# Ignore Python virtual environments
+# Python
 venv/
 venv12/
 *.pyc
 __pycache__/
 
-# Ignore environment files
+# Environment files
 .env
 
-
-# Node modules (if you're using React frontend)
+# Node.js
 node_modules/
+
+# VSCode settings
+.vscode/
+
+# Mac system files
+.DS_Store
+
+# Logs
+*.log
+
+# Database files (if any local sqlite)
+*.sqlite3
+
+# Build output folders (if any)
+dist/
+build/

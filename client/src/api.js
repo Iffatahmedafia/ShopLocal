@@ -1,6 +1,9 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8000/api"; // Adjust this if needed
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
+// use API_URL in fetch/axios calls
+
 
 export const fetchCategories = async () => {
   try {
