@@ -10,8 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-from pathlib import Path
 import os
+import dj_database_url
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,13 +21,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
+SECRET_KEY = os.getenv('SECRET_KEY', 'unsafe-key')
+DEBUG = os.getenv("DEBUG", "False") == "True"
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-t#$(vd58bup$8(9v8j&!ex+_i@eb^#a1d1*2qj60u#1obdd^_k'
+# SECRET_KEY = 'django-insecure-t#$(vd58bup$8(9v8j&!ex+_i@eb^#a1d1*2qj60u#1obdd^_k'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1','backend', '0.0.0.0']
+ALLOWED_HOSTS = ['.onrender.com','localhost', '127.0.0.1','backend', '0.0.0.0']
 
 # Static settings
 STATIC_URL = '/static/'
@@ -38,6 +42,7 @@ STATICFILES_DIRS = [
 
 # In production, you'll also have a STATIC_ROOT defined for collecting static files
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media settings
 MEDIA_URL = "/media/"
@@ -61,6 +66,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -72,8 +78,11 @@ MIDDLEWARE = [
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3001",  # React frontend
+    os.getenv("FRONTEND_URL", "http://localhost:3001"),
 ]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3001",  # React frontend
+# ]
 
 CORS_ALLOW_CREDENTIALS = True  # Allow cookies to be sent in requests
 
@@ -115,15 +124,19 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'shopLocal',
-        'USER': 'afia',
-        'PASSWORD': '12345',
-        'HOST': 'localhost',  # or your PostgreSQL host
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(default=os.getenv("DATABASE_URL"), conn_max_age=600)
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'shopLocal',
+#         'USER': 'afia',
+#         'PASSWORD': '12345',
+#         'HOST': 'localhost',  # or your PostgreSQL host
+#         'PORT': '5432',
+#     }
+# }
 
 AUTH_USER_MODEL = 'store.CustomUser'
 

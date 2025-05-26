@@ -8,6 +8,7 @@ attrs==25.3.0
 certifi==2025.1.31
 charset-normalizer==3.4.1
 dataclasses-json==0.6.7
+dj-database-url==2.3.0
 Django==5.2
 django-cors-headers==4.7.0
 djangorestframework==3.16.0
@@ -17,6 +18,7 @@ filelock==3.18.0
 frozenlist==1.6.0
 fsspec==2025.3.2
 greenlet==3.2.1
+gunicorn==23.0.0
 h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
@@ -75,5 +77,6 @@ typing-inspection==0.4.0
 typing_extensions==4.13.2
 urllib3==2.4.0
 wheel==0.45.1
+whitenoise==6.9.0
 yarl==1.20.0
 zstandard==0.23.0
