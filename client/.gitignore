@@ -44,4 +44,5 @@ dist-ssr/
 # If you store other static files like favicon, robots.txt etc.
 !/public/favicon.ico
 !/public/robots.txt
+!/public/_redirects
 
