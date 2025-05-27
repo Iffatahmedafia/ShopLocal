@@ -39,6 +39,7 @@ import MobileSidebar from "./components/MobileSidebar.jsx";
 import Chatbot from "./components/Chatbot.jsx";
 import Breadcrumb from "./components/Breadcrumb.jsx";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 const fetchUser = async (dispatch) => {
   const localUser = localStorage.getItem("user");

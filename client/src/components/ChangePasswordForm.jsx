@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 
 const ChangePasswordForm = () => {
 //   const [userData, setUserData] = useState(null);
-  
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
 
@@ -16,7 +17,7 @@ const ChangePasswordForm = () => {
     }
 
     try {
-      await axios.put("http://localhost:8000/api/password/update/",{
+      await axios.put(`${API_URL}/password/update/`,{
         old_password: data.currentPassword,
         new_password: data.newPassword
       }, { withCredentials: true });

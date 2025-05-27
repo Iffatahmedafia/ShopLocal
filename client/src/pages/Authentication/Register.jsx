@@ -6,6 +6,9 @@ import { toast } from 'react-toastify';
 
 
 const Register = () => {
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   console.log(showPassword)
@@ -23,7 +26,7 @@ const Register = () => {
   const handleSubmitForm = async (data) => {
     console.log(data);
     try {
-      const response = await fetch("http://localhost:8000/api/register/", {
+      const response = await fetch(`${API_URL}/register/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

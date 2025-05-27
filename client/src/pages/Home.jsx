@@ -31,6 +31,9 @@ const products = [
 ];
 
 const Home = ({ updateFavouritesCount }) => {
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
   const { user } = useSelector((state) => state.auth);
   console.log("User:", user)
   // const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
@@ -86,7 +89,7 @@ const Home = ({ updateFavouritesCount }) => {
     try {
       console.log(user.id)
       // Send a request to the backend to add the product to the favorites
-      const response = await axios.post('http://localhost:8000/api/favorites/add/', 
+      const response = await axios.post(`${API_URL}/api/favorites/add/`, 
         { product: productId, },
         {
           headers: {

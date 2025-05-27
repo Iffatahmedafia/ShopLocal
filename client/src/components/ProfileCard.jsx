@@ -4,6 +4,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const ProfileCard = () => {
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
   const [userData, setUserData] = useState(null);
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
@@ -12,7 +15,7 @@ const ProfileCard = () => {
     // Fetch current user data
     const fetchUserData = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/profile/", { withCredentials: true });
+        const res = await axios.get(`${API_URL}/profile/`, { withCredentials: true });
         console.log("User Data:",res.data)
         setUserData(res.data);
         setValue("name", res.data.name);

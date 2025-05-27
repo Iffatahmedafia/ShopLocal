@@ -93,7 +93,7 @@ class Brand(models.Model):
     supershop_store = models.TextField(blank=True, null=True)
     website_link = models.URLField(max_length=500, blank=True, null=True)  # Store URL
     province = models.CharField(max_length=255)
-    status = models.CharField(default="Pending")
+    status = models.CharField(max_length=20, default="Pending")
     canadian_owned = models.BooleanField(default=True)
     origin_country = models.CharField(max_length=100, blank=True, null=True)
     manufactured_in = models.CharField(max_length=100,blank=True, null=True)
@@ -119,7 +119,7 @@ class Product(models.Model):
     retail_store = models.TextField(blank=True, null=True)
     supershop_store = models.TextField(blank=True, null=True)
     online_store = models.URLField(max_length=500, blank=True, null=True)  # Store URL
-    status = models.CharField(default="Pending")
+    status = models.CharField(max_length=20, default="Pending")
     tags = models.JSONField(default=list, blank=True, null=True)  # Example: ["smartwatch", "fitness", "apple"]
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name="products")
     subcategory = models.ForeignKey(SubCategory, null=True, blank=True, on_delete=models.SET_NULL, related_name='products')

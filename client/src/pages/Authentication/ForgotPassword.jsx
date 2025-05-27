@@ -6,6 +6,7 @@ import axios from "axios";
 
 const ForgotPassword = () => {
 
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
     const {
         register,
@@ -17,7 +18,7 @@ const ForgotPassword = () => {
     const handleForgotPassword = async () => {
   
       try {
-        const result = await axios.post("http://localhost:8000/api/forgot-password/", { email });
+        const result = await axios.post(`${API_URL}/forgot-password/`, { email });
         console.log("Forgot Password Result", result)
         toast.success(result.message || 'Reset link sent if the email exists!');
       } catch (err) {

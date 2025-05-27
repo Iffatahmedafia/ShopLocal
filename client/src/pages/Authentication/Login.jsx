@@ -12,6 +12,9 @@ import { getCookie } from "../../utils/ExtractCookie";
 
 
 const Login = () => {
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const dispatch = useDispatch();
@@ -33,7 +36,7 @@ const Login = () => {
   const handleSubmitForm = async (data) => {
     console.log(data);
     try {
-      const response = await fetch("http://localhost:8000/api/login/", {
+      const response = await fetch(`${API_URL}/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

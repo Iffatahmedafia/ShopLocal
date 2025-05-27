@@ -7,6 +7,9 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const BrandCard = ({ brand, category, type }) => {
+
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
     const { user } = useSelector((state) => state.auth);
     const [favouritesCount, setFavouritesCount] = useState(0)
     const navigate = useNavigate()
@@ -24,7 +27,7 @@ const BrandCard = ({ brand, category, type }) => {
             setFavouritesCount(favouritesCount + 1);
             // updateFavouritesCount(favouritesCount + 1);
             // Send a request to the backend to add the product to the favorites
-            const response = await axios.post('http://localhost:8000/api/saved_brands/add/', 
+            const response = await axios.post(`${API_URL}/saved_brands/add/`, 
             { brand: brandId, },
             {
                 headers: {
@@ -62,7 +65,7 @@ const BrandCard = ({ brand, category, type }) => {
             setFavouritesCount(favouritesCount - 1);
             // updateFavouritesCount(favouritesCount + 1);
             // Send a request to the backend to add the product to the favorites
-            const response = await axios.delete(`http://localhost:8000/api/saved_brands/remove/${brandId}/`, 
+            const response = await axios.delete(`${API_URL}/saved_brands/remove/${brandId}/`, 
             {
                 headers: {
                     "Content-Type": "application/json",

@@ -11,6 +11,9 @@ import { logout } from "../redux/slices/authSlice"
 
 
 const Avatar = () => {
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
   const [open, setOpen] = useState(false);
   const [openPassword, setOpenPassword] = useState(false);
   const { user } = useSelector((state) => state.auth);
@@ -18,17 +21,17 @@ const Avatar = () => {
   const navigate = useNavigate();
 
   const logoutHandler = async () => {
-    // try {
-    //   await fetch("http://localhost:8000/api/logout/", {
-    //     method: "POST",
-    //     credentials: "include", // Include cookies
-    //   });
-    // } catch (error) {
-    //   console.error("Logout API call failed:", error);
-    // }
-  
-    dispatch(logout());
-    navigate("/");
+    try {
+      await fetch(`${API_URL}/logout/`, {
+        method: "POST",
+        credentials: "include", // Include cookies
+      });
+      dispatch(logout());
+      navigate("/");
+    } catch (error) {
+      console.error("Logout API call failed:", error);
+    }
+   
   };
 
   return (

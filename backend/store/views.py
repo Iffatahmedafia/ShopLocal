@@ -43,7 +43,7 @@ def checkAuth(request):
         print("Access Token", access_token)
 
         if not access_token:
-            return Response({"authenticated": False, "error": "No token found in cookies"}, status=401)
+            raise AuthenticationFailed("No token found in cookies")
 
         try:
             # Decode the token
@@ -125,6 +125,8 @@ class CheckAuthView(APIView):
                 "user": {"id": user.id, "email": user.email, "name": user.name}  # Using `user.name` instead of `username`
             }, status=200)
 
+        except AuthenticationFailed as e:
+            return Response({"authenticated": False, "error": str(e)}, status=401)
         except jwt.ExpiredSignatureError:
             return Response({"authenticated": False, "error": "Token expired"}, status=401)
         except jwt.InvalidTokenError:

@@ -6,6 +6,9 @@ import axios from "axios";
 import { toast } from 'react-toastify';
 
 const ResetPassword = () => {
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
   const [params] = useSearchParams();
   const token = params.get("token");
   const navigate = useNavigate();
@@ -21,7 +24,7 @@ const ResetPassword = () => {
   const handleResetPassword = async () => {
 
     try {
-      const result = await axios.post("http://localhost:8000/api/reset-password/", {
+      const result = await axios.post(`${API_URL}/reset-password/`, {
         token,
         new_password: data.password,
         confirm_password: data.confirmPassword,

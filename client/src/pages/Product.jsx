@@ -14,6 +14,9 @@ import Breadcrumb from "../components/Breadcrumb.jsx";
 
 
 const Product = ({ updateFavouritesCount }) => {
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
   const { user } = useSelector((state) => state.auth);
   const { subcategoryId } = useParams();
   const { categoryId } = useParams();
@@ -124,7 +127,7 @@ const Product = ({ updateFavouritesCount }) => {
     // ];
       try {
         console.log("Fetching recommendations...");
-        const response = await axios.get("http://localhost:8000/api/recommendations/", {
+        const response = await axios.get(`${API_URL}/api/recommendations/`, {
           withCredentials: true,
         });
         console.log("Recommendation", response.data.recommendations);

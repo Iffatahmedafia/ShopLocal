@@ -2,6 +2,9 @@
 
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
+
 export const logInteraction = async ({ userId, productId = null, action = "view", searchQuery = "" }) => {
   const data = {
     user: userId,
@@ -11,7 +14,7 @@ export const logInteraction = async ({ userId, productId = null, action = "view"
   };
 
   try {
-    await axios.post("http://localhost:8000/api/interactions/", data);
+    await axios.post(`${API_URL}/interactions/`, data);
     console.log("Logged:", data);
   } catch (err) {
     console.error("Interaction log failed:", err);

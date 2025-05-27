@@ -8,6 +8,9 @@ import { fetchUserData } from "../api";
 import { toast } from "react-toastify";
 
 const UpdateProfileForm = () => {
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
   const dispatch = useDispatch();
   const [userData, setUserData] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -37,7 +40,7 @@ const UpdateProfileForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      const res = await axios.put("http://localhost:8000/api/profile/update/", data, { withCredentials: true });
+      const res = await axios.put(`${API_URL}/profile/update/`, data, { withCredentials: true });
       console.log("Updated Data", res.data)
       setUserData(res.data); // Update UI with new data
       dispatch(setCredentials({ user: res.data }));

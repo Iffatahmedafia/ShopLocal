@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { toast } from 'react-toastify';
 
-import { fetchProducts } from "../../api";
+import { fetchProducts, deleteProduct } from "../../api";
 import Table from "../../components/Table";
 import DeleteModal from "../../components/DeleteModal";
 
@@ -22,6 +22,9 @@ const columns = [
 ];
 
 const Trash = () => {
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
   const { user } = useSelector((state) => state.auth);
   console.log("User:", user)
   const [loading, setLoading] = useState(true);

@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 import dj_database_url
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -80,6 +83,8 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     os.getenv("FRONTEND_URL", "http://localhost:3001"),
 ]
+print("FRONTEND_URL from env:", os.getenv("FRONTEND_URL"))
+
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:3001",  # React frontend
 # ]

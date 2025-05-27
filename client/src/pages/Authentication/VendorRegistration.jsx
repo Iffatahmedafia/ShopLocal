@@ -6,6 +6,9 @@ import { toast } from 'react-toastify';
 import { fetchCategories } from "../../api";
 
 const VendorRegistration = () => {
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -35,7 +38,7 @@ const VendorRegistration = () => {
   const handleSubmitForm = async (data) => {
     console.log(data);
     try {
-      const response = await fetch("http://localhost:8000/api/brand/create/", {
+      const response = await fetch(`${API_URL}/brand/create/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

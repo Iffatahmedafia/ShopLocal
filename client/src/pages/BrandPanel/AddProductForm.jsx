@@ -10,6 +10,9 @@ import DialogWrapper from "../../components/DialogWrapper";
 
 
 const AddProductForm = ({ open, setOpen, title, type, productData, onSubmit }) => {
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
   const { user } = useSelector((state) => state.auth);
   console.log("User:", user)
   const [categories, setCategories] = useState([]);
@@ -125,7 +128,7 @@ const AddProductForm = ({ open, setOpen, title, type, productData, onSubmit }) =
   const generateTagsFromAI = async (description) => {
     try {
       setGeneratingTags(true);
-      const res = await axios.post("http://localhost:8000/api/generate-tags/", { text: description });
+      const res = await axios.post(`${API_URL}/generate-tags/`, { text: description });
       const tags = res.data.tags;
       setSuggestedTags(tags);
       setTagsInput(tags.join(', '));
@@ -174,14 +177,14 @@ const AddProductForm = ({ open, setOpen, title, type, productData, onSubmit }) =
     try {
       if (productData) {
         // If task exists, make PUT request to update it
-        const response = await axios.patch(`http://localhost:8000/api/product/update/${productData.id}`,FormData, 
+        const response = await axios.patch(`${API_URL}/product/update/${productData.id}`,FormData, 
           { withCredentials: true }
         );
         console.log(response.data);
         toast.success("Product updated successfully!");
       }
       else{
-        const response = await axios.post("http://localhost:8000/api/product/create/", {
+        const response = await axios.post(`${API_URL}/product/create/`, {
             name: data.name,
             description: data.description,
             brand_id: data.brand,

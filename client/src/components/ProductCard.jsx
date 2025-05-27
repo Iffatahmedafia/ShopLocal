@@ -12,6 +12,9 @@ import { fetchFavorites } from "../api";
 
 
 const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
   const { user } = useSelector((state) => state.auth);
   const [favouritesCount, setFavouritesCount] = useState(0)
   const navigate = useNavigate()
@@ -49,7 +52,7 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
       setFavouritesCount(favouritesCount + 1);
       // updateFavouritesCount(favouritesCount + 1);
       // Send a request to the backend to add the product to the favorites
-      const response = await axios.post('http://localhost:8000/api/favorites/add/', 
+      const response = await axios.post(`${API_URL}/favorites/add/`, 
         { product: productId, },
         {
           headers: {
@@ -88,7 +91,7 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
       setFavouritesCount(favouritesCount - 1);
       // updateFavouritesCount(favouritesCount + 1);
       // Send a request to the backend to add the product to the favorites
-      const response = await axios.delete(`http://localhost:8000/api/favorites/remove/${productId}/`, 
+      const response = await axios.delete(`${API_URL}/favorites/remove/${productId}/`, 
         {
           headers: {
               "Content-Type": "application/json",

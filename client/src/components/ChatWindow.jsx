@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const ChatWindow = ({ closeChat }) => {
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
   const [messages, setMessages] = useState([
     { type: "bot", message: "Hi, how can I help you today?" } // 👈 Initial welcome message
   ]);
@@ -17,7 +20,7 @@ const ChatWindow = ({ closeChat }) => {
     setLoading(true)
 
     try {
-      const res = await axios.post("http://localhost:8000/api/chatbot/", { message: input });
+      const res = await axios.post(`${API_URL}/chatbot/`, { message: input });
       console.log("Result", res)
 
       if (res.data.type === "suggestions") {
