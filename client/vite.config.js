@@ -8,6 +8,7 @@ const isDocker = process.env.REACT_APP_API_URL?.includes("backend");
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  base: '/', // IMPORTANT for relative asset paths
   server: {
     port: 3001,
     host: true,
