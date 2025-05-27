@@ -450,7 +450,7 @@ const Navbar = ({ count }) => {
               </div>
             )}
           </div>
-          <a href="/brands" className="flex items-center hover:text-red-700">Brands</a>
+          <Link to="/brands" className="flex items-center hover:text-red-700">Brands</Link>
           <hr className="my-4 border-gray-300 dark:border-gray-700" />
           {!user && (
           <div>
