@@ -183,7 +183,7 @@ const Navbar = ({ count }) => {
     <>
     <nav className="bg-black dark:bg-gray-700 dark:text-white shadow-md px-4 py-2 flex justify-between items-center"> 
         {/* Logo */}
-        <a href="/" className="text-xl font-bold text-white ml-2 md:ml-6 whitespace-nowrap">Shop Local</a>
+        <Link to="/" className="text-xl font-bold text-white ml-2 md:ml-6 whitespace-nowrap">Shop Local</Link>
         {user && ( 
           <div className="text-white text-lg font-semibold">
             Welcome, {user.name}
@@ -288,10 +288,10 @@ const Navbar = ({ count }) => {
               </div>
             )}
           </div>
-          <a href="/brands" className="hover:text-red-600 flex items-center">
+          <Link to="/brands" className="hover:text-red-600 flex items-center">
             <FaTag size={18} className="mr-2" />
              Brands
-          </a>
+          </Link>
         </div>
 
         {/* Search Bar */}
@@ -325,10 +325,10 @@ const Navbar = ({ count }) => {
           {user? (<Avatar />):
           (
           // Avatar with Sign In 
-          <a href="/login" className="hidden md:flex items-center space-x-1 hover:text-red-700">
+          <Link to="/login" className="hidden md:flex items-center space-x-1 hover:text-red-700">
             <FaUserCircle size={30} />
             <span className="text-sm font-semibold hidden sm:inline">Sign In</span>
-          </a>
+          </Link>
           )}
           {!user &&
            <button
@@ -466,7 +466,7 @@ const Navbar = ({ count }) => {
             <div>
               <p className="mt-4 text-center text-gray-700 dark:text-gray-300">
                 Don't have an account?{" "}
-              <a href="/register" className="text-red-500 hover:underline">Sign Up</a>
+              <Link href="/register" className="text-red-500 hover:underline">Sign Up</Link>
               {/* <Link to="/signup" className="text-red-500 hover:underline">
                 Sign Up
               </Link> */}

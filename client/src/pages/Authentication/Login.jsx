@@ -140,7 +140,7 @@ const Login = () => {
               />
               Remember Me
             </label>
-            <a href="/forgot-password" className="text-red-600 hover:underline"> Forgot Password?</a>
+            <Link to="/forgot-password" className="text-red-600 hover:underline"> Forgot Password?</Link>
             {/* <Link to="/forgot-password" className="text-red-500 hover:underline">
               Forgot Password?
             </Link> */}
@@ -166,7 +166,7 @@ const Login = () => {
         {/* Sign Up Link */}
         <p className="mt-4 text-center text-gray-700 dark:text-gray-300">
           Don't have an account?{" "}
-          <a href= "/register" className="text-red-600 hover:underline">Sign Up</a>
+          <Link to= "/register" className="text-red-600 hover:underline">Sign Up</Link>
           {/* <Link to="/signup" className="text-red-500 hover:underline">
             Sign Up
           </Link> */}

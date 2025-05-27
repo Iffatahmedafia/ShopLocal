@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from "react-router-dom";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { toast } from 'react-toastify';
 
@@ -404,7 +405,7 @@ const VendorRegistration = () => {
         {/* Sign Up Link */}
         <p className="mt-4 text-center text-gray-700 dark:text-gray-300">
           Return to Home{" "}
-          <a href= "/" className="text-red-600 hover:underline">Home</a>
+          <Link to= "/" className="text-red-600 hover:underline">Home</Link>
         </p>
       </div>
     </div>
