@@ -87,16 +87,16 @@ class LoginView(APIView):
                     value=tokens["access"],
                     max_age=max_age,
                     httponly=True, 
-                    secure=False,  # Set to True in production with HTTPS
-                    samesite="Lax"
+                    secure=True,  # Set to True in production with HTTPS
+                    samesite="None"
                 )
                 response.set_cookie(
                     key="refreshToken", 
                     value=tokens["refresh"],
                     max_age=max_age,
                     httponly=True, 
-                    secure=False, 
-                    samesite="Lax"
+                    secure=True, 
+                    samesite="None"
                 )
                 return response
 
