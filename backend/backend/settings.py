@@ -93,8 +93,8 @@ CORS_ALLOW_CREDENTIALS = True  # Allow cookies to be sent in requests
 
 SESSION_COOKIE_SECURE = not DEBUG  # Set to True in production (HTTPS)
 CSRF_COOKIE_SECURE = not DEBUG
-SESSION_COOKIE_SAMESITE = "Lax"
-CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SAMESITE = "None"
 
 # Authentication settings
 REST_FRAMEWORK = {

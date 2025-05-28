@@ -46,7 +46,7 @@ const fetchUser = async (dispatch) => {
   if (localUser) return; // Already stored
 
   try {
-    const response = await fetch("http://localhost:8000/api/check_auth/", {
+    const response = await fetch(`${API_BASE}/check_auth/`, {
       method: "GET",
       credentials: "include", // Send cookies for authentication
     });
