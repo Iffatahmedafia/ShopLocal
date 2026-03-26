@@ -1,27 +1,116 @@
-# Python
-venv/
-venv12/
-*.pyc
-__pycache__/
-
+# =========================
 # Environment files
+# =========================
 .env
+backend/.env
+client/.env
 
-# Node.js
-node_modules/
-
-# VSCode settings
-.vscode/
-
-# Mac system files
-.DS_Store
-
-# Logs
-*.log
-
-# Database files (if any local sqlite)
+# =========================
+# Python / Django
+# =========================
+backend/.venv/
+backend/venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
 *.sqlite3
 
-# Build output folders (if any)
-dist/
-build/
+# Django
+backend/media/
+backend/staticfiles/
+*.log
+
+# =========================
+# Node / React
+# =========================
+client/node_modules/
+client/dist/
+client/build/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# OS / Editor
+# =========================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+
+# Vite local env files
+*.local
+
+
+# Editor settings
+.vscode/
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Ignore everything in public folder first
+client/public/*
+
+# Allow specific image folders in public
+!client/public/hero_images/
+!client/public/hero_images/**
+!client/public/category_images/
+!client/public/category_images/**
+!client/public/product_images/
+!client/public/product_images/**
+
+# If you store other static files like favicon, robots.txt etc.
+!client/public/favicon.ico
+!client/public/robots.txt
+!client/public/_redirects
+
+
+
+# =========================
+# Database dumps / backups
+# =========================
+*.sql
+*.dump
+*.backup
+
+# =========================
+# Coverage / Tests
+# =========================
+.coverage
+htmlcov/
+.pytest_cache/
+
+# =========================
+# Mac system files
+# =========================
+.DS_Store
+
+
+# =========================
+# Database files (if any local sqlite)
+# =========================
+*.sqlite3
+
+# =========================
+# Misc
+# =========================
+.env.*
+
+
