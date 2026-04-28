@@ -181,14 +181,16 @@ const Navbar = ({ count }) => {
 
   return (
     <>
-    <nav className="bg-black dark:bg-gray-700 dark:text-white shadow-md px-4 py-2 flex justify-between items-center"> 
+    <nav className="bg-[#0f1c2e] border-b border-white/10 dark:text-white backdrop-blur-md shadow-sm px-4 py-2 flex justify-between items-center"> 
         {/* Logo */}
-        <Link to="/" className="text-xl font-bold text-white ml-2 md:ml-6 whitespace-nowrap">Shop Local</Link>
-        {user && ( 
-          <div className="text-white text-lg font-semibold">
+        <Link to="/" className="text-xl font-bold ml-2 md:ml-6 whitespace-nowrap text-white">
+         Shop <span className="text-red-600">Local</span>
+        </Link>
+        {/* {user && ( 
+          <div className="text-lg font-semibold text-white">
             Welcome, {user.name}
           </div>
-        )}
+        )} */}
      
         <div className="flex items-center space-x-6">
           {/* Favorite Button */}
@@ -212,20 +214,20 @@ const Navbar = ({ count }) => {
       <div className="px-4 py-3 flex justify-between items-center">
              
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center space-x-6 ml-6">
+        <div className="hidden md:flex items-center space-x-2">
 
           {/* Categories Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
-              className="flex items-center hover:text-red-600"
+              className="flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-red-50 hover:text-red-700 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-red-400"
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
-              <FaList size={18} className="mr-2" />Categories <FiChevronDown className="ml-1" />
+              <FaList size={18} className="mr-1" />Categories <FiChevronDown className="ml-1" />
             </button>
 
             {/* Main Dropdown Menu */}
             {dropdownOpen && (
-              <div className="absolute left-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 flex">
+              <div className="absolute left-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-50 flex">
                 
                 {/* Category List */}
                 <div className="w-56">
@@ -236,7 +238,7 @@ const Navbar = ({ count }) => {
                           setActiveSubCategory(null); // clear subcategory
                         }
                         }
-                        className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex justify-between"
+                        className="block w-full text-left text-sm font-medium px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex justify-between"
                       >
                         {category.name} {subcategories.some(sub => sub.category.id === category.id) && <FiChevronRight />}
                       </button>
@@ -248,7 +250,7 @@ const Navbar = ({ count }) => {
                 {activeCategory && (
                 <div className="absolute top-0 left-full flex items-start">
                   {/* Subcategory Panel */}
-                  <div className="w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                  <div className="w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-50">
                     {subcategories
                       .filter(sub => sub.category.name === activeCategory)
                       .map((sub) => (
@@ -259,7 +261,7 @@ const Navbar = ({ count }) => {
                             handleNavigate({ subcategoryId: sub.id });
                           }
                           }
-                          className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex justify-between items-center"
+                          className="block w-full text-sm font-medium text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex justify-between items-center"
                         >
                           {sub.name}
                           {subsubcategories.some(subsub => subsub.subcategory.id === sub.id) && <FiChevronRight />}
@@ -276,7 +278,7 @@ const Navbar = ({ count }) => {
                           <button
                             key={subSub.id}
                             onClick={() => handleNavigate({ subsubcategoryId: subSub.id })}
-                            className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            className="block w-full text-left text-sm font-medium px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
                           >
                             {subSub.name}
                           </button>
@@ -288,49 +290,68 @@ const Navbar = ({ count }) => {
               </div>
             )}
           </div>
-          <Link to="/brands" className="hover:text-red-600 flex items-center">
-            <FaTag size={18} className="mr-2" />
+          <Link to="/brands" className="flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-red-50 hover:text-red-700 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-red-400">
+            <FaTag size={18} className="mr-1" />
              Brands
           </Link>
+          {!user && (
+          <button
+            type="button"
+            onClick={() => navigate('/vendor_register')}
+            className="ml-2 inline-flex items-center rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition-all duration-300 hover:bg-red-700 hover:text-white hover:border-red-700"
+          >
+            Register your business
+          </button>
+        )}
         </div>
 
         {/* Search Bar */}
-        <div className="flex-1 flex md:justify-center pr-2">
-          <div className="flex items-center border-2 border-gray-300 dark:border-gray-600 rounded-full overflow-hidden w-full max-w-sm md:w-96">
-            <FiSearch size={25} className="text-red-700 ml-3"/>
+        <div className="flex-1 flex md:justify-center px-2 md:px-4">
+          <div className="group flex items-center w-full max-w-full sm:max-w-md md:max-w-xl lg:max-w-2xl rounded-full border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-900/80 shadow-[0_8px_30px_rgba(0,0,0,0.08)] backdrop-blur-md transition-all duration-300 focus-within:border-red-500 focus-within:shadow-[0_10px_35px_rgba(185,28,28,0.18)] hover:shadow-[0_10px_35px_rgba(0,0,0,0.12)]">
+            <div className="pl-4 pr-2 text-gray-400 dark:text-gray-500 transition-colors duration-300 group-focus-within:text-red-600">
+              <FiSearch size={20} />
+            </div>
+
             <input
               type="text"
               placeholder="Search for products..."
-              className="w-full p-2 text-sm text-gray-800 dark:text-white dark:bg-gray-800 focus:outline-none"
+              className="w-full bg-transparent py-3 pr-2 text-sm sm:text-base text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none"
               value={query}
               onChange={handleSearch}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSearchClick();
+              }}
             />
-            <button className="bg-red-700 px-4 py-2 text-white rounded-r-lg hover:bg-red-800"
-            onClick={handleSearchClick}
+
+            <button
+              onClick={handleSearchClick}
+              className="m-1.5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-red-600 to-red-700 px-4 sm:px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:scale-[1.03] hover:from-red-700 hover:to-red-800 active:scale-[0.98]"
             >
-              Search
+              <FiSearch size={16} className="sm:hidden" />
+              <span className="hidden sm:inline">Search</span>
             </button>
-            {/* <button className="bg-red-700 text-white px-3 py-2 hover:bg-red-700 flex items-center gap-2">
-              <FiSearch size={18} />
-              <span className="hidden md:inline">Search</span>
-            </button> */}
           </div>
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-3 md:space-x-5">
           {/* <a href="/vendor_register" className="hidden md:flex items-center underline md:text-red-500 hover:text-red-600 text-underline flex items-center">
               Register your business
           </a> */}
-          {user? (<Avatar />):
+          {user ? (
+            <div className="flex items-center">
+              <Avatar />
+            </div>
+          ) 
+        :
           (
           // Avatar with Sign In 
           <Link to="/login" className="hidden md:flex items-center space-x-1 hover:text-red-700">
-            <FaUserCircle size={30} />
-            <span className="text-sm font-semibold hidden sm:inline">Sign In</span>
+            <FaUserCircle size={32} />
+            <span className="text-sm font-medium hidden sm:inline">Sign In</span>
           </Link>
           )}
-          {!user &&
+          {/* {!user &&
            <button
               type="button"
               onClick={() => navigate('/vendor_register')}
@@ -338,7 +359,7 @@ const Navbar = ({ count }) => {
             >
                Register your business
           </button>
-          }
+          } */}
           {/* Theme Toggle Button
           <button
             onClick={() => setDarkMode(!darkMode)}
@@ -356,124 +377,135 @@ const Navbar = ({ count }) => {
 
       {/* Mobile Menu */}
       {isOpen &&  (
-        <div className="md:hidden bg-white dark:bg-gray-800 p-4 space-y-2 transition duration-300">
-        {!user && (
-          <button
-              type="button"
-              onClick={() => navigate('/vendor_register')}
-              className="w-full flex items-center justify-center bg-red-700 hover:bg-red-800 text-white py-2 transition"
-            >
-               Register your business
-          </button>)
-          }
-          
-          {/* Categories Dropdown */}
-          <div className="relative" ref={dropdownRef}>
-            <button
-              className="flex items-center hover:text-red-700"
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-            >
-              Categories <FiChevronDown className="ml-1" />
-            </button>
+        <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-xl">
+          <div className="px-4 py-5 space-y-5">
+            {/* Register Button */}
+            {!user && (
+              <button
+                type="button"
+                onClick={() => navigate('/vendor_register')}
+                className="w-full inline-flex items-center justify-center rounded-full 
+                bg-red-700 px-5 py-3 text-sm font-semibold text-white 
+                shadow-md transition-all duration-300 
+                hover:bg-red-800 active:scale-[0.98]"
+              >
+                Register your business
+              </button>
+            )}
+                
+            {/* Categories Dropdown */}
+            <div className="relative font-medium" ref={dropdownRef}>
+              <button
+                className="flex items-center hover:text-red-700"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                Categories <FiChevronDown className="ml-1" />
+              </button>
 
-            {/* Main Dropdown Menu */}
-            {dropdownOpen && (
-              <div className="mt-2 space-y-2 bg-white dark:bg-gray-800 rounded-md p-2">
-                {categories.map((category) => (
-                  <div key={category.id} className="relative">
-                    <button
-                      onClick={() => {
-                        setActiveCategory(category.name === activeCategory ? null : category.name)
-                        setActiveSubCategory(null); // clear subcategory
-                      }        
-                      }
-                      className="w-full text-left flex items-center justify-between px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
-                    >
-                      {category.name}
-                      {/* Show chevron only if the category has subcategories */}
-                      {subcategories.some((sub) => sub.category.name === category.name) && (
-                        <FiChevronDown
-                          className={`ml-1 transition-transform ${
-                            activeCategory === category.name ? "rotate-180" : ""
-                          }`}
-                        />
-                      )}
-                    </button>
+              {/* Main Dropdown Menu */}
+              {dropdownOpen && (
+                <div className="mt-2 space-y-2 bg-white dark:bg-gray-800 rounded-md p-2">
+                  {categories.map((category) => (
+                    <div key={category.id} className="relative">
+                      <button
+                        onClick={() => {
+                          setActiveCategory(category.name === activeCategory ? null : category.name)
+                          setActiveSubCategory(null); // clear subcategory
+                        }        
+                        }
+                        className="w-full text-left flex items-center justify-between px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
+                      >
+                        {category.name}
+                        {/* Show chevron only if the category has subcategories */}
+                        {subcategories.some((sub) => sub.category.name === category.name) && (
+                          <FiChevronDown
+                            className={`ml-1 transition-transform ${
+                              activeCategory === category.name ? "rotate-180" : ""
+                            }`}
+                          />
+                        )}
+                      </button>
 
-                    {/* Subcategories Panel (Expands under clicked category) */}
-                    {activeCategory === category.name && (
-                      <div className="ml-6 mt-1 space-y-1">
-                        {subcategories
-                          .filter((sub) => sub.category.name === category.name)
-                          .map((sub) => (
-                            <div key={sub.id} className="relative">
-                              <button
-                                onClick={() => {
-                                  setActiveSubCategory(sub.id === activeSubCategory ? null : sub.id)
-                                  handleNavigate({ subcategoryId: sub.id });
-                                }}
-                                className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex justify-between items-center"
-                              >
-                                {sub.name}
-                                {/* Show chevron only if the category has subcategories */}
-                                {subsubcategories.some((subsub) => subsub.subcategory.name === sub.name) && (
-                                  <FiChevronDown
-                                    className={`ml-1 transition-transform ${
-                                      activeSubCategory === sub.id ? "rotate-180" : ""
-                                    }`}
-                                  />
+                      {/* Subcategories Panel (Expands under clicked category) */}
+                      {activeCategory === category.name && (
+                        <div className="ml-6 mt-1 space-y-1">
+                          {subcategories
+                            .filter((sub) => sub.category.name === category.name)
+                            .map((sub) => (
+                              <div key={sub.id} className="relative">
+                                <button
+                                  onClick={() => {
+                                    setActiveSubCategory(sub.id === activeSubCategory ? null : sub.id)
+                                    handleNavigate({ subcategoryId: sub.id });
+                                  }}
+                                  className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex justify-between items-center"
+                                >
+                                  {sub.name}
+                                  {/* Show chevron only if the category has subcategories */}
+                                  {subsubcategories.some((subsub) => subsub.subcategory.name === sub.name) && (
+                                    <FiChevronDown
+                                      className={`ml-1 transition-transform ${
+                                        activeSubCategory === sub.id ? "rotate-180" : ""
+                                      }`}
+                                    />
+                                  )}
+                                </button>
+
+                                {/* Sub-subcategories */}
+                                {activeSubCategory === sub.id && (
+                                  <div className="ml-6 mt-1 space-y-1">
+                                    {subsubcategories
+                                      .filter((subsub) => subsub.subcategory.name === sub.name)
+                                      .map((subsub) => (
+                                        <button
+                                          key={subsub.id}
+                                          onClick={() => handleNavigate({ subsubcategoryId: subsub.id })}
+                                          className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        >
+                                          {subsub.name}
+                                        </button>
+                                      ))}
+                                  </div>
                                 )}
-                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* Brands */}
+            <Link to="/brands" className="flex font-medium items-center hover:text-red-700">
+              Brands
+            </Link>
 
-                              {/* Sub-subcategories */}
-                              {activeSubCategory === sub.id && (
-                                <div className="ml-6 mt-1 space-y-1">
-                                  {subsubcategories
-                                    .filter((subsub) => subsub.subcategory.name === sub.name)
-                                    .map((subsub) => (
-                                      <button
-                                        key={subsub.id}
-                                        onClick={() => handleNavigate({ subsubcategoryId: subsub.id })}
-                                        className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                      >
-                                        {subsub.name}
-                                      </button>
-                                    ))}
-                                </div>
-                              )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
+            {/* Auth Section */}
+            {!user && (
+              <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-800/70 p-4 text-center">
+                <button
+                  type="button"
+                  onClick={() => navigate('/login')}
+                  className="w-full rounded-full 
+                  bg-gray-900 px-5 py-3 text-sm font-semibold text-white 
+                  shadow-sm transition-all duration-300 
+                  hover:bg-red-700 active:scale-[0.98] 
+                  dark:bg-white dark:text-gray-900 
+                  dark:hover:bg-red-700 dark:hover:text-white"
+                >
+                  Sign In
+                </button>
+
+                <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">
+                  Don&apos;t have an account?{" "}
+                  <Link to="/register" className="font-semibold text-red-600 hover:underline">
+                    Sign Up
+                  </Link>
+                </p>
               </div>
             )}
           </div>
-          <Link to="/brands" className="flex items-center hover:text-red-700">Brands</Link>
-          <hr className="my-4 border-gray-300 dark:border-gray-700" />
-          {!user && (
-          <div>
-            <div className="flex items-center justify-center">
-              <button
-                  type="button"
-                  onClick={() => navigate('/login')}
-                  className="bg-gray-300 hover:bg-gray-400 text-red-700 px-4 py-2 rounded-md transition"
-                >
-                  Sign In
-              </button>
-            </div>
-            <div>
-              <p className="mt-4 text-center text-gray-700 dark:text-gray-300">
-                Don't have an account?{" "}
-              <Link href="/register" className="text-red-500 hover:underline">Sign Up</Link>
-              {/* <Link to="/signup" className="text-red-500 hover:underline">
-                Sign Up
-              </Link> */}
-              </p>
-            </div>
-          </div>
-          )}
         </div>
       )}
     </nav>
