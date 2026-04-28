@@ -10,7 +10,8 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaUserCircle,
-  FaLock
+  FaLock,
+  FaStar
 } from "react-icons/fa";
 import { MdDashboard, MdSettings } from "react-icons/md";
 
@@ -19,7 +20,7 @@ export const getNavLinksByRole = (role) => {
     { link: 'dashboard', label: 'Dashboard', icon: <MdDashboard size={20} />, roles: ['admin', 'user','brand'] },
     { link: 'brandlist', label: 'Brands', icon: <FaIndustry size={20} />, roles: ['admin'] },
     { link: 'brand_detail', label: 'Brand Detail', icon: <FaIndustry size={20} />, roles: ['brand'] },
-    { link: 'saved_brands', label: 'Saved Brand', icon: <FaIndustry size={20} />, roles: ['user'] },
+    { link: 'saved_brands', label: 'Saved Brand', icon: <FaStar size={20} />, roles: ['user'] },
     { link: 'productlist', label: 'Products', icon: <FaBoxOpen size={22} />, roles: ['admin', 'brand'] },
     { link: 'favorites', label: "Favourite Product", icon: <FaHeart size={20} />, roles: ['user'] },
     { link: 'categories', label: 'Categories', icon: <FaThList size={20} />, roles: ['admin'] },

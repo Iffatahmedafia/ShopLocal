@@ -38,6 +38,7 @@ import Sidebar from "./components/Sidebar.jsx";
 import MobileSidebar from "./components/MobileSidebar.jsx";
 import Chatbot from "./components/Chatbot.jsx";
 import Breadcrumb from "./components/Breadcrumb.jsx";
+import Footer from "./components/Footer.jsx";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
@@ -116,7 +117,7 @@ const ProtectedRoute = ({ favouritesCount }) => {
           </div>  
           <Outlet />
         </div>
-        <Chatbot />
+        <Chatbot />  
       </div>
     </div>
   )  
@@ -132,6 +133,7 @@ function Layout({ favouritesCount }) {
       {!hideNavbar && <Navbar count={favouritesCount} />}
       <Outlet /> {/* Renders the child routes inside Layout */}
       <Chatbot />
+      <Footer />
     </div>
   );
 }

@@ -50,7 +50,7 @@ const Sidebar = () => {
             <Link
               key={el.label}
               to={el.link}
-              className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-300 ${
+              className={`w-full flex items-center text-sm font-medium gap-3 px-4 py-2 rounded-lg transition-all duration-300 ${
                 path === el.link.split("/")[0]
                   ? "bg-red-100 text-red-700"
                   : "text-gray-700 dark:text-white hover:bg-red-100 hover:text-red-700"
@@ -70,7 +70,7 @@ const Sidebar = () => {
           <Link
             key={el.label}
             to={el.link}
-            className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-300 ${
+            className={`w-full flex items-center text-sm font-medium gap-3 px-4 py-2 rounded-lg transition-all duration-300 ${
               path === el.link.split("/")[0]
                 ? "bg-red-100 text-red-700"
                 : "text-gray-700 dark:text-white hover:bg-red-100 hover:text-red-700"

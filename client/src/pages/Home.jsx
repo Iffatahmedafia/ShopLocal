@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { FiSun, FiMoon, FiShoppingCart, FiHeart } from "react-icons/fi";
-import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FiSun, FiMoon, FiShoppingCart, FiHeart, FiShoppingBag, FiShield, FiStar, FiTrendingUp } from "react-icons/fi";
+import { FaFacebook, FaTwitter, FaInstagram, FaStore } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
@@ -14,6 +15,7 @@ import { useTheme } from "../context/ThemeContext";
 import { useSearch } from "../context/SearchContext"
 import { toast } from 'react-toastify';
 import ProductCard from "../components/ProductCard";
+import Footer from "../components/Footer";
 
 
 const categories = [
@@ -36,6 +38,7 @@ const Home = ({ updateFavouritesCount }) => {
 
   const { user } = useSelector((state) => state.auth);
   console.log("User:", user)
+   const navigate = useNavigate()
   // const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
   const { darkMode } = useTheme(); // Get dark mode state
   const [favouritesCount, setFavouritesCount] = useState(0)
@@ -122,26 +125,121 @@ const Home = ({ updateFavouritesCount }) => {
       <div className="bg-slate dark:bg-gray-900 text-gray-900 dark:text-white transition duration-300">
 
         {/* Hero Section */}
-        <header className="relative w-full h-[400px] md:h-[500px] bg-cover bg-center"
-          style={{
-            backgroundImage: "url('/hero_images/hero_banner.png')",
-            backgroundColor: "gray-100",
-          }}
-        >
-          <div
-            className="absolute inset-0 flex flex-col justify-center items-center text-center"
-            style={{ backgroundColor: "rgba(255, 255, 255, 0.3)" }} // semi-transparent overlay
+          <header
+            className="relative isolate overflow-hidden"
+            style={{
+              backgroundImage: "url('/hero_images/hero_banner.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
           >
-            <h1 className="text-4xl md:text-6xl font-bold">Find Your Perfect Local Products</h1>
-            <p className="mt-4 text-lg text-gray-700 text-white">Explore our local shops and their collections.</p>
-            <a
-              href="/shop"
-              className="mt-6 px-6 py-3 bg-red-700 hover:bg-red-600 text-white font-semibold rounded-lg"
-            >
-              Shop Now
-            </a>
-          </div>
-        </header>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/20 to-black/10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/10 dark:to-black/10" />
+
+            <div className="relative container mx-auto px-6 py-24 md:py-32 lg:py-40">
+              <div className="max-w-3xl text-center mx-auto">
+                <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm text-white backdrop-blur-md shadow-lg mb-6">
+                  Discover curated products from local shops
+                </div>
+
+                <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white leading-tight">
+                  Find Your Perfect Local Products
+                </h1>
+
+                <p className="mt-5 text-base md:text-xl text-white/85 max-w-2xl mx-auto leading-relaxed">
+                  Explore our local shops and their collections.
+                </p>
+
+                <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                  {/* Primary CTA */}
+                  <a
+                    href="/shop"
+                    className="group relative inline-flex items-center gap-2 justify-center rounded-full 
+                    bg-gradient-to-r from-red-600 to-red-700 
+                    px-8 py-3.5 text-white font-semibold 
+                    shadow-[0_10px_30px_rgba(220,38,38,0.35)]
+                    transition-all duration-300 
+                    hover:from-red-500 hover:to-red-600 
+                    hover:scale-105 active:scale-95"
+                  >
+                    <FiShoppingBag size={18} />
+                    <span className="relative z-10">Shop Now</span>
+
+                    {/* subtle glow */}
+                    <span className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 bg-white/10" />
+                  </a>
+
+                  {/* Secondary CTA */}
+                  {!user && (
+                    <button
+                      onClick={() => navigate('/vendor_register')}
+                      className="inline-flex items-center gap-2 justify-center rounded-full 
+                      border border-white/30 
+                      bg-white/10 backdrop-blur-md 
+                      px-8 py-3.5 font-semibold text-white
+                      transition-all duration-300 
+                      hover:bg-white hover:text-red-700 hover:scale-105"
+                    >
+                      <FaStore size={16} />
+                      Register your business
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {/* Why Us Section */}
+          <section className="container mx-auto px-6 py-16">
+            <div className="text-center mb-12">
+              
+              <h2 className="mt-5 text-2xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
+                Why Shop Local?
+              </h2>
+
+              <p className="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-base md:text-lg leading-relaxed">
+                We connect you with trusted local businesses and curated products for a smarter, more reliable shopping experience.
+              </p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="group rounded-2xl border border-gray-200/80 dark:border-gray-700 bg-white/90 dark:bg-gray-800/80 p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-red-700 shadow-sm dark:bg-red-950/20 dark:text-red-300">
+                  <FiShield size={22} />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Trusted Local Sellers
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-400">
+                  Discover verified shops and reliable sellers from your local community with more confidence.
+                </p>
+              </div>
+
+              <div className="group rounded-2xl border border-gray-200/80 dark:border-gray-700 bg-white/90 dark:bg-gray-800/80 p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-red-700 shadow-sm dark:bg-red-950/20 dark:text-red-300">
+                  <FiStar size={22} />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Curated Products
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-400">
+                  Explore thoughtfully selected products designed to make your shopping experience easier and better.
+                </p>
+              </div>
+
+              <div className="group rounded-2xl border border-gray-200/80 dark:border-gray-700 bg-white/90 dark:bg-gray-800/80 p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-red-700 shadow-sm dark:bg-red-950/20 dark:text-red-300">
+                  <FiTrendingUp size={22} />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Support Local Growth
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-400">
+                  Help local businesses grow while enjoying a more personal and community-focused marketplace.
+                </p>
+              </div>
+            </div>
+          </section>
 
         {/* Top Categories Section */}
         <section className="container mx-auto px-4 py-12">
@@ -210,18 +308,40 @@ const Home = ({ updateFavouritesCount }) => {
           </Swiper>
         </section>
 
-        {/* Footer */}
-        <footer className="bg-black dark:bg-gray-800 py-6 mt-12">
-          <div className="container mx-auto text-center">
-            <h3 className="text-lg text-white font-semibold">Follow Us</h3>
-            <div className="flex justify-center space-x-4 my-3">
-              <a href="#" className="text-gray-100 dark:text-gray-300 hover:text-red-600"><FaFacebook size={24} /></a>
-              <a href="#" className="text-gray-100 dark:text-gray-300 hover:text-red-600"><FaTwitter size={24} /></a>
-              <a href="#" className="text-gray-100 dark:text-gray-300 hover:text-red-600"><FaInstagram size={24} /></a>
+         {/* Business CTA */}
+        {!user && (
+          <section className="py-12 px-4">
+            <div className="container mx-auto">
+              <div className="relative overflow-hidden rounded-3xl border border-red-200/60 dark:border-red-900/30 bg-red-50/40 dark:bg-red-950/10 0 backdrop-blur-sm shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
+                <div className="absolute inset-0 bg-gradient-to-r from-red-100/80 via-white to-transparent dark:from-red-950/20 dark:via-gray-900 dark:to-gray-900" />
+                
+                <div className="relative px-6 py-12 md:px-12 md:py-14 text-center">
+                  <div className="inline-flex items-center rounded-full border border-red-100 dark:border-red-900/40 bg-red-50 dark:bg-red-950/20 px-4 py-1.5 text-sm font-medium text-red-700 dark:text-red-300 mb-5">
+                    For local business owners
+                  </div>
+
+                  <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    Grow your business with Shop Local
+                  </h2>
+
+                  <p className="mt-4 max-w-2xl mx-auto text-base md:text-lg leading-relaxed text-gray-600 dark:text-gray-300">
+                    Showcase your products, reach nearby customers, and build stronger visibility for your local store.
+                  </p>
+
+                  <button
+                    onClick={() => navigate('/vendor_register')}
+                    className="mt-8 inline-flex items-center rounded-full bg-red-700 px-6 py-3 text-white font-semibold shadow-md transition-all duration-300 hover:bg-red-800 hover:scale-[1.03]"
+                  >
+                    Register your business
+                  </button>
+                </div>
+              </div>
             </div>
-            <p className="text-gray-200 dark:text-gray-400">© 2025 Shop Local. All rights reserved.</p>
-          </div>
-        </footer>
+          </section>
+        )}
+
+        {/* Footer */}
+        {/* <Footer /> */}
 
         {/* Dark Mode Toggle
         <button

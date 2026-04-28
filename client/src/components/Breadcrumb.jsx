@@ -16,7 +16,7 @@ const Breadcrumb = () => {
   if (location.pathname === '/') return null;
 
   return (
-    <nav className="text-md text-gray-500 px-4 py-2">
+    <nav className="text-md font-nedium text-gray-500 px-4 py-2">
       <ol className="flex space-x-2 items-center">
         <li>
           <Link to="/" className="text-blue-600 hover:underline flex items-center">
