@@ -1,4 +1,5 @@
 # backend/views.py
+import logging
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -7,11 +8,12 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from store.authentication import CookieJWTAuthentication  # Import custom auth
 from rest_framework.views import APIView
 from rest_framework import generics
-from .serializers import RegisterSerializer, LoginSerializer, UserInteractionSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, SavedBrandSerializer, CategorySerializer, SubCategorySerializer, SubSubCategorySerializer, ProductSerializer, FavoriteProductSerializer,BrandChatbotSerializer,ProductChatbotSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserInteractionSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, SavedBrandSerializer, CategorySerializer, SubCategorySerializer, SubSubCategorySerializer, ProductSerializer, FavoriteProductSerializer,BrandChatbotSerializer,ProductChatbotSerializer, CartSerializer, CartItemSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .models import Category, SubCategory, SubSubcategory, Brand, SavedBrand, Product, FavoriteProduct, CustomUser, UserInteraction
+from .models import Category, SubCategory, SubSubcategory, Brand, SavedBrand, Product, FavoriteProduct, CustomUser, UserInteraction, Cart, CartItem
 from django.conf import settings
+from django.http import JsonResponse
 import jwt
 from rest_framework.exceptions import AuthenticationFailed
 from django.db.models import Count
@@ -26,6 +28,15 @@ import os
 from rapidfuzz import fuzz
 
 
+logger = logging.getLogger(__name__)
+
+
+# Function to check health
+def health_check(request):
+    return JsonResponse({
+        "status": "healthy",
+        "service": "shoplocal-backend"
+    })
 
 
 # Function to generate JWT tokens
@@ -40,7 +51,7 @@ def get_tokens_for_user(user):
 def checkAuth(request):
         # Retrieve the token from cookies
         access_token = request.COOKIES.get("accessToken")
-        print("Access Token", access_token)
+        logger.debug("access token present=%s", bool(access_token))
 
         if not access_token:
             raise AuthenticationFailed("No token found in cookies")
@@ -48,7 +59,7 @@ def checkAuth(request):
         try:
             # Decode the token
             payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
-            print("Decoded Payload:", payload)
+            logger.debug("decoded JWT for user_id=%s", payload.get("user_id"))
             user = CustomUser.objects.get(id=payload["user_id"])
             return user
 
@@ -118,7 +129,7 @@ class CheckAuthView(APIView):
         try:  
             # Use checkauth function to authenticate the user
             user = checkAuth(request)  
-            print("Authenticated User:", user)
+            logger.info("authenticated user checked user_id=%s", user.id)
 
             return Response({
                 "authenticated": True,
@@ -193,11 +204,11 @@ class UserProfileView(APIView):
         if not user_data:
             return Response({"detail": "User is not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
         user_id = user_data.id
-        print(user_id)
+        logger.info("fetching user profile user_id=%s", user_id)
         try:
             user = CustomUser.objects.get(id=user_id)
             serializer = UserSerializer(user)  # Serialize the user data
-            print("User data:", serializer.data)
+            logger.debug("user profile serialized user_id=%s", user_id)
             return Response(serializer.data)  # Return the serialized data as JSON
         except CustomUser.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -207,13 +218,12 @@ class UserProfileView(APIView):
         if not user_data:
             return Response({"detail": "User is not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
         user_id = user_data.id
-        print(user_id)
+        logger.info("updating user profile user_id=%s", user_id)
         try:
             user = CustomUser.objects.get(id=user_id)
             serializer = UserUpdateSerializer(user, data=request.data, partial=True)  # partial=True allows partial updates (only name or email)
             
             if serializer.is_valid():
-                # print("User data:", serializer.data)
                 serializer.save()  # Save the updated user data
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
@@ -228,13 +238,12 @@ class PasswordUpdateView(APIView):
         if not user_data:
             return Response({"detail": "User is not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
         user_id = user_data.id
-        print(user_id)
+        logger.info("updating password user_id=%s", user_id)
         try:
             user = CustomUser.objects.get(id=user_id)
             serializer = PasswordUpdateSerializer(user, data=request.data, partial=True)  # partial=True allows partial updates (only name or email)
             
             if serializer.is_valid():
-                # print("User data:", serializer.data)
                 serializer.save()  # Save the updated user data
                 return Response({"detail": "Password updated successfully!"}, status=status.HTTP_200_OK)
             else:
@@ -246,13 +255,13 @@ class PasswordUpdateView(APIView):
 
 class BrandView(APIView):
     def post(self, request):
-        print("Request Data:", request.data)
+        logger.info("brand registration request received")
         user_serializer = RegisterSerializer(data=request.data)
         if user_serializer.is_valid():
             # Check if the user already exists based on the email
             email = request.data.get('email')
             existing_user = CustomUser.objects.filter(email=email).first()
-            print("Existing User", existing_user)
+            logger.info("brand registration existing_user=%s", bool(existing_user))
 
             if existing_user:
                 return Response({"message": "User with this email already exists!"}, status=status.HTTP_400_BAD_REQUEST)
@@ -282,7 +291,7 @@ class BrandView(APIView):
     def put(self, request, brand_id):
 
         user_data = checkAuth(request)
-        print("User Data", user_data)
+        logger.info("brand status update requested by user_id=%s", getattr(user_data, "id", None))
         if not user_data:
             return Response({"message": "Unauthorized. Admins only."}, status=status.HTTP_403_FORBIDDEN)
 
@@ -307,8 +316,7 @@ class BrandView(APIView):
         Partially update the brand details (not user details).
         Only brand-specific fields can be updated.
         """
-        print(brand_id)
-        print(request.data)
+        logger.info("brand update requested brand_id=%s", brand_id)
         try:
             brand = Brand.objects.get(id=brand_id)  # Get the brand by its ID
         except Brand.DoesNotExist:
@@ -353,12 +361,10 @@ class ProductView(APIView):
     def post(self, request):
         user = checkAuth(request)
         # Get the user ID from the request (assuming user is authenticated)
-        print("User Id: ", user.id)
-        print("Incoming Request Data:", request.data)
+        logger.info("product create requested user_id=%s", user.id)
         
         # Add the user explicitly to the request data
         request.data['user'] = user.id
-        print(request.data)
 
         # Get tags as list
         if isinstance(request.data.get("tags"), str):
@@ -369,14 +375,15 @@ class ProductView(APIView):
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             product = serializer.save()
+            logger.info("product created product_id=%s user_id=%s", product.id, user.id)
             return Response({"message": "Product added successfully!"}, status=status.HTTP_201_CREATED)
         else:
-            print("Validation Errors:",serializer.errors)  # Log the errors to the console
+            logger.warning("product create validation failed user_id=%s errors=%s", user.id, serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, product_id):
         user = checkAuth(request)
-        print("User ID:", user.id)
+        logger.info("product update requested product_id=%s user_id=%s", product_id, user.id)
 
         try:
             product = Product.objects.get(id=product_id, user=user)
@@ -394,16 +401,17 @@ class ProductView(APIView):
         serializer = ProductSerializer(product, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            logger.info("product updated product_id=%s user_id=%s", product_id, user.id)
             return Response({"message": "Product updated successfully!"}, status=status.HTTP_200_OK)
         else:
-            print("Update errors:", serializer.errors)
+            logger.warning("product update validation failed product_id=%s user_id=%s errors=%s", product_id, user.id, serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # Approve/ Reject Products(admin only)
     def put(self, request, product_id):
 
         user_data = checkAuth(request)
-        print("User Data", user_data)
+        logger.info("product status update requested product_id=%s user_id=%s", product_id, getattr(user_data, "id", None))
         if not user_data:
             return Response({"message": "Unauthorized. Admins only."}, status=status.HTTP_403_FORBIDDEN)
 
@@ -429,8 +437,7 @@ class ProductView(APIView):
         
         if not user_data:
             return Response({"message": "Unauthorized."}, status=status.HTTP_403_FORBIDDEN)
-        print("User Data", user_data)
-        print("User Id: ", user_data.id)
+        logger.info("product trash toggle requested product_id=%s user_id=%s", product_id, user_data.id)
 
         try:
             product = Product.objects.get(id=product_id)
@@ -449,15 +456,13 @@ class FavoriteProductView(APIView):
     # permission_classes = [IsAuthenticated]
     def post(self, request):
         # user = request.user
-        # print("User", user)
         user = checkAuth(request)
         user_id = user.id
-        print("User Id: ", user.id)
-        print("Incoming Request Data:", request.data)
+        logger.info("favorite product add requested user_id=%s", user.id)
         
         # Extract product ID from the request data
         product_id = request.data.get("product")
-        print("Product Id:", product_id)
+        logger.debug("favorite product requested product_id=%s user_id=%s", product_id, user_id)
         # Check if the product is already in the user's favorites
         if FavoriteProduct.objects.filter(user_id=user_id, product_id=product_id).exists():
             return Response(
@@ -476,15 +481,14 @@ class FavoriteProductView(APIView):
     def get(self, request):
         # Get the user ID from the checkAuth function
         # user = request.user
-        # print("User", user)
         user = checkAuth(request)
         user_id = user.id
         
         # Get all the favorite products for the user
         favorites = FavoriteProduct.objects.filter(user_id=user_id).values_list("product_id", flat=True)
-        print("Favorites", favorites)
+        logger.debug("favorites fetched user_id=%s", user_id)
         products = Product.objects.filter(id__in = favorites)
-        print("Products", products)
+        logger.debug("favorite products serialized user_id=%s count=%s", user_id, products.count())
         # Serialize the products matching id
         serializer = ProductSerializer(products, many=True)
         
@@ -495,8 +499,8 @@ class FavoriteProductView(APIView):
         # Get the user ID from the request (again, assuming user is authenticated)
         # user = request.user
         user = checkAuth(request)
-        print("User", user)
         user_id = user.id
+        logger.info("favorite product remove requested user_id=%s product_id=%s", user_id, product_id)
         
         try:
             # Find the favorite product by user and product ID
@@ -518,12 +522,11 @@ class SavedBrandView(APIView):
         user = checkAuth(request)
         # Get the user ID from the request (assuming user is authenticated)
         user_id = user.id
-        print("User Id: ", user.id)
-        print("Incoming Request Data:", request.data)
+        logger.info("saved brand add requested user_id=%s", user.id)
         
         # Extract brand ID from the request data
         brand_id = request.data.get("brand")
-        print("Brand Id:", brand_id)
+        logger.debug("saved brand requested brand_id=%s user_id=%s", brand_id, user_id)
         # Check if the brand is already in the user's saved collection
         if SavedBrand.objects.filter(user_id=user_id, brand_id=brand_id).exists():
             return Response(
@@ -546,9 +549,9 @@ class SavedBrandView(APIView):
         
         # Get all the saved brands for the user
         saved_brands = SavedBrand.objects.filter(user_id=user_id).values_list("brand_id", flat=True)
-        print("Saved Brands", saved_brands)
+        logger.debug("saved brands fetched user_id=%s", user_id)
         brands = Brand.objects.filter(id__in = saved_brands)
-        print("Brands", brands)
+        logger.debug("saved brands serialized user_id=%s count=%s", user_id, brands.count())
         # Serialize the brands matching id
         serializer = BrandSerializer(brands, many=True)
         
@@ -558,8 +561,8 @@ class SavedBrandView(APIView):
     def delete(self, request, brand_id):
         # Get the user ID from the request (again, assuming user is authenticated)
         user = checkAuth(request)
-        print("User", user)
         user_id = user.id
+        logger.info("saved brand remove requested user_id=%s brand_id=%s", user_id, brand_id)
         # user_id =  request.data.get('user') # Get the user ID
         
         try:
@@ -578,7 +581,7 @@ class SavedBrandView(APIView):
 
 class LogInteractionView(APIView):
     def post(self, request):
-        print("User Interaction Data",request.data)
+        logger.info("user interaction log requested action=%s user=%s", request.data.get("action"), request.data.get("user"))
         serializer = UserInteractionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -591,15 +594,15 @@ class LLMRecommendationView(APIView):
         if not user:
             return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        print("User ID:", user.id)
+        logger.info("recommendations requested user_id=%s", user.id)
 
         interactions = UserInteraction.objects.filter(user_id=user.id).order_by('-timestamp')[:10]
-        print("Total Interactions Retrieved:", len(interactions))
+        logger.debug("recommendation interactions retrieved user_id=%s count=%s", user.id, len(interactions))
 
         tags = []
 
         for i in interactions:
-            print(f"[{i.timestamp}] Action: {i.action}, Query: {i.search_query}, Product: {i.product}")
+            logger.debug("recommendation interaction action=%s has_query=%s has_product=%s", i.action, bool(i.search_query), bool(i.product))
             
             # Add search query if available
             if i.search_query:
@@ -615,24 +618,23 @@ class LLMRecommendationView(APIView):
                 elif isinstance(raw_tags, list):
                     tags.extend([t.strip().lower() for t in raw_tags if isinstance(t, str)])
 
-        print(f"Extracted Tags: {tags}")
+        logger.debug("recommendation extracted tag_count=%s", len(tags))
 
         # Final keyword set
         keywords = list(set(tags))[:5]
-        print("Final keywords used for recommendation:", keywords)
+        logger.info("recommendation keywords selected user_id=%s keywords=%s", user.id, keywords)
 
         # Optional fallback if no meaningful tags found
         if not keywords:
             keywords = ["popular", "electronics", "new"]
-            print("Fallback keywords used:", keywords)
+            logger.info("recommendation fallback keywords used user_id=%s", user.id)
 
         try:
             results = generate_recommendations(keywords)
-            print("Recommendation result:", results)
+            logger.info("recommendations generated user_id=%s count=%s", user.id, len(results))
             return Response({"recommendations": results})
         except Exception as e:
-            import traceback
-            traceback.print_exc()
+            logger.exception("recommendation generation failed user_id=%s", user.id)
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -649,7 +651,7 @@ class GenerateTagsFromDescriptionView(APIView):
 
 class ChatbotAPIView(APIView):
     def post(self, request):
-        print("Chatbot view")
+        logger.info("chatbot request received")
         user_message = request.data.get("message", "").lower()
 
         # Exact/partial match
@@ -702,7 +704,6 @@ class ChatbotAPIView(APIView):
         #     ai_reply = response['choices'][0]['message']['content']
         #     return Response({"type": "chat", "message": ai_reply})
         # except Exception as e:
-        #     print("OpenAI Error:", e)
         #     return Response({
         #         "type": "fallback",
         #         "message": "Sorry, I couldn’t process your request. Please try again later."
@@ -718,7 +719,7 @@ class BrandAnalyticsView(APIView):
 
         try:
             brand = Brand.objects.get(user=user)
-            print("Brand", brand)
+            logger.info("brand analytics requested brand_id=%s user_id=%s", brand.id, user.id)
         except Brand.DoesNotExist:
             return Response({"error": "Brand not found"}, status=404)
        
@@ -726,7 +727,7 @@ class BrandAnalyticsView(APIView):
         this_month = datetime.now().month
 
         products = Product.objects.filter(brand_id=brand.id, is_trashed=False)
-        print("Products",products)
+        logger.debug("brand analytics products loaded brand_id=%s count=%s", brand.id, products.count())
         interactions = UserInteraction.objects.filter(product__in=products)
 
 
@@ -743,7 +744,7 @@ class BrandAnalyticsView(APIView):
             ]
 
         status = products.values("status").annotate(count=Count("id"))
-        print("Product Status", status)
+        logger.debug("brand analytics product status loaded brand_id=%s", brand.id)
 
       # Aggregate analytics
         data = {
@@ -812,3 +813,108 @@ class AdminAnalyticsView(APIView):
             }
 
         return Response(data)
+
+
+class CartView(APIView):
+    def get(self, request):
+        user = checkAuth(request)
+        cart, _ = Cart.objects.get_or_create(user=user)
+        serializer = CartSerializer(cart)
+        logger.info("cart fetched user_id=%s cart_id=%s", user.id, cart.id)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CartItemView(APIView):
+    def post(self, request):
+        user = checkAuth(request)
+        product_id = request.data.get("product")
+        quantity = request.data.get("quantity", 1)
+
+        try:
+            quantity = int(quantity)
+        except (TypeError, ValueError):
+            return Response({"quantity": ["Quantity must be a valid number."]}, status=status.HTTP_400_BAD_REQUEST)
+
+        if quantity < 1:
+            return Response({"quantity": ["Quantity must be at least 1."]}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({"product": ["Product not found."]}, status=status.HTTP_404_NOT_FOUND)
+
+        if product.is_trashed:
+            return Response({"product": ["This product is not available."]}, status=status.HTTP_400_BAD_REQUEST)
+
+        if product.price is None:
+            return Response({"product": ["This product does not have a price."]}, status=status.HTTP_400_BAD_REQUEST)
+
+        cart, _ = Cart.objects.get_or_create(user=user)
+        cart_item, created = CartItem.objects.get_or_create(
+            cart=cart,
+            product=product,
+            defaults={
+                "quantity": quantity,
+                "unit_price": product.price,
+            },
+        )
+
+        if not created:
+            cart_item.quantity += quantity
+            cart_item.save(update_fields=["quantity", "updated_at"])
+
+        serializer = CartItemSerializer(cart_item)
+        logger.info(
+            "cart item added user_id=%s cart_id=%s product_id=%s quantity=%s created=%s",
+            user.id,
+            cart.id,
+            product.id,
+            quantity,
+            created,
+        )
+        return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+
+    def patch(self, request, item_id):
+        user = checkAuth(request)
+        quantity = request.data.get("quantity")
+
+        try:
+            quantity = int(quantity)
+        except (TypeError, ValueError):
+            return Response({"quantity": ["Quantity must be a valid number."]}, status=status.HTTP_400_BAD_REQUEST)
+
+        if quantity < 1:
+            return Response({"quantity": ["Quantity must be at least 1."]}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            cart_item = CartItem.objects.get(id=item_id, cart__user=user)
+        except CartItem.DoesNotExist:
+            return Response({"message": "Cart item not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        cart_item.quantity = quantity
+        cart_item.save(update_fields=["quantity", "updated_at"])
+
+        serializer = CartItemSerializer(cart_item)
+        logger.info("cart item updated user_id=%s item_id=%s quantity=%s", user.id, item_id, quantity)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, item_id):
+        user = checkAuth(request)
+
+        try:
+            cart_item = CartItem.objects.get(id=item_id, cart__user=user)
+        except CartItem.DoesNotExist:
+            return Response({"message": "Cart item not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        cart_item.delete()
+        logger.info("cart item removed user_id=%s item_id=%s", user.id, item_id)
+        return Response({"message": "Cart item removed successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+
+class CartClearView(APIView):
+    def delete(self, request):
+        user = checkAuth(request)
+        cart, _ = Cart.objects.get_or_create(user=user)
+        deleted_count, _ = cart.items.all().delete()
+        logger.info("cart cleared user_id=%s cart_id=%s deleted_count=%s", user.id, cart.id, deleted_count)
+        return Response({"message": "Cart cleared successfully."}, status=status.HTTP_204_NO_CONTENT)

@@ -13,7 +13,7 @@ import Breadcrumb from "../components/Breadcrumb.jsx";
 
 
 
-const Product = ({ updateFavouritesCount }) => {
+const Product = ({ updateFavouritesCount, updateCartCount }) => {
 
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
@@ -279,6 +279,7 @@ const filteredProducts = baseProducts.filter((product) => {
                       key={product.id} 
                       product={{ ...product, brandName }} 
                       updateFavouritesCount={updateFavouritesCount} 
+                      updateCartCount={updateCartCount}
                       type="add"
                       onClick={() => {
                         if (user) {
@@ -303,6 +304,7 @@ const filteredProducts = baseProducts.filter((product) => {
                   key={`rec-${index}`} 
                   product={{ ...item, brandName }} 
                   updateFavouritesCount={updateFavouritesCount} 
+                  updateCartCount={updateCartCount}
                   type="recommend"
                   onClick={() => {
                     if (user) {

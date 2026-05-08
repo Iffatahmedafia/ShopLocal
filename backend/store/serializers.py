@@ -2,7 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
-from .models import Category, SubCategory, SubSubcategory, Product, FavoriteProduct, Brand, SavedBrand, UserInteraction
+from .models import Category, SubCategory, SubSubcategory, Product, FavoriteProduct, Brand, SavedBrand, UserInteraction, Cart, CartItem
 
 
 CustomUser = get_user_model()  # Get the correct user model dynamically
@@ -247,4 +247,44 @@ class BrandChatbotSerializer(serializers.ModelSerializer):
         model = Brand
         fields = ['id', 'name', 'website_link']
 
+
+class CartProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'image', 'price', 'online_store', 'status', 'is_trashed']
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    product_detail = CartProductSerializer(source='product', read_only=True)
+    line_total = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CartItem
+        fields = ['id', 'product', 'product_detail', 'quantity', 'unit_price', 'line_total', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'unit_price', 'line_total', 'created_at', 'updated_at']
+
+    def get_line_total(self, obj):
+        return obj.line_total
+
+    def validate_quantity(self, value):
+        if value < 1:
+            raise serializers.ValidationError("Quantity must be at least 1.")
+        return value
+
+
+class CartSerializer(serializers.ModelSerializer):
+    items = CartItemSerializer(many=True, read_only=True)
+    total_items = serializers.SerializerMethodField()
+    subtotal = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Cart
+        fields = ['id', 'user', 'items', 'total_items', 'subtotal', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'user', 'items', 'total_items', 'subtotal', 'created_at', 'updated_at']
+
+    def get_total_items(self, obj):
+        return obj.total_items
+
+    def get_subtotal(self, obj):
+        return obj.subtotal
         

@@ -1,3 +1,4 @@
+import logging
 import os
 from dotenv import load_dotenv
 from huggingface_hub import InferenceClient
@@ -9,6 +10,8 @@ from langchain_community.vectorstores import FAISS
 from .models import Product
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 data_path = os.path.join(os.path.dirname(__file__), "training_data", "chatbot_finetune_data.txt")
 
@@ -59,7 +62,7 @@ def generate_tags_from_description(description, max_tags=5):
         tags = [tag.strip().lower() for tag in output.split(",") if tag.strip()]
         return tags[:max_tags]
     except Exception as e:
-        print("Error generating tags:", e)
+        logger.exception("error generating tags: %s", e)
         return []
 
 
@@ -85,7 +88,7 @@ def get_vector_index():
         return FAISS.from_documents(docs, embedding_model)
 
     except RuntimeError as e:
-        print("Error while building vector index:", e)
+        logger.exception("error while building vector index: %s", e)
         raise
 
 
@@ -112,7 +115,7 @@ def generate_recommendations(user_keywords):
                 "image": product.image if product.image else None
 
             })
-    print("Structured output preview:", structured_output)
+    logger.info("recommendation structured output generated count=%s", len(structured_output))
 
     return structured_output
 
@@ -124,5 +127,4 @@ def generate_recommendations(user_keywords):
 #         tags = [tag.strip() for tag in tag_string.split(",") if tag.strip()]
 #         return tags[:max_tags]
 #     except Exception as e:
-#         print("Error generating tags:", e)
 #         return []

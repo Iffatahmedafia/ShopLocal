@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { FiMenu, FiX, FiSun, FiMoon, FiSearch, FiChevronRight, FiChevronDown,FiHeart } from "react-icons/fi";
+import { FiMenu, FiX, FiSun, FiMoon, FiSearch, FiChevronRight, FiChevronDown, FiHeart, FiShoppingCart, FiLogIn } from "react-icons/fi";
 import { FaUserCircle, FaFolder, FaList, FaShoppingBag, FaTag, FaStore, FaCogs, FaTrademark } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { MdLabel } from 'react-icons/md';   // Material Design
 
-import { fetchCategories, fetchSubCategories, fetchFavorites, fetchSubSubCategories } from "../api";
+import { fetchCategories, fetchSubCategories, fetchSubSubCategories } from "../api";
 import { logInteraction } from "../utils/logInteraction.js";
 import { useSearch } from "../context/SearchContext.jsx"
 import { useTheme } from "../context/ThemeContext.jsx";
@@ -41,7 +41,7 @@ import Avatar from "./Avatar";
 //   },
 // ];
 
-const Navbar = ({ count }) => {
+const Navbar = ({ cartCount = 0 }) => {
   const { user } = useSelector((state) => state.auth);
   console.log("User:", user)
   const navigate = useNavigate()
@@ -56,7 +56,6 @@ const Navbar = ({ count }) => {
   const [categories, setCategories] = useState([])
   const [subcategories, setSubcategories] = useState([])
   const [subsubcategories, setSubSubcategories] = useState([])
-  const [favoritecount, setFavoritecount] = useState(0)
   const { query, updateSearchQuery } = useSearch();
 
   const handleSearch = (event) => {
@@ -117,19 +116,6 @@ const Navbar = ({ count }) => {
     }, [subcategories]); // ✅ Runs whenever subcategories change
 
     
-    useEffect(() => {
-      const getFavorites = async () => {
-        if (user) {
-          const data = await fetchFavorites();
-          setFavoritecount(data.length);
-        }
-      };
-    
-      getFavorites();
-    }, [user]); 
-  
- 
-
   // Handle theme mode
   // useEffect(() => {
   //   if (darkMode) {
@@ -192,15 +178,7 @@ const Navbar = ({ count }) => {
           </div>
         )} */}
      
-        <div className="flex items-center space-x-6">
-          {/* Favorite Button */}
-          <button className="relative bg-white dark:bg-gray-800 p-2 rounded-full shadow-lg hover:bg-red-200 dark:hover:bg-red-700 transition">
-            <FiHeart size={16} onClick={() => user? (navigate('/favorites')) : (navigate('/login'))} className="text-gray-600 dark:text-gray-300" />
-            {user && count > 0 && ( 
-              <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white px-2 py-1 rounded-full">{count}</span>
-            )}
-          </button>
-          
+        <div className="flex items-center">
           {/* Theme Toggle Button */}
           <button
                 onClick={toggleDarkMode}
@@ -212,6 +190,10 @@ const Navbar = ({ count }) => {
     </nav>
     <nav className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-md border-b border-gray-300 dark:border-gray-700 transition duration-300">
       <div className="px-4 py-3 flex justify-between items-center">
+        {/* Mobile Menu Button */}
+        <button onClick={() => setIsOpen(!isOpen)} className="mr-3 md:hidden">
+          {isOpen ? <FiX size={28} /> : <FiMenu size={28} />}
+        </button>
              
         {/* Desktop Links */}
         <div className="hidden md:flex items-center space-x-2">
@@ -335,6 +317,29 @@ const Navbar = ({ count }) => {
 
         {/* Right Section */}
         <div className="flex items-center space-x-3 md:space-x-5">
+          {/* Favorite Button */}
+          <button
+            type="button"
+            onClick={() => user ? navigate('/favorites') : navigate('/login')}
+            className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-red-700 shadow-md ring-1 ring-gray-200 transition hover:bg-red-50 hover:shadow-lg dark:bg-gray-900 dark:text-red-300 dark:ring-gray-700 dark:hover:bg-gray-700"
+            aria-label="Favorite products"
+          >
+            <FiHeart size={18} />
+          </button>
+
+          {/* Cart Button */}
+          <button
+            type="button"
+            onClick={() => user ? navigate('/cart') : navigate('/login')}
+            className="relative flex h-11 w-11 items-center justify-center rounded-full bg-red-700 text-white shadow-lg ring-2 ring-red-100 transition hover:bg-red-800 hover:shadow-xl active:scale-95 dark:ring-red-900"
+            aria-label="Shopping cart"
+          >
+            <FiShoppingCart size={20} />
+            {user && cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 min-w-5 rounded-full bg-gray-900 px-1.5 py-0.5 text-center text-xs font-bold leading-4 text-white shadow dark:bg-white dark:text-gray-900">{cartCount}</span>
+            )}
+          </button>
+
           {/* <a href="/vendor_register" className="hidden md:flex items-center underline md:text-red-500 hover:text-red-600 text-underline flex items-center">
               Register your business
           </a> */}
@@ -345,10 +350,12 @@ const Navbar = ({ count }) => {
           ) 
         :
           (
-          // Avatar with Sign In 
-          <Link to="/login" className="hidden md:flex items-center space-x-1 hover:text-red-700">
-            <FaUserCircle size={32} />
-            <span className="text-sm font-medium hidden sm:inline">Sign In</span>
+          <Link
+            to="/login"
+            className="hidden md:inline-flex items-center gap-2 rounded-full bg-[#0f1c2e] px-5 py-2.5 text-sm font-bold text-white shadow-md ring-1 ring-white/10 transition hover:bg-red-700 active:scale-95 dark:bg-[#0f1c2e] dark:hover:bg-red-700"
+          >
+            <FiLogIn size={19} />
+            <span>Sign in</span>
           </Link>
           )}
           {/* {!user &&
@@ -367,11 +374,6 @@ const Navbar = ({ count }) => {
           >
             {darkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
           </button> */}
-
-          {/* Mobile Menu Button */}
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden">
-            {isOpen ? <FiX size={28} /> : <FiMenu size={28} />}
-          </button>
         </div>
       </div>
 

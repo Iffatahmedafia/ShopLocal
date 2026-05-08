@@ -1,22 +1,20 @@
-import { useState, useEffect, useCallback } from "react";
-import { FiHeart } from "react-icons/fi";
+import { FiHeart, FiShoppingCart } from "react-icons/fi";
 import { toast } from 'react-toastify';
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { Edit, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Trash2 } from "lucide-react";
 
-import { fetchFavorites } from "../api";
-
-
+import { addToCart, fetchCart } from "../api";
 
 
-const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
+
+
+const ProductCard = ({ product, updateCartCount, type, onClick, onFavoriteRemoved }) => {
 
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
   const { user } = useSelector((state) => state.auth);
-  const [favouritesCount, setFavouritesCount] = useState(0)
   const navigate = useNavigate()
 
   const getFullImageUrl = (image) => {
@@ -25,21 +23,6 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
     if (image.startsWith("/")) return image; // already absolute
     return `/${image}`; // add leading slash
   };
-  
-  
-  
-  const getFavorites = useCallback(async () => {
-    if (user) {
-      const data = await fetchFavorites();
-      setFavouritesCount(data.length);
-      updateFavouritesCount(data.length);
-    }
-  }, [user, updateFavouritesCount]);
-  
-  useEffect(() => {
-    getFavorites();
-  }, [getFavorites]);
-
   const handleFavourites = async (productId) => {
 
     if (!user) {
@@ -49,8 +32,6 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
     }
     try {
       console.log(user.id)
-      setFavouritesCount(favouritesCount + 1);
-      // updateFavouritesCount(favouritesCount + 1);
       // Send a request to the backend to add the product to the favorites
       const response = await axios.post(`${API_URL}/favorites/add/`, 
         { product: productId, },
@@ -63,9 +44,6 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
 
       );
       if (response.status === 201) {
-        getFavorites();
-        // setFavouritesCount(prev => prev + 1)
-        // updateFavouritesCount(favouritesCount + 1); // Update the parent's state (App.js)
         toast.success('Product added to favorites successfully!')
       } 
     } catch (error) {
@@ -74,10 +52,7 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
       } else {
         toast.error('An error occurred. Please try again later.');
       }
-      setFavouritesCount(favouritesCount - 1);
-      // updateFavouritesCount(favouritesCount - 1);
     }
-    updateFavouritesCount(favouritesCount)
   }; 
   const removeFavourites = async (productId) => {
 
@@ -88,8 +63,6 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
     }
     try {
       console.log(user.id)
-      setFavouritesCount(favouritesCount - 1);
-      // updateFavouritesCount(favouritesCount + 1);
       // Send a request to the backend to add the product to the favorites
       const response = await axios.delete(`${API_URL}/favorites/remove/${productId}/`, 
         {
@@ -99,9 +72,7 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
           withCredentials:true
         });
       if (response.status === 204) {
-        getFavorites();
-        // setFavouritesCount(prev => prev + 1)
-        // updateFavouritesCount(favouritesCount + 1); // Update the parent's state (App.js)
+        onFavoriteRemoved?.(productId);
         toast.success('Product removed from favorites successfully!')
       } 
     } catch (error) {
@@ -110,11 +81,32 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
       } else {
         toast.error('An error occurred. Please try again later.');
       }
-      setFavouritesCount(favouritesCount + 1);
-      // updateFavouritesCount(favouritesCount - 1);
     }
-    updateFavouritesCount(favouritesCount)
   }; 
+
+  const refreshCartCount = async () => {
+    if (!user) return;
+    const cart = await fetchCart();
+    updateCartCount?.(cart.total_items || 0);
+  };
+
+  const handleAddToCart = async (event, productId) => {
+    event.stopPropagation();
+
+    if (!user) {
+      toast.error('You must be logged in to add to cart!');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      await addToCart(productId, 1);
+      await refreshCartCount();
+      toast.success('Product added to cart successfully!');
+    } catch (error) {
+      toast.error(error.response?.data?.product?.[0] || 'Could not add product to cart.');
+    }
+  };
 
   return (
    
@@ -122,12 +114,25 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
       onClick={onClick}
     >
       {/* Product Image */}
-      <div className="flex justify-center items-center mb-3 bg-white dark:bg-gray-800 rounded-t-xl">
-      <img
-        src={getFullImageUrl(product.image)}
-        alt={product.name}
-        className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
-      />
+      <div className="relative flex justify-center items-center mb-3 bg-white dark:bg-gray-800 rounded-t-xl">
+        <img
+          src={getFullImageUrl(product.image)}
+          alt={product.name}
+          className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+        />
+        {type !== "delete" && (
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              handleFavourites(product.id);
+            }}
+            className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-red-700 shadow-md transition hover:bg-red-50 hover:scale-105 active:scale-95 dark:bg-gray-900/90 dark:text-red-300 dark:hover:bg-gray-800"
+            aria-label="Add to favorites"
+          >
+            <FiHeart size={19} />
+          </button>
+        )}
       </div>
 
       {/* Product Details */}
@@ -155,20 +160,23 @@ const ProductCard = ({ product, updateFavouritesCount, type, onClick }) => {
         </div>
 
         {/* Add to Favorites Button */}
-        {type == "add" ? (
-        <button
-          onClick={() => handleFavourites(product.id)}
-          className="mt-4 w-full flex items-center justify-center gap-2 bg-red-700 hover:bg-red-800 text-white py-2 rounded-lg transition-all duration-300 font-semibold shadow-md hover:shadow-lg active:scale-95"
-        >
-          <FiHeart size={20} className="transition-transform duration-300 group-hover:scale-110" /> Add to Favorites
-        </button>
+        {type == "delete" ? (
+          <button
+            onClick={(event) => {
+              event.stopPropagation();
+              removeFavourites(product.id);
+            }}
+            className="mt-4 w-full flex items-center justify-center gap-2 bg-red-700 hover:bg-red-800 text-white px-2 py-2 rounded-lg transition-all duration-300 font-semibold shadow-md hover:shadow-lg active:scale-95"
+          >
+            <Trash2 size={18} className="transition-transform duration-300 group-hover:scale-110" /> Remove
+          </button>
         ):(
-        <button
-          onClick={() => removeFavourites(product.id)}
-          className="mt-4 w-full flex items-center justify-center gap-2 bg-red-700 hover:bg-red-800 text-white px-2 py-2 rounded-lg transition-all duration-300 font-semibold shadow-md hover:shadow-lg active:scale-95"
-        >
-          <Trash2 size={18} className="transition-transform duration-300 group-hover:scale-110" /> Remove
-        </button>
+          <button
+            onClick={(event) => handleAddToCart(event, product.id)}
+            className="mt-4 w-full flex items-center justify-center gap-2 bg-red-700 hover:bg-red-800 text-white py-2.5 rounded-lg transition-all duration-300 font-semibold shadow-md hover:shadow-lg active:scale-95"
+          >
+            <FiShoppingCart size={18} className="transition-transform duration-300 group-hover:scale-110" /> Add to Cart
+          </button>
         )
       }
       </div>
