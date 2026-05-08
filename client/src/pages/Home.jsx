@@ -136,24 +136,24 @@ const Home = ({ updateFavouritesCount }) => {
             <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/20 to-black/10" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/10 dark:to-black/10" />
 
-            <div className="relative container mx-auto px-6 py-24 md:py-32 lg:py-40">
+            <div className="relative container mx-auto px-6 py-16 md:py-20 lg:py-24">
               <div className="max-w-3xl text-center mx-auto">
-                <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm text-white backdrop-blur-md shadow-lg mb-6">
+                {/* <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm text-white backdrop-blur-md shadow-lg mb-6">
                   Discover curated products from local shops
-                </div>
+                </div> */}
 
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white leading-tight">
                   Find Your Perfect Local Products
                 </h1>
 
                 <p className="mt-5 text-base md:text-xl text-white/85 max-w-2xl mx-auto leading-relaxed">
-                  Explore our local shops and their collections.
+                  Explore our local shops and their collections
                 </p>
 
                 <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                   {/* Primary CTA */}
                   <a
-                    href="/shop"
+                    href="/products"
                     className="group relative inline-flex items-center gap-2 justify-center rounded-full 
                     bg-gradient-to-r from-red-600 to-red-700 
                     px-8 py-3.5 text-white font-semibold 

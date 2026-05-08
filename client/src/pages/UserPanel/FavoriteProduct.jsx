@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -7,11 +6,10 @@ import ProductCard from "../../components/ProductCard";
 import { fetchFavorites } from "../../api";
 
 
-const FavoriteProduct = ({ updateFavouritesCount }) => {
+const FavoriteProduct = () => {
   const { user } = useSelector((state) => state.auth);
   console.log(user.id)
   const [favorites, setFavorites] = useState([]);
-  const [type, setType] = useState([]);
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -56,7 +54,16 @@ const FavoriteProduct = ({ updateFavouritesCount }) => {
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
         {favorites.length > 0 ? (
           favorites.map((product) => (
-            <ProductCard key={product.id} product={product} updateFavouritesCount={updateFavouritesCount} type="delete" />
+            <ProductCard
+              key={product.id}
+              product={product}
+              type="delete"
+              onFavoriteRemoved={(productId) => {
+                setFavorites((currentFavorites) =>
+                  currentFavorites.filter((item) => item.id !== productId)
+                );
+              }}
+            />
           ))
         ) : (
           <p className="text-center text-gray-500">No favorite products yet.</p>

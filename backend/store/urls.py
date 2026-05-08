@@ -1,10 +1,21 @@
 # backend/urls.py
 
 from django.urls import path
-from .views import RegisterView, BrandView, LoginView, LogoutView, ForgotPasswordView, ResetPasswordView, CategoryListView, SubCategoryListView, SubSubCategoryListView, ProductListView, ProductView, FavoriteProductView, SavedBrandView, CheckAuthView, UserProfileView, UserListView, PasswordUpdateView, LogInteractionView, LLMRecommendationView, GenerateTagsFromDescriptionView, ChatbotAPIView, BrandAnalyticsView,AdminAnalyticsView
-
+from .views import (
+    RegisterView, BrandView, LoginView, LogoutView,
+    ForgotPasswordView, ResetPasswordView,
+    CategoryListView, SubCategoryListView, SubSubCategoryListView,
+    ProductListView, ProductView, FavoriteProductView,
+    SavedBrandView, CheckAuthView, UserProfileView, UserListView,
+    PasswordUpdateView, LogInteractionView, LLMRecommendationView,
+    GenerateTagsFromDescriptionView, ChatbotAPIView,
+    BrandAnalyticsView, AdminAnalyticsView,
+    CartView, CartItemView, CartClearView,
+    health_check,
+)
 
 urlpatterns = [
+    path("health/", health_check, name="health_check"),
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
@@ -36,6 +47,10 @@ urlpatterns = [
     path('chatbot/', ChatbotAPIView.as_view(), name='chat-bot'),
     path('brand/analytics/', BrandAnalyticsView.as_view()),
     path('admin/analytics/', AdminAnalyticsView.as_view()),
+    path('cart/', CartView.as_view(), name='cart'),
+    path('cart/items/', CartItemView.as_view(), name='cart_item_add'),
+    path('cart/items/<int:item_id>/', CartItemView.as_view(), name='cart_item_update_delete'),
+    path('cart/clear/', CartClearView.as_view(), name='cart_clear'),
     
  
     # URL for adding to favorites (POST)

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { setCredentials } from "./redux/slices/authSlice";
+import { setCredentials, logout } from "./redux/slices/authSlice";
 import { SearchProvider } from './context/SearchContext.jsx'
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 
@@ -32,6 +32,7 @@ import BrandList from "./pages/AdminPanel/BrandList.jsx";
 
 import FavoriteProduct from "./pages/UserPanel/FavoriteProduct.jsx";
 import SavedBrand from "./pages/UserPanel/SavedBrand.jsx";
+import Cart from "./pages/UserPanel/Cart.jsx";
 
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar.jsx";
@@ -39,28 +40,28 @@ import MobileSidebar from "./components/MobileSidebar.jsx";
 import Chatbot from "./components/Chatbot.jsx";
 import Breadcrumb from "./components/Breadcrumb.jsx";
 import Footer from "./components/Footer.jsx";
+import { fetchCart } from "./api.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 const fetchUser = async (dispatch) => {
-  const localUser = localStorage.getItem("user");
-  if (localUser) return; // Already stored
-
   try {
     const response = await fetch(`${API_URL}/check_auth/`, {
       method: "GET",
       credentials: "include", // Send cookies for authentication
     });
 
-    if (response.ok) {
-      const userData = await response.json();
-      console.log("UserData",userData)
-       if (userData.authenticated) {
+    const userData = await response.json();
+
+    if (response.ok && userData.authenticated) {
       dispatch(setCredentials({ user: userData.user })); 
-      }// Store user in Redux
+      return;
     }
+
+    dispatch(logout());
   } catch (error) {
-    console.error("Failed to fetch user:", error);
+    console.error("Failed to verify user:", error);
+    dispatch(logout());
   }
 };
 
@@ -71,7 +72,7 @@ const fetchUser = async (dispatch) => {
   
 // };
 
-const ProtectedRoute = ({ favouritesCount }) => {
+const ProtectedRoute = ({ favouritesCount, cartCount }) => {
   const { user } = useSelector((state) => state.auth);
   const [sidebarOpen, setSidebarOpen] = useState(true);  // Control sidebar visibility
   const [isMobile, setIsMobile] = useState(false);
@@ -94,7 +95,7 @@ const ProtectedRoute = ({ favouritesCount }) => {
     <div className="flex flex-col min-h-screen">
       {/* Fixed Navbar */}
       <div className="w-full fixed top-0 left-0 right-0 z-10">
-        <Navbar count={favouritesCount} />
+        <Navbar count={favouritesCount} cartCount={cartCount} />
       </div>
 
       {/* Mobile Sidebar (only on mobile view) */}
@@ -124,13 +125,13 @@ const ProtectedRoute = ({ favouritesCount }) => {
 };
 
 
-function Layout({ favouritesCount }) {
+function Layout({ favouritesCount, cartCount }) {
   const location = useLocation();
   const hideNavbar = location.pathname === "/login" || location.pathname === "/register";
 
   return (
     <div>
-      {!hideNavbar && <Navbar count={favouritesCount} />}
+      {!hideNavbar && <Navbar count={favouritesCount} cartCount={cartCount} />}
       <Outlet /> {/* Renders the child routes inside Layout */}
       <Chatbot />
       <Footer />
@@ -140,8 +141,10 @@ function Layout({ favouritesCount }) {
 
 function App() {
   const [favouritesCount, setFavouritesCount] = useState(0);
+  const [cartCount, setCartCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const init = async () => {
@@ -150,6 +153,20 @@ function App() {
     };
     init();
   }, [dispatch]);
+
+  useEffect(() => {
+    const loadCartCount = async () => {
+      if (!user) {
+        setCartCount(0);
+        return;
+      }
+
+      const data = await fetchCart();
+      setCartCount(data.total_items || 0);
+    };
+
+    loadCartCount();
+  }, [user]);
 
   if (loading) {
     return (
@@ -165,15 +182,15 @@ function App() {
       <main className="w-full min-h-screen">
         <Routes>
           {/* Layout will be applied to all these routes */}
-          <Route element={<Layout favouritesCount={favouritesCount} />}>
+          <Route element={<Layout favouritesCount={favouritesCount} cartCount={cartCount} />}>
             <Route path="/" element={<Home updateFavouritesCount={setFavouritesCount} />} />
-            <Route path="/products" element={<Product updateFavouritesCount={setFavouritesCount} />} />
-            <Route path="/products/category/:categoryId" element={<Product updateFavouritesCount={setFavouritesCount} />} />
-            <Route path="/products/subcategory/:subcategoryId" element={<Product updateFavouritesCount={setFavouritesCount} />} />
-            <Route path="/products/sub/:subsubcategoryId" element={<Product updateFavouritesCount={setFavouritesCount} />} />
+            <Route path="/products" element={<Product updateFavouritesCount={setFavouritesCount} updateCartCount={setCartCount} />} />
+            <Route path="/products/category/:categoryId" element={<Product updateFavouritesCount={setFavouritesCount} updateCartCount={setCartCount} />} />
+            <Route path="/products/subcategory/:subcategoryId" element={<Product updateFavouritesCount={setFavouritesCount} updateCartCount={setCartCount} />} />
+            <Route path="/products/sub/:subsubcategoryId" element={<Product updateFavouritesCount={setFavouritesCount} updateCartCount={setCartCount} />} />
             <Route path="/brands" element={<Brand />} />
           </Route>
-          <Route element={<ProtectedRoute favouritesCount={favouritesCount} />}>
+          <Route element={<ProtectedRoute favouritesCount={favouritesCount} cartCount={cartCount} />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/productlist" element={<ProductList />} />
               <Route path="/trash" element={<Trash />} />
@@ -182,6 +199,7 @@ function App() {
               <Route path="/categories" element={<Categories />} />
               <Route path="/users" element={<Users />} />
               <Route path="/favorites" element={<FavoriteProduct updateFavouritesCount={setFavouritesCount} />} />
+              <Route path="/cart" element={<Cart updateCartCount={setCartCount} />} />
               <Route path="/saved_brands" element={<SavedBrand />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/security" element={<ProfilePage />} />

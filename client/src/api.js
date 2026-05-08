@@ -89,6 +89,80 @@ export const fetchFavorites = async () => {
   }
 };
 
+export const fetchCart = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/cart/`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching cart:", error);
+    return { items: [], total_items: 0, subtotal: "0.00" };
+  }
+};
+
+export const addToCart = async (productId, quantity = 1) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/cart/items/`,
+      { product: productId, quantity },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error adding to cart:", error);
+    throw error;
+  }
+};
+
+export const updateCartItem = async (itemId, quantity) => {
+  try {
+    const response = await axios.patch(
+      `${API_URL}/cart/items/${itemId}/`,
+      { quantity },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating cart item:", error);
+    throw error;
+  }
+};
+
+export const removeCartItem = async (itemId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/cart/items/${itemId}/`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error removing cart item:", error);
+    throw error;
+  }
+};
+
+export const clearCart = async () => {
+  try {
+    const response = await axios.delete(`${API_URL}/cart/clear/`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    throw error;
+  }
+};
+
 export const fetchSavedBrands = async () => {
   try {
     const response = await axios.get(`${API_URL}/saved_brands/`, {
