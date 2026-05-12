@@ -101,7 +101,7 @@ const BrandCard = ({ brand, category, type }) => {
             {brand.canadian_owned && (
             <div className="text-center my-2">
                 <span className="inline-block bg-red-100 text-red-800 dark:bg-red-800 dark:text-white px-2.5 py-0.5 rounded-full text-sm font-medium">
-                    🇨🇦 Canadian Owned
+                    Canadian Owned
                 </span>
             </div>
             )}
@@ -151,7 +151,7 @@ const BrandCard = ({ brand, category, type }) => {
                 {type == "add" ? (
                 <button
                 onClick={() => handleSave(brand.id)}
-                className="mt-4 w-full flex items-center justify-center gap-2 bg-red-700 hover:bg-red-800 text-white py-2 rounded-lg transition-all duration-300 font-semibold shadow-md hover:shadow-lg active:scale-95"
+                className="mt-4 w-full flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-white py-2 font-semibold text-red-700 shadow-sm transition-all duration-300 hover:bg-red-700 hover:text-white hover:shadow-md active:scale-95 dark:border-red-900 dark:bg-gray-800 dark:text-red-300 dark:hover:bg-red-700 dark:hover:text-white"
                 >
                 <Star className="w-5 h-5 group-hover:scale-110 transition-transform" /> Save
                 </button>

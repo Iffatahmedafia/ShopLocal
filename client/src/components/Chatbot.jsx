@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { Suspense, lazy, useState } from "react";
 import { FaCommentDots } from "react-icons/fa"; // Using the comment icon for the chat button
 import { FaRobot } from "react-icons/fa";
 
-import ChatWindow from "./ChatWindow"; // Your existing chat window component
+const ChatWindow = lazy(() => import("./ChatWindow"));
 
 const Chatbot = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -20,7 +20,9 @@ const Chatbot = () => {
 
       {isChatOpen && (
         <div className="fixed bottom-20 right-8 z-50 w-90 h-96 bg-white dark:bg-gray-800 dark:text-white shadow-xl rounded-lg border border-gray-300">
-          <ChatWindow closeChat={() => setIsChatOpen(false)} />
+          <Suspense fallback={<div className="p-4 text-sm text-gray-500">Loading chat...</div>}>
+            <ChatWindow closeChat={() => setIsChatOpen(false)} />
+          </Suspense>
         </div>
       )}
     </div>

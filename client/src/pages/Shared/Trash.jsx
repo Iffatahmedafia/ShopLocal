@@ -159,9 +159,9 @@ const handleAdminAction = async (product, newStatus) => {
   if (loading) return <p className="text-gray-900 mt-6">Loading  trashed products...</p>;
 
   return (
-    <div className="p-2">
-        <div className="md:ml-12 mt-4 p-3">
-          <h2 className="text-2xl font-bold text-center text-start mb-4"> Trashed Products</h2>
+    <div className="px-4 pb-10 pt-4 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Trashed Products</h2>
         </div>
         {products.length> 0 ? (
         <div className="">

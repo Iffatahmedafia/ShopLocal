@@ -5,7 +5,8 @@ import axios from "axios";
 import debounce from "lodash/debounce";
 import { useSelector } from "react-redux";
 
-import { fetchCategories, fetchSubCategories, fetchSubSubCategories, fetchBrands } from "../../api";
+import { fetchBrands } from "../../api";
+import { useLookupData } from "../../context/LookupDataContext";
 import DialogWrapper from "../../components/DialogWrapper";
 
 
@@ -15,11 +16,9 @@ const AddProductForm = ({ open, setOpen, title, type, productData, onSubmit }) =
 
   const { user } = useSelector((state) => state.auth);
   console.log("User:", user)
-  const [categories, setCategories] = useState([]);
+  const { categories, subcategories, subsubcategories } = useLookupData();
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
-  const [subcategories, setSubcategories] = useState([]);
   const [selectedsubcategory, setSelectedsubcategory] = useState("");
-  const [subsubcategories, setSubSubcategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [image, setImage] = useState(null);
   const fileInputRef = useRef(null); // reference for hidden file input
@@ -69,37 +68,6 @@ const AddProductForm = ({ open, setOpen, title, type, productData, onSubmit }) =
       setSelectedCategoryId('');
     }
   }, [open, reset]);
-
-  useEffect(() => {
-    const getCategories = async () => {
-      const data = await fetchCategories();
-      setCategories(data);
-    };
-    getCategories();
-  }, []);
-
-  useEffect(() => {
-        if (categories.length > 0) {
-          const getSubcategories = async () => {
-            const data = await fetchSubCategories();
-            console.log("Fetched subcategories: ", data)
-            setSubcategories(data);
-          };
-          getSubcategories();
-        }
-      }, [categories]);
-  
-  
-  useEffect(() => {
-    if (subcategories.length > 0) {
-      const getSubSubcategories = async () => {
-        const data = await fetchSubSubCategories();
-        console.log("Fetched sub_subcategories Data: ", data)
-        setSubSubcategories(data);
-      };
-      getSubSubcategories();
-    }
-  }, [subcategories]);
 
   useEffect(() => {
     const getBrands = async () => {

@@ -163,6 +163,64 @@ export const clearCart = async () => {
   }
 };
 
+export const checkoutCart = async (checkoutData) => {
+  try {
+    const response = await axios.post(`${API_URL}/orders/checkout/`, checkoutData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error checking out cart:", error);
+    throw error;
+  }
+};
+
+export const fetchOrders = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/orders/`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    return [];
+  }
+};
+
+export const fetchOrder = async (orderId) => {
+  try {
+    const response = await axios.get(`${API_URL}/orders/${orderId}/`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching order:", error);
+    throw error;
+  }
+};
+
+export const updateOrderStatus = async (orderId, status) => {
+  try {
+    const response = await axios.patch(
+      `${API_URL}/orders/${orderId}/status/`,
+      { status },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    throw error;
+  }
+};
+
 export const fetchSavedBrands = async () => {
   try {
     const response = await axios.get(`${API_URL}/saved_brands/`, {

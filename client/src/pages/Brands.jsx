@@ -3,7 +3,8 @@ import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 import { useSearch } from "../context/SearchContext.jsx"
-import { fetchBrands, fetchCategories } from "../api.js";
+import { fetchBrands } from "../api.js";
+import { useLookupData } from "../context/LookupDataContext.jsx";
 import BrandCard from "../components/BrandCard.jsx";
 import Breadcrumb from "../components/Breadcrumb.jsx";
 
@@ -84,7 +85,7 @@ function MultiSelect({ options, selected, setSelected, label }) {
 
 const Brand = () => {
   const [brands, setBrands] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const { categories } = useLookupData();
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedProvinces, setSelectedProvinces] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -99,14 +100,6 @@ const Brand = () => {
       setBrands(data);
     };
     getBrands();
-  }, []);
-
-  useEffect(() => {
-    const getCategories = async () => {
-      const data = await fetchCategories();
-      setCategories(data);
-    };
-    getCategories();
   }, []);
 
   // Filter brand dropdown based on Canadian Owned if checked

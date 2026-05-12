@@ -32,8 +32,8 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`fixed top-[100px] left-0 w-64 h-screen overflow-y-auto transition-all duration-300 transform ${
-        darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
+      className={`fixed top-32 left-0 w-64 h-[calc(100vh-8rem)] overflow-y-auto border-r transition-all duration-300 transform ${
+        darkMode ? "border-gray-700 bg-gray-800 text-white" : "border-gray-200 bg-white text-gray-800"
       }`}
     >
       <div className="h-full flex flex-col gap-5 p-5 shadow-lg">
@@ -43,17 +43,17 @@ const Sidebar = () => {
         </h1> */}
 
         {/* Sidebar Links */}
-        <div className="flex-1 flex flex-col gap-4 py-4">
+        <div className="flex-1 flex flex-col gap-3 py-5">
           {linkData
           .filter(el => el.label !== 'Settings')
           .map((el) => (
             <Link
               key={el.label}
               to={el.link}
-              className={`w-full flex items-center text-sm font-medium gap-3 px-4 py-2 rounded-lg transition-all duration-300 ${
-                path === el.link.split("/")[0]
-                  ? "bg-red-100 text-red-700"
-                  : "text-gray-700 dark:text-white hover:bg-red-100 hover:text-red-700"
+              className={`w-full flex items-center text-sm font-semibold gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                path === el.link
+                  ? "bg-red-50 text-red-700 shadow-sm ring-1 ring-red-100 dark:bg-red-900/30 dark:text-red-200 dark:ring-red-800"
+                  : "text-gray-700 dark:text-gray-100 hover:bg-red-50 hover:text-red-700 dark:hover:bg-gray-700"
               }`}
             >
               {el.icon}
@@ -70,10 +70,10 @@ const Sidebar = () => {
           <Link
             key={el.label}
             to={el.link}
-            className={`w-full flex items-center text-sm font-medium gap-3 px-4 py-2 rounded-lg transition-all duration-300 ${
-              path === el.link.split("/")[0]
-                ? "bg-red-100 text-red-700"
-                : "text-gray-700 dark:text-white hover:bg-red-100 hover:text-red-700"
+            className={`w-full flex items-center text-sm font-semibold gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+              path === el.link
+                ? "bg-red-50 text-red-700 shadow-sm ring-1 ring-red-100 dark:bg-red-900/30 dark:text-red-200 dark:ring-red-800"
+                : "text-gray-700 dark:text-gray-100 hover:bg-red-50 hover:text-red-700 dark:hover:bg-gray-700"
             }`}
           >
             {el.icon}

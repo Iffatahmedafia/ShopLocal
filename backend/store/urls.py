@@ -11,6 +11,7 @@ from .views import (
     GenerateTagsFromDescriptionView, ChatbotAPIView,
     BrandAnalyticsView, AdminAnalyticsView,
     CartView, CartItemView, CartClearView,
+    OrderCheckoutView, OrderListView, OrderDetailView, OrderStatusView,
     health_check,
 )
 
@@ -51,6 +52,10 @@ urlpatterns = [
     path('cart/items/', CartItemView.as_view(), name='cart_item_add'),
     path('cart/items/<int:item_id>/', CartItemView.as_view(), name='cart_item_update_delete'),
     path('cart/clear/', CartClearView.as_view(), name='cart_clear'),
+    path('orders/checkout/', OrderCheckoutView.as_view(), name='order_checkout'),
+    path('orders/', OrderListView.as_view(), name='orders'),
+    path('orders/<int:order_id>/', OrderDetailView.as_view(), name='order_detail'),
+    path('orders/<int:order_id>/status/', OrderStatusView.as_view(), name='order_status'),
     
  
     # URL for adding to favorites (POST)
