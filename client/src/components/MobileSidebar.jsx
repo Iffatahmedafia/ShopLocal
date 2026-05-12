@@ -50,14 +50,14 @@ const MobileSidebar = () => {
     //   ];
 
   return (
-    <div className="block md:hidden bg-white dark:bg-gray-800 dark:text-white shadow-md px-4 py-6 mt-[120px]">
+    <div className="block md:hidden bg-white dark:bg-gray-800 dark:text-white shadow-md px-4 py-6 mt-32">
       <div className="flex flex-col gap-3">
         {linkData.map((el) => (
             <Link
                 key={el.label}
                 to={el.link}
                 className={`flex items-center gap-3 rounded-xl p-3 shadow transition transition-all duration-300 ${
-                path === el.link.split("/")[0]
+                path === el.link
                     ? "bg-red-100 text-red-700"
                     : "bg-gray-100 dark:bg-gray-900 dark:text-white hover:bg-red-100 hover:text-red-700"
                 }`}

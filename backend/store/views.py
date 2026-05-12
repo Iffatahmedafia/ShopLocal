@@ -8,10 +8,10 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from store.authentication import CookieJWTAuthentication  # Import custom auth
 from rest_framework.views import APIView
 from rest_framework import generics
-from .serializers import RegisterSerializer, LoginSerializer, UserInteractionSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, SavedBrandSerializer, CategorySerializer, SubCategorySerializer, SubSubCategorySerializer, ProductSerializer, FavoriteProductSerializer,BrandChatbotSerializer,ProductChatbotSerializer, CartSerializer, CartItemSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserInteractionSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserSerializer, UserUpdateSerializer, PasswordUpdateSerializer, BrandSerializer, SavedBrandSerializer, CategorySerializer, SubCategorySerializer, SubSubCategorySerializer, ProductSerializer, FavoriteProductSerializer,BrandChatbotSerializer,ProductChatbotSerializer, CartSerializer, CartItemSerializer, OrderSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .models import Category, SubCategory, SubSubcategory, Brand, SavedBrand, Product, FavoriteProduct, CustomUser, UserInteraction, Cart, CartItem
+from .models import Category, SubCategory, SubSubcategory, Brand, SavedBrand, Product, FavoriteProduct, CustomUser, UserInteraction, Cart, CartItem, Order, OrderItem
 from django.conf import settings
 from django.http import JsonResponse
 import jwt
@@ -133,7 +133,13 @@ class CheckAuthView(APIView):
 
             return Response({
                 "authenticated": True,
-                "user": {"id": user.id, "email": user.email, "name": user.name}  # Using `user.name` instead of `username`
+                "user": {
+                    "id": user.id,
+                    "email": user.email,
+                    "name": user.name,
+                    "is_admin": user.is_admin,
+                    "is_brand": user.is_brand,
+                }
             }, status=200)
 
         except AuthenticationFailed as e:
@@ -860,8 +866,10 @@ class CartItemView(APIView):
         )
 
         if not created:
-            cart_item.quantity += quantity
-            cart_item.save(update_fields=["quantity", "updated_at"])
+            return Response(
+                {"message": "This product is already in your cart!"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         serializer = CartItemSerializer(cart_item)
         logger.info(
@@ -918,3 +926,116 @@ class CartClearView(APIView):
         deleted_count, _ = cart.items.all().delete()
         logger.info("cart cleared user_id=%s cart_id=%s deleted_count=%s", user.id, cart.id, deleted_count)
         return Response({"message": "Cart cleared successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+
+class OrderCheckoutView(APIView):
+    def post(self, request):
+        user = checkAuth(request)
+        cart, _ = Cart.objects.get_or_create(user=user)
+        items = list(cart.items.select_related("product", "product__brand_id").all())
+
+        if not items:
+            return Response({"message": "Your cart is empty."}, status=status.HTTP_400_BAD_REQUEST)
+
+        customer_name = request.data.get("customer_name") or user.name
+        customer_email = request.data.get("customer_email") or user.email
+        fulfillment_method = request.data.get("fulfillment_method") or "Pickup"
+        address = request.data.get("address", "")
+        notes = request.data.get("notes", "")
+
+        subtotal = cart.subtotal
+        order = Order.objects.create(
+            user=user,
+            customer_name=customer_name,
+            customer_email=customer_email,
+            fulfillment_method=fulfillment_method,
+            address=address,
+            notes=notes,
+            subtotal=subtotal,
+            total=subtotal,
+        )
+
+        for item in items:
+            product = item.product
+            brand = product.brand_id
+            OrderItem.objects.create(
+                order=order,
+                product=product,
+                product_name=product.name,
+                product_image=product.image,
+                brand=brand,
+                brand_name=brand.name if brand else None,
+                quantity=item.quantity,
+                unit_price=item.unit_price,
+                line_total=item.line_total,
+            )
+
+        cart.items.all().delete()
+        logger.info("order created user_id=%s order_id=%s item_count=%s", user.id, order.id, len(items))
+        serializer = OrderSerializer(order)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class OrderListView(APIView):
+    def get(self, request):
+        user = checkAuth(request)
+        if user.is_admin:
+            orders = Order.objects.all()
+        elif user.is_brand:
+            try:
+                brand = Brand.objects.get(user=user)
+                orders = Order.objects.filter(items__brand=brand).distinct()
+            except Brand.DoesNotExist:
+                orders = Order.objects.none()
+        else:
+            orders = Order.objects.filter(user=user)
+
+        orders = orders.prefetch_related("items").order_by("-created_at")
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class OrderDetailView(APIView):
+    def get(self, request, order_id):
+        user = checkAuth(request)
+
+        try:
+            if user.is_admin:
+                order = Order.objects.get(id=order_id)
+            elif user.is_brand:
+                brand = Brand.objects.get(user=user)
+                order = Order.objects.filter(id=order_id, items__brand=brand).distinct().get()
+            else:
+                order = Order.objects.get(id=order_id, user=user)
+        except (Order.DoesNotExist, Brand.DoesNotExist):
+            return Response({"message": "Order not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = OrderSerializer(order)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class OrderStatusView(APIView):
+    def patch(self, request, order_id):
+        user = checkAuth(request)
+
+        if not user.is_admin and not user.is_brand:
+            return Response({"message": "Unauthorized."}, status=status.HTTP_403_FORBIDDEN)
+
+        next_status = request.data.get("status")
+        valid_statuses = {choice[0] for choice in Order.STATUS_CHOICES}
+        if next_status not in valid_statuses:
+            return Response({"message": "Invalid order status."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            if user.is_admin:
+                order = Order.objects.get(id=order_id)
+            else:
+                brand = Brand.objects.get(user=user)
+                order = Order.objects.filter(id=order_id, items__brand=brand).distinct().get()
+        except (Order.DoesNotExist, Brand.DoesNotExist):
+            return Response({"message": "Order not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        order.status = next_status
+        order.save(update_fields=["status", "updated_at"])
+        serializer = OrderSerializer(order)
+        return Response(serializer.data, status=status.HTTP_200_OK)

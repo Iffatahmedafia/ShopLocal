@@ -1,54 +1,72 @@
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-toastify";
 
 const ProfileCard = () => {
-
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
-
   const [userData, setUserData] = useState(null);
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm();
-
   useEffect(() => {
-    // Fetch current user data
     const fetchUserData = async () => {
       try {
         const res = await axios.get(`${API_URL}/profile/`, { withCredentials: true });
-        console.log("User Data:",res.data)
+        console.log("User Data:", res.data);
         setUserData(res.data);
-        setValue("name", res.data.name);
-        setValue("email", res.data.email);
       } catch (error) {
         toast.error("Failed to load user data");
       }
     };
-    fetchUserData();
-  }, [setValue]);
 
+    fetchUserData();
+  }, [API_URL]);
+
+  const initials = userData?.name
+    ? userData.name
+        .split(" ")
+        .map((part) => part[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "SL";
+
+  const roleLabel = userData?.is_admin
+    ? "Admin"
+    : userData?.is_brand
+    ? "Business"
+    : "Customer";
 
   return (
-      <div className="w-full max-w-md flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-black/50 border border-gray-300 dark:border-gray-700">
-        {/* User Avatar */}
-        <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center text-4xl dark:text-white font-bold shadow-md">
-          🧑
+    <aside className="h-fit rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <div className="rounded-2xl bg-[#0f1c2e] p-5 text-white">
+        <div className="flex items-center gap-4">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white text-xl font-bold text-red-700 shadow-md">
+            {initials}
+          </div>
+          <div className="min-w-0">
+            <h2 className="truncate text-xl font-bold">{userData?.name || "ShopLocal user"}</h2>
+            <p className="truncate text-sm text-gray-300">
+              {userData?.email || "Loading account..."}
+            </p>
+          </div>
         </div>
-
-        {/* User Name & Email */}
-        <h2 className="text-2xl font-bold dark:text-white mt-4">{userData?.name}</h2>
-        <p className="text-gray-600 dark:text-gray-300 text-sm">{userData?.email}</p>
-
-        {/* Additional User Role Display (Optional) */}
-        {userData?.is_admin && (
-          <span className="mt-2 px-3 py-1 text-sm font-medium text-white bg-blue-600 rounded-full">
-            Admin
-          </span>
-        )}
       </div>
 
-    );
+      <div className="mt-5 space-y-4">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            Role
+          </p>
+          <span className="inline-flex rounded-full bg-red-50 px-3 py-1 text-sm font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-200">
+            {roleLabel}
+          </span>
+        </div>
+        <div className="rounded-xl bg-gray-50 p-4 text-sm leading-6 text-gray-600 dark:bg-gray-900 dark:text-gray-300">
+          Your profile information is used across your dashboard, saved items, and account
+          security.
+        </div>
+      </div>
+    </aside>
+  );
 };
-
 
 export default ProfileCard;

@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { toast } from 'react-toastify';
 
-import { fetchCategories } from "../../api";
+import { useLookupData } from "../../context/LookupDataContext";
 
 const VendorRegistration = () => {
 
@@ -12,7 +12,7 @@ const VendorRegistration = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [categories, setCategories] = useState([]);
+  const { categories } = useLookupData();
   const [isCanadianOwned, setIsCanadianOwned] = useState(true);
   const [step, setStep] = useState(1); // Multi-step form
 
@@ -27,14 +27,6 @@ const VendorRegistration = () => {
 
   const provinces = ["Ontario", "Quebec", "British Columbia", "Alberta", "Manitoba", "Saskatchewan", "Nova Scotia"];
 //   const categories = ["Retail", "Food & Beverage", "Technology", "Health"];
-
-  useEffect(() => {
-      const getCategories = async () => {
-        const data = await fetchCategories();
-        setCategories(data);
-      };
-      getCategories();
-    }, []);
 
   const handleSubmitForm = async (data) => {
     console.log(data);

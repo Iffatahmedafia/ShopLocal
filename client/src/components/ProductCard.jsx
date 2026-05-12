@@ -104,7 +104,11 @@ const ProductCard = ({ product, updateCartCount, type, onClick, onFavoriteRemove
       await refreshCartCount();
       toast.success('Product added to cart successfully!');
     } catch (error) {
-      toast.error(error.response?.data?.product?.[0] || 'Could not add product to cart.');
+      toast.error(
+        error.response?.data?.message ||
+        error.response?.data?.product?.[0] ||
+        'Could not add product to cart.'
+      );
     }
   };
 
@@ -173,7 +177,7 @@ const ProductCard = ({ product, updateCartCount, type, onClick, onFavoriteRemove
         ):(
           <button
             onClick={(event) => handleAddToCart(event, product.id)}
-            className="mt-4 w-full flex items-center justify-center gap-2 bg-red-700 hover:bg-red-800 text-white py-2.5 rounded-lg transition-all duration-300 font-semibold shadow-md hover:shadow-lg active:scale-95"
+            className="mt-4 w-full flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-white py-2.5 font-semibold text-red-700 shadow-sm transition-all duration-300 hover:bg-red-700 hover:text-white hover:shadow-md active:scale-95 dark:border-red-900 dark:bg-gray-800 dark:text-red-300 dark:hover:bg-red-700 dark:hover:text-white"
           >
             <FiShoppingCart size={18} className="transition-transform duration-300 group-hover:scale-110" /> Add to Cart
           </button>
