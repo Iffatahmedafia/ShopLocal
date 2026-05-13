@@ -75,6 +75,7 @@ client/public/*
 !client/public/category_images/**
 !client/public/product_images/
 !client/public/product_images/**
+!client/public/shoplocal-logo.svg
 
 # If you store other static files like favicon, robots.txt etc.
 !client/public/favicon.ico
