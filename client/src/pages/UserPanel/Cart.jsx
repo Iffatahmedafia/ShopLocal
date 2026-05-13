@@ -194,10 +194,10 @@ const Cart = ({ updateCartCount }) => {
             </div>
             <button
               type="button"
-              disabled
-              className="mt-6 w-full rounded-lg bg-gray-300 px-4 py-3 text-sm font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+              onClick={() => navigate("/checkout")}
+              className="mt-6 w-full rounded-lg bg-red-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-red-800"
             >
-              Checkout Coming Soon
+              Checkout
             </button>
           </aside>
         </div>

@@ -4,9 +4,10 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import Fuse from "fuse.js";
 
-import { fetchProducts, fetchBrands, fetchCategories } from "../api";
+import { fetchProducts, fetchBrands } from "../api";
 import { logInteraction } from "../utils/logInteraction.js";
 import { useSearch } from "../context/SearchContext.jsx";
+import { useLookupData } from "../context/LookupDataContext.jsx";
 import ProductCard from "../components/ProductCard";
 import Breadcrumb from "../components/Breadcrumb.jsx";
 
@@ -22,7 +23,7 @@ const Product = ({ updateFavouritesCount, updateCartCount }) => {
   const { categoryId } = useParams();
   const { subsubcategoryId } = useParams();
   const [brands, setBrands] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const { categories } = useLookupData();
   const [selectedBrands, setSelectedBrands] = useState([]); // State for selected brands
   const [selectedBrandCategories, setSelectedBrandCategories] = useState([]); // State for selected brand categories
   const [products, setProducts] = useState([]);
@@ -48,14 +49,6 @@ const Product = ({ updateFavouritesCount, updateCartCount }) => {
       getBrands();
     }, []);
   
-    useEffect(() => {
-      const getCategories = async () => {
-        const data = await fetchCategories();
-        setCategories(data);
-      };
-      getCategories();
-    }, []);
-
   useEffect(() => {
     const getProducts = async () => {
       const data = await fetchProducts();

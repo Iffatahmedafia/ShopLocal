@@ -97,10 +97,10 @@ useEffect(() => {
   if (loading) return <p className="text-gray-900">Loading categories...</p>;
 
   return (
-    <div className="min-h-screen p-2">
+    <div className="px-4 pb-10 pt-4 sm:px-6 lg:px-8">
         {/* Add Categories Button */}
-        <div className="flex justify-between items-center p-3 mt-4 md:px-12">
-          <h2 className="text-2xl font-bold">Categories</h2>
+        <div className="mb-8 flex items-center justify-between gap-4">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Categories</h2>
           <button
             onClick={() => setIsModalOpen(true)}
             className="py-2 px-4 text-white bg-red-700 hover:bg-red-800 rounded-lg transition-all"

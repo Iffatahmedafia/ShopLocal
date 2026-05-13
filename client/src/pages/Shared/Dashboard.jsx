@@ -9,12 +9,12 @@ import PieChartComponent from "../../components/PieChart";
 import {
   fetchUsers,
   fetchBrands,
-  fetchCategories,
   fetchProducts,
   fetchFavorites,
   fetchSavedBrands
 } from "../../api";
 import DashboardCards from "../../components/DashboardCards";
+import { useLookupData } from "../../context/LookupDataContext";
 
 const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
@@ -22,7 +22,7 @@ const Dashboard = () => {
 
   const [users, setUsers] = useState([]);
   const [brands, setBrands] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const { categories } = useLookupData();
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [savedBrands, setSavedBrands] = useState([]);
@@ -66,15 +66,6 @@ const Dashboard = () => {
     };
     getProducts();
   }, [user]);
-
-  useEffect(() => {
-    const getCategories = async () => {
-      const data = await fetchCategories();
-      setCategories(data);
-      setLoading(false);
-    };
-    getCategories();
-  }, []);
 
   useEffect(() => {
     const getFavoritesProduct = async () => {
@@ -139,8 +130,10 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="md:ml-12 p-6 md:p-2 mt-6">
-      <h2 className="text-2xl font-bold mb-6">Dashboard Overview</h2>
+    <div className="px-4 pb-10 pt-4 sm:px-6 lg:px-8">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard Overview</h2>
+      </div>
       {!loading && <DashboardCards stats={stats} role={role} />}
       {role ==='brand' && (
         <div className="mt-6">

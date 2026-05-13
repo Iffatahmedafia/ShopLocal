@@ -4,14 +4,15 @@ import { Pencil } from "lucide-react";
 import { useSelector } from "react-redux";
 import { toast } from 'react-toastify';
 
-import { fetchBrands, updateBrand, fetchCategories } from "../../api";
+import { fetchBrands, updateBrand } from "../../api";
+import { useLookupData } from "../../context/LookupDataContext";
 
 
 const BrandDetail = () => {
   const { user } = useSelector((state) => state.auth);
   const [isEditing, setIsEditing] = useState(false);
   const [brand, setBrand] = useState(null);
-  const [categories, setCategories] =useState([]);
+  const { categories } = useLookupData();
 
   const provinceOptions = [
     "Ontario",
@@ -32,14 +33,6 @@ const BrandDetail = () => {
   } = useForm();
 
   const watchCanadianOwned = watch("canadian_owned");
-
-  useEffect(() => {
-      const getCategories = async () => {
-        const data = await fetchCategories();
-        setCategories(data);
-      };
-      getCategories();
-    }, []);
 
   useEffect(() => {
     const getBrands = async () => {

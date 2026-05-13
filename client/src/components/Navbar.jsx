@@ -5,10 +5,10 @@ import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { MdLabel } from 'react-icons/md';   // Material Design
 
-import { fetchCategories, fetchSubCategories, fetchSubSubCategories } from "../api";
 import { logInteraction } from "../utils/logInteraction.js";
 import { useSearch } from "../context/SearchContext.jsx"
 import { useTheme } from "../context/ThemeContext.jsx";
+import { useLookupData } from "../context/LookupDataContext.jsx";
 import Avatar from "./Avatar";
 
 // const categoriesData = [
@@ -53,9 +53,7 @@ const Navbar = ({ cartCount = 0 }) => {
   const [activeCategory, setActiveCategory] = useState(null); 
   const [activeSubCategory, setActiveSubCategory] = useState(null);
   const dropdownRef = useRef(null);
-  const [categories, setCategories] = useState([])
-  const [subcategories, setSubcategories] = useState([])
-  const [subsubcategories, setSubSubcategories] = useState([])
+  const { categories, subcategories, subsubcategories } = useLookupData();
   const { query, updateSearchQuery } = useSearch();
 
   const handleSearch = (event) => {
@@ -75,40 +73,8 @@ const Navbar = ({ cartCount = 0 }) => {
   };
   
   
-    useEffect(() => {
-      const getCategories = async () => {
-        const data = await fetchCategories();
-        console.log("Fetched Category Data: ", data)
-        setCategories(data);
-      };
-      getCategories();
-    }, []);
     
   
-    useEffect(() => {
-      if (categories.length > 0) {
-        const getSubcategories = async () => {
-          const data = await fetchSubCategories();
-          console.log("Fetched Data: ", data)
-          setSubcategories(data);
-          console.log("SubCategories: ",subcategories)
-        };
-        getSubcategories();
-      }
-    }, [categories]);
-
-
-    useEffect(() => {
-      if (subcategories.length > 0) {
-        const getSubSubcategories = async () => {
-          const data = await fetchSubSubCategories();
-          console.log("Fetched sub_subcategories Data: ", data)
-          setSubSubcategories(data);
-          console.log("SubSubCategories: ",subsubcategories)
-        };
-        getSubSubcategories();
-      }
-    }, [subcategories]);
   
 
     useEffect(() => {
@@ -167,10 +133,13 @@ const Navbar = ({ cartCount = 0 }) => {
 
   return (
     <>
-    <nav className="bg-[#0f1c2e] border-b border-white/10 dark:text-white backdrop-blur-md shadow-sm px-4 py-2 flex justify-between items-center"> 
+    <nav className="h-16 bg-[#0f1c2e] border-b border-white/10 dark:text-white backdrop-blur-md shadow-sm px-4 flex justify-between items-center"> 
         {/* Logo */}
-        <Link to="/" className="text-xl font-bold ml-2 md:ml-6 whitespace-nowrap text-white">
-         Shop <span className="text-red-600">Local</span>
+        <Link to="/" className="ml-2 md:ml-6 inline-flex items-center gap-3 whitespace-nowrap" aria-label="Shop Local home">
+          <img src="/shoplocal-logo.svg" alt="" className="h-10 w-10 shrink-0" aria-hidden="true" />
+          <span className="text-xl font-bold text-white">
+            Shop <span className="text-red-500">Local</span>
+          </span>
         </Link>
         {/* {user && ( 
           <div className="text-lg font-semibold text-white">
@@ -188,8 +157,8 @@ const Navbar = ({ cartCount = 0 }) => {
           </button>
         </div>
     </nav>
-    <nav className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-md border-b border-gray-300 dark:border-gray-700 transition duration-300">
-      <div className="px-4 py-3 flex justify-between items-center">
+    <nav className="min-h-16 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-md border-b border-gray-200 dark:border-gray-700 transition duration-300">
+      <div className="px-4 py-3 flex justify-between items-center gap-3">
         {/* Mobile Menu Button */}
         <button onClick={() => setIsOpen(!isOpen)} className="mr-3 md:hidden">
           {isOpen ? <FiX size={28} /> : <FiMenu size={28} />}
@@ -213,6 +182,17 @@ const Navbar = ({ cartCount = 0 }) => {
                 
                 {/* Category List */}
                 <div className="w-56">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      setActiveCategory(null);
+                      navigate("/products");
+                    }}
+                    className="block w-full border-b border-gray-100 px-4 py-2 text-left text-sm font-semibold text-red-700 hover:bg-red-50 dark:border-gray-700 dark:text-red-300 dark:hover:bg-gray-700"
+                  >
+                    View all products
+                  </button>
                   {categories.map((category) => (
                     <div key={category.id} className="relative">
                       <button
@@ -407,6 +387,17 @@ const Navbar = ({ cartCount = 0 }) => {
               {/* Main Dropdown Menu */}
               {dropdownOpen && (
                 <div className="mt-2 space-y-2 bg-white dark:bg-gray-800 rounded-md p-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      setActiveCategory(null);
+                      navigate("/products");
+                    }}
+                    className="w-full rounded-md px-4 py-2 text-left font-semibold text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-gray-700"
+                  >
+                    View all products
+                  </button>
                   {categories.map((category) => (
                     <div key={category.id} className="relative">
                       <button

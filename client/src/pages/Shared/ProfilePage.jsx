@@ -1,60 +1,74 @@
 import { useState } from "react";
-import { FaUserEdit, FaKey } from "react-icons/fa";
+import { FaKey, FaUserEdit } from "react-icons/fa";
 
-import UpdateProfileForm from "../../components/UpdateProfileForm"
-import ChangePasswordForm from "../../components/ChangePasswordForm"
+import ChangePasswordForm from "../../components/ChangePasswordForm";
 import ProfileCard from "../../components/ProfileCard";
+import UpdateProfileForm from "../../components/UpdateProfileForm";
 
 const ProfilePage = () => {
   const [selectedTab, setSelectedTab] = useState("profile");
 
   return (
-    // <div className="min-h-screen px-4 py-10 bg-gradient-to-br from-white to-gray-100 dark:from-gray-900 dark:to-gray-950 mt-4">
-    <div className="md:ml-12 mt-6 md:p-2 p-6">
-
-      <div className="">
-        <h1 className="text-2xl font-bold mb-6 text-center text-start text-gray-800 dark:text-white">
+    <div className="px-4 pb-10 pt-4 sm:px-6 lg:px-8">
+      <div className="mb-8">
+        <p className="text-sm font-semibold uppercase tracking-wide text-red-700 dark:text-red-400">
+          Account settings
+        </p>
+        <h1 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
           My Profile
         </h1>
+        <p className="mt-2 max-w-2xl text-sm text-gray-600 dark:text-gray-300">
+          Manage your account details, profile information, and password.
+        </p>
       </div>
 
-      <div className="flex flex-col gap-y-8 items-center">
-        {/* Profile Card */}
+      <div className="grid gap-8 xl:grid-cols-[360px_minmax(0,1fr)]">
         <ProfileCard />
 
-        {/* Tabs */}
-        <div className="flex justify-center space-x-4">
-          <button
-            onClick={() => setSelectedTab("profile")}
-            className={`flex items-center gap-2 pb-2 text-lg font-medium border-b-2 transition-colors ${
-              selectedTab === "profile"
-                ? "border-red-700 text-red-700 dark:text-red-600"
-                : "border-transparent text-gray-500 hover:text-gray-800 dark:hover:text-gray-300"
-            }`}
-          >
-            <FaUserEdit className="text-lg" />
-            Update Profile
-          </button>
-          <button
-            onClick={() => setSelectedTab("password")}
-            className={`flex items-center gap-2 pb-2 text-lg font-medium border-b-2 transition-colors ${
-              selectedTab === "password"
-                ? "border-red-700 text-red-700 dark:text-red-600"
-                : "border-transparent text-gray-500 hover:text-gray-800 dark:hover:text-gray-300"
-            }`}
-          >
-            <FaKey className="text-lg" />
-            Change Password
-          </button>
-        </div>
+        <div className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+          <div className="border-b border-gray-200 p-4 dark:border-gray-700 sm:p-6">
+            <div className="inline-flex rounded-full bg-gray-100 p-1 dark:bg-gray-900">
+              <button
+                type="button"
+                onClick={() => setSelectedTab("profile")}
+                className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  selectedTab === "profile"
+                    ? "bg-white text-red-700 shadow-sm dark:bg-gray-700 dark:text-red-300"
+                    : "text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                }`}
+              >
+                <FaUserEdit className="text-base" />
+                Profile
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedTab("password")}
+                className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  selectedTab === "password"
+                    ? "bg-white text-red-700 shadow-sm dark:bg-gray-700 dark:text-red-300"
+                    : "text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                }`}
+              >
+                <FaKey className="text-base" />
+                Security
+              </button>
+            </div>
+          </div>
 
-        {/* Form Card */}
-        <div className="w-full max-w-2xl p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-black/50 border border-gray-300 dark:border-gray-700">
-          <h2 className="text-2xl mb-6 font-semibold text-center text-gray-700 dark:text-gray-200">
-            {selectedTab === "profile" ? "Update Profile" : "Change Password"}
-          </h2>
+          <div className="p-5 sm:p-8">
+            <div className="mb-7">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                {selectedTab === "profile" ? "Profile details" : "Password"}
+              </h2>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                {selectedTab === "profile"
+                  ? "Update the name and email attached to your account."
+                  : "Keep your account secure by choosing a strong password."}
+              </p>
+            </div>
 
-          {selectedTab === "profile" ? <UpdateProfileForm /> : <ChangePasswordForm />}
+            {selectedTab === "profile" ? <UpdateProfileForm /> : <ChangePasswordForm />}
+          </div>
         </div>
       </div>
     </div>

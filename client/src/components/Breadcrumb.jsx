@@ -16,10 +16,10 @@ const Breadcrumb = () => {
   if (location.pathname === '/') return null;
 
   return (
-    <nav className="text-md font-nedium text-gray-500 px-4 py-2">
-      <ol className="flex space-x-2 items-center">
+    <nav className="text-sm font-medium text-gray-500">
+      <ol className="flex flex-wrap items-center gap-2">
         <li>
-          <Link to="/" className="text-blue-600 hover:underline flex items-center">
+          <Link to="/" className="flex items-center text-red-700 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
             <Home className="w-4 h-4 mr-1" /> Home
           </Link>
         </li>
@@ -28,11 +28,11 @@ const Breadcrumb = () => {
           const isLast = index === pathnames.length - 1;
           return (
             <li key={to} className="flex items-center">
-              <span className="mx-2">/</span>
+              <span className="text-gray-300 dark:text-gray-600">/</span>
               {isLast ? (
-                <span className="text-gray-700 dark:text-white">{formatBreadcrumbName(value)}</span>
+                <span className="text-gray-700 dark:text-gray-200">{formatBreadcrumbName(value)}</span>
               ) : (
-                <Link to={to} className="text-blue-600 hover:underline">
+                <Link to={to} className="text-red-700 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
                   {formatBreadcrumbName(value)}
                 </Link>
               )}

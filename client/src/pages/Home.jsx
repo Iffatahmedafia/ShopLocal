@@ -10,9 +10,10 @@ import "swiper/css/pagination";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-import { fetchCategories, fetchSubCategories, fetchProducts } from "../api";
+import { fetchProducts } from "../api";
 import { useTheme } from "../context/ThemeContext"; 
 import { useSearch } from "../context/SearchContext"
+import { useLookupData } from "../context/LookupDataContext";
 import { toast } from 'react-toastify';
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
@@ -42,29 +43,9 @@ const Home = ({ updateFavouritesCount }) => {
   // const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
   const { darkMode } = useTheme(); // Get dark mode state
   const [favouritesCount, setFavouritesCount] = useState(0)
-  const [categories, setCategories] = useState([])
-  const [subcategories, setSubcategories] = useState([])
+  const { categories, subcategories } = useLookupData();
   const [products, setProducts] = useState([])
   const { query } = useSearch();
-
-
-
-  useEffect(() => {
-    const getCategories = async () => {
-      const data = await fetchCategories();
-      setCategories(data);
-    };
-    getCategories();
-  }, []);
-  
-
-  useEffect(() => {
-    const getSubcategories = async () => {
-      const data = await fetchSubCategories();
-      setSubcategories(data);
-    };
-    getSubcategories();
-  }, []);
 
   useEffect(() => {
     if (categories.length > 0) {
@@ -170,20 +151,18 @@ const Home = ({ updateFavouritesCount }) => {
                   </a>
 
                   {/* Secondary CTA */}
-                  {!user && (
-                    <button
-                      onClick={() => navigate('/vendor_register')}
-                      className="inline-flex items-center gap-2 justify-center rounded-full 
-                      border border-white/30 
-                      bg-white/10 backdrop-blur-md 
-                      px-8 py-3.5 font-semibold text-white
-                      transition-all duration-300 
-                      hover:bg-white hover:text-red-700 hover:scale-105"
-                    >
-                      <FaStore size={16} />
-                      Register your business
-                    </button>
-                  )}
+                  <Link
+                    to="/brands"
+                    className="inline-flex items-center gap-2 justify-center rounded-full 
+                    border border-white/30 
+                    bg-white/10 backdrop-blur-md 
+                    px-8 py-3.5 font-semibold text-white
+                    transition-all duration-300 
+                    hover:bg-white hover:text-red-700 hover:scale-105"
+                  >
+                    <FaStore size={16} />
+                    Browse Brands
+                  </Link>
                 </div>
               </div>
             </div>
@@ -289,7 +268,12 @@ const Home = ({ updateFavouritesCount }) => {
 
         {/* Top Products Section */}
         <section className="container mx-auto px-4 py-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Top Products</h2>
+          <div className="relative mb-8 flex items-center justify-center">
+            <h2 className="text-center text-2xl md:text-3xl font-bold">Featured Products</h2>
+            <Link to="/products" className="absolute right-0 text-sm font-semibold text-red-700 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+              View all products
+            </Link>
+          </div>
           <Swiper
             spaceBetween={20}
             slidesPerView={2} // Show 2 slides on small screens

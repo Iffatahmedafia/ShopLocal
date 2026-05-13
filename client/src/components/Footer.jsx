@@ -9,9 +9,12 @@ const Footer = () => {
 
                 {/* Brand Section */}
                 <div className="lg:col-span-2">
-                    <h2 className="text-xl font-bold text-white">
-                    Shop <span className="text-red-600">Local</span>
-                    </h2>
+                    <Link to="/" className="inline-flex items-center gap-3" aria-label="Shop Local home">
+                        <img src="/shoplocal-logo.svg" alt="" className="h-11 w-11" aria-hidden="true" />
+                        <span className="text-xl font-bold text-white">
+                            Shop <span className="text-red-500">Local</span>
+                        </span>
+                    </Link>
 
                     <p className="mt-4 max-w-md text-sm leading-6 text-gray-400">
                     Discover and shop from trusted local businesses. We bring communities

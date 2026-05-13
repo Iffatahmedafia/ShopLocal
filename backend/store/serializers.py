@@ -2,7 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
-from .models import Category, SubCategory, SubSubcategory, Product, FavoriteProduct, Brand, SavedBrand, UserInteraction, Cart, CartItem
+from .models import Category, SubCategory, SubSubcategory, Product, FavoriteProduct, Brand, SavedBrand, UserInteraction, Cart, CartItem, Order, OrderItem
 
 
 CustomUser = get_user_model()  # Get the correct user model dynamically
@@ -287,4 +287,34 @@ class CartSerializer(serializers.ModelSerializer):
 
     def get_subtotal(self, obj):
         return obj.subtotal
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = ['id', 'product', 'product_name', 'product_image', 'brand', 'brand_name', 'quantity', 'unit_price', 'line_total']
+        read_only_fields = fields
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Order
+        fields = [
+            'id',
+            'user',
+            'status',
+            'customer_name',
+            'customer_email',
+            'fulfillment_method',
+            'address',
+            'notes',
+            'subtotal',
+            'total',
+            'items',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = ['id', 'user', 'subtotal', 'total', 'items', 'created_at', 'updated_at']
         
