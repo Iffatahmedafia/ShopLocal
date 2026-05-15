@@ -75,6 +75,28 @@ export const fetchProducts = async () => {
   }
 };
 
+export const fetchProduct = async (productId) => {
+  try {
+    const response = await axios.get(`${API_URL}/products/${productId}/`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    throw error;
+  }
+};
+
+export const fetchRecommendations = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/recommendations/`, {
+      withCredentials: true,
+    });
+    return response.data.recommendations || [];
+  } catch (error) {
+    console.error("Error fetching recommendations:", error);
+    return [];
+  }
+};
+
 export const fetchFavorites = async () => {
   try {
     const response = await axios.get(`${API_URL}/favorites/`, {

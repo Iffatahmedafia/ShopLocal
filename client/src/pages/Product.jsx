@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Fuse from "fuse.js";
 
-import { fetchProducts, fetchBrands } from "../api";
+import { fetchProducts, fetchBrands, fetchRecommendations } from "../api";
 import { logInteraction } from "../utils/logInteraction.js";
 import { useSearch } from "../context/SearchContext.jsx";
 import { useLookupData } from "../context/LookupDataContext.jsx";
@@ -19,6 +19,8 @@ const Product = ({ updateFavouritesCount, updateCartCount }) => {
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
   const { user } = useSelector((state) => state.auth);
+  const location = useLocation();
+  const navigate = useNavigate();
   const { subcategoryId } = useParams();
   const { categoryId } = useParams();
   const { subsubcategoryId } = useParams();
@@ -75,11 +77,6 @@ const Product = ({ updateFavouritesCount, updateCartCount }) => {
       }
 
       setProducts(filtered);
-      if (user) {
-        filtered.slice(0, 5).forEach((product) => {
-          logInteraction({ userId: user.id, productId: product.id, action: "view" });
-        });
-      }
     };
 
     getProducts();
@@ -93,7 +90,7 @@ const Product = ({ updateFavouritesCount, updateCartCount }) => {
 
 
   useEffect(() => {
-    const fetchRecommendations = async () => {
+    const loadRecommendations = async () => {
       console.log("User state: ", user);
       if (!user) {
         console.log("No user, skipping request.");
@@ -118,20 +115,12 @@ const Product = ({ updateFavouritesCount, updateCartCount }) => {
     //     tags: ["audio", "wireless"]
     //   }
     // ];
-      try {
-        console.log("Fetching recommendations...");
-        const response = await axios.get(`${API_URL}/api/recommendations/`, {
-          withCredentials: true,
-        });
-        console.log("Recommendation", response.data.recommendations);
-        setRecommended(response.data.recommendations || []);
-        // setRecommended(mockData)
-      } catch (error) {
-        console.error("Error fetching recommendations:", error);
-      }
+      const recommendations = await fetchRecommendations();
+      console.log("Recommendation", recommendations);
+      setRecommended(recommendations);
     };
   
-    fetchRecommendations();
+    loadRecommendations();
   }, [user]);
 
   const handleFavourites = async (productId) => {
@@ -278,6 +267,7 @@ const filteredProducts = baseProducts.filter((product) => {
                         if (user) {
                           logInteraction({ userId: user.id, productId: product.id, action: "click" });
                         }
+                        navigate(`/products/${product.id}`);
                       }}
                     />
                   )
@@ -303,6 +293,7 @@ const filteredProducts = baseProducts.filter((product) => {
                     if (user) {
                       logInteraction({ userId: user.id, productId: item.id, action: "click" });
                     }
+                    navigate(`/products/${item.id}`);
                   }}
                 />
                 )

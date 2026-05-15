@@ -1,5 +1,6 @@
 # backend/views.py
 import logging
+import re
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -16,7 +17,7 @@ from django.conf import settings
 from django.http import JsonResponse
 import jwt
 from rest_framework.exceptions import AuthenticationFailed
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.db.models.functions import TruncMonth
 from django.core.mail import send_mail
 from rest_framework import status
@@ -364,6 +365,21 @@ class ProductListView(generics.ListAPIView):
 class ProductView(APIView):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAuthenticated]
+    def get(self, request, product_id):
+        logger.info("product detail requested product_id=%s", product_id)
+
+        try:
+            product = (
+                Product.objects
+                .select_related("category", "subcategory", "sub_subcategory", "brand_id")
+                .get(id=product_id)
+            )
+        except Product.DoesNotExist:
+            return Response({"message": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ProductSerializer(product)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def post(self, request):
         user = checkAuth(request)
         # Get the user ID from the request (assuming user is authenticated)
@@ -655,38 +671,147 @@ class GenerateTagsFromDescriptionView(APIView):
 
 # openai.api_key = os.getenv("OPENAI_API_KEY")
 
+STOP_WORDS = {
+    "a", "an", "and", "are", "below", "budget", "can", "find", "for", "get",
+    "give", "i", "in", "is", "less", "looking", "me", "need", "of", "please",
+    "product", "products", "show", "than", "the", "to", "under", "within",
+    "with", "you"
+}
+
+KNOWN_COLORS = {
+    "black", "white", "red", "blue", "green", "yellow", "pink", "purple",
+    "brown", "gray", "grey", "silver", "gold", "orange", "beige"
+}
+
+
+def parse_chatbot_product_query(message):
+    text = (message or "").lower()
+    filters = {
+        "raw": text,
+        "keywords": [],
+        "tags": [],
+        "min_price": None,
+        "max_price": None,
+    }
+
+    between_match = re.search(r"between\s+\$?(\d+(?:\.\d+)?)\s+(?:and|to)\s+\$?(\d+(?:\.\d+)?)", text)
+    if between_match:
+        filters["min_price"] = min(float(between_match.group(1)), float(between_match.group(2)))
+        filters["max_price"] = max(float(between_match.group(1)), float(between_match.group(2)))
+    else:
+        max_match = re.search(r"(?:under|below|within|less than|up to)\s+\$?(\d+(?:\.\d+)?)", text)
+        if max_match:
+            filters["max_price"] = float(max_match.group(1))
+
+    words = re.findall(r"[a-zA-Z0-9]+", text)
+    for word in words:
+        if word in KNOWN_COLORS:
+            filters["tags"].append(word)
+        elif word not in STOP_WORDS and not word.isdigit() and len(word) > 1:
+            filters["keywords"].append(word)
+
+    filters["keywords"] = list(dict.fromkeys(filters["keywords"]))
+    filters["tags"] = list(dict.fromkeys(filters["tags"]))
+    return filters
+
+
+def search_products_for_chatbot(filters, limit=5):
+    products = Product.objects.filter(is_trashed=False).select_related("category", "subcategory", "sub_subcategory", "brand_id")
+    products = products.exclude(status__iexact="Rejected").exclude(status__iexact="Pending")
+
+    if filters.get("min_price") is not None:
+        products = products.filter(price__gte=filters["min_price"])
+    if filters.get("max_price") is not None:
+        products = products.filter(price__lte=filters["max_price"])
+
+    search_terms = filters.get("keywords", []) + filters.get("tags", [])
+    if search_terms:
+        query = Q()
+        for term in search_terms:
+            query |= Q(name__icontains=term)
+            query |= Q(description__icontains=term)
+            query |= Q(tags__icontains=term)
+            query |= Q(category__name__icontains=term)
+            query |= Q(subcategory__name__icontains=term)
+            query |= Q(sub_subcategory__name__icontains=term)
+            query |= Q(brand_id__name__icontains=term)
+        products = products.filter(query).distinct()
+
+    return products.order_by("price", "-created_at")[:limit]
+
 class ChatbotAPIView(APIView):
     def post(self, request):
         logger.info("chatbot request received")
         user_message = request.data.get("message", "").lower()
 
+        filters = parse_chatbot_product_query(user_message)
+        smart_products = search_products_for_chatbot(filters)
+        if smart_products.exists():
+            product_data = ProductChatbotSerializer(smart_products, many=True).data
+            return Response({
+                "type": "suggestions",
+                "products": product_data,
+                "brands": [],
+                "message": "Here are products matching your request."
+            })
+
         # Exact/partial match
-        matched_products = Product.objects.filter(name__icontains=user_message, is_trashed=False)[:5]
-        matched_brands = Brand.objects.filter(name__icontains=user_message)[:5]
+        matched_products = Product.objects.filter(name__icontains=user_message, is_trashed=False)
+        matched_brands = Brand.objects.filter(name__icontains=user_message)
 
         # If no matches found, try fuzzy logic
         if not matched_products.exists():
             all_products = Product.objects.filter(is_trashed=False)
             for product in all_products:
                 if fuzz.partial_ratio(user_message, product.name.lower()) > 80:
-                    matched_products |= Product.objects.filter(id=product.id)
+                    matched_products = matched_products | Product.objects.filter(id=product.id)
 
         if not matched_brands.exists():
             all_brands = Brand.objects.all()
             for brand in all_brands:
                 if fuzz.partial_ratio(user_message, brand.name.lower()) > 80:
-                    matched_brands |= Brand.objects.filter(id=brand.id)
+                    matched_brands = matched_brands | Brand.objects.filter(id=brand.id)
 
         # Return results if any
         if matched_products.exists() or matched_brands.exists():
-            product_data = ProductChatbotSerializer(matched_products, many=True).data
-            brand_data = BrandChatbotSerializer(matched_brands, many=True).data
+            product_data = ProductChatbotSerializer(matched_products.distinct()[:5], many=True).data
+            brand_data = BrandChatbotSerializer(matched_brands.distinct()[:5], many=True).data
             return Response({
                 "type": "suggestions",
                 "products": product_data,
                 "brands": brand_data,
                 "message": "Here are some suggestions from our database."
             })
+
+        # Fallback to product-vector recommendations before plain chat text.
+        try:
+            recommendation_terms = filters.get("keywords") or filters.get("tags") or [user_message]
+            recommended_items = generate_recommendations(recommendation_terms)
+            recommended_ids = [item.get("id") for item in recommended_items if item.get("id")]
+
+            if recommended_ids:
+                preserved_order = {product_id: index for index, product_id in enumerate(recommended_ids)}
+                recommended_products = list(
+                    Product.objects.filter(
+                        id__in=recommended_ids,
+                        is_trashed=False
+                    )
+                    .exclude(status__iexact="Rejected")
+                    .exclude(status__iexact="Pending")
+                    .select_related("category", "subcategory", "sub_subcategory", "brand_id")
+                )
+                recommended_products.sort(key=lambda product: preserved_order.get(product.id, 999))
+
+                if recommended_products:
+                    product_data = ProductChatbotSerializer(recommended_products[:5], many=True).data
+                    return Response({
+                        "type": "suggestions",
+                        "products": product_data,
+                        "brands": [],
+                        "message": "I found a few relevant products for you."
+                    })
+        except Exception as e:
+            logger.exception("chatbot product recommendation fallback failed: %s", e)
 
         # Fallback to LLM-generated RAG response
         ai_reply = generate_chat_response(user_message)

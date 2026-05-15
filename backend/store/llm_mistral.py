@@ -68,7 +68,12 @@ def generate_tags_from_description(description, max_tags=5):
 
 
 def get_product_docs():
-    products = Product.objects.all()
+    products = (
+        Product.objects
+        .filter(is_trashed=False)
+        .exclude(status__iexact="Rejected")
+        .exclude(status__iexact="Pending")
+    )
     docs = []
     for p in products:
         text = f"Product: {p.name}. Tags: {getattr(p, 'tags', '')}. Description: {p.description}. Category: {p.category.name if p.category else 'N/A'}"

@@ -238,9 +238,12 @@ class UserInteractionSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class ProductChatbotSerializer(serializers.ModelSerializer):
+    brand_name = serializers.CharField(source='brand_id.name', read_only=True)
+    category_name = serializers.CharField(source='category.name', read_only=True)
+
     class Meta:
         model = Product
-        fields = ['id', 'name', 'price', 'online_store']
+        fields = ['id', 'name', 'image', 'price', 'retail_store', 'online_store', 'brand_name', 'category_name', 'tags']
 
 class BrandChatbotSerializer(serializers.ModelSerializer):
     class Meta:

@@ -20,6 +20,7 @@ import { fetchCart } from "./api.js";
 
 const Home = lazy(() => import("./pages/Home"));
 const Product = lazy(() => import("./pages/Product"));
+const ProductDetail = lazy(() => import("./pages/ProductDetail.jsx"));
 const Brand = lazy(() => import("./pages/Brands.jsx"));
 const Login = lazy(() => import("./pages/Authentication/Login.jsx"));
 const Register = lazy(() => import("./pages/Authentication/Register.jsx"));
@@ -184,11 +185,12 @@ function App() {
         <Routes>
           {/* Layout will be applied to all these routes */}
           <Route element={<Layout favouritesCount={favouritesCount} cartCount={cartCount} />}>
-            <Route path="/" element={<Home updateFavouritesCount={setFavouritesCount} />} />
+            <Route path="/" element={<Home updateFavouritesCount={setFavouritesCount} updateCartCount={setCartCount} />} />
             <Route path="/products" element={<Product updateFavouritesCount={setFavouritesCount} updateCartCount={setCartCount} />} />
             <Route path="/products/category/:categoryId" element={<Product updateFavouritesCount={setFavouritesCount} updateCartCount={setCartCount} />} />
             <Route path="/products/subcategory/:subcategoryId" element={<Product updateFavouritesCount={setFavouritesCount} updateCartCount={setCartCount} />} />
             <Route path="/products/sub/:subsubcategoryId" element={<Product updateFavouritesCount={setFavouritesCount} updateCartCount={setCartCount} />} />
+            <Route path="/products/:productId" element={<ProductDetail updateCartCount={setCartCount} />} />
             <Route path="/brands" element={<Brand />} />
           </Route>
           <Route element={<ProtectedRoute favouritesCount={favouritesCount} cartCount={cartCount} />}>
